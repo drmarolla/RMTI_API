@@ -1,0 +1,198 @@
+{
+ "registry_version": "2026.10.4",
+ "engine_version": "2.4.0",
+ "note": "Source of truth for lung evidence. Edit via registry.py, never by hand-editing hashes.",
+ "evidence": [
+  {
+   "id": "muller2017",
+   "status": "peer-reviewed",
+   "cite": "Muller DC, Johansson M, Brennan P. Lung cancer risk prediction model incorporating lung function: development and validation in the UK Biobank prospective cohort study. J Clin Oncol 2017;35:861-869.",
+   "design": "UK Biobank cohort, 502,321 participants, 738 lung cancers; 2-year absolute risk accounting for competing mortality; separate models for never, former and current smokers.",
+   "findings": "C-statistic 0.85 (0.82-0.87), optimism-corrected 0.84; questionnaire-only model 0.84 (0.82-0.86); FEV1 improved discrimination, also in never smokers (0.74 v 0.72); NLST-type eligibility rules 0.66.",
+   "use": "Example of a validated source for L, and the list of variables such a tool already contains (used by the overlap check).",
+   "limits": "Horizon is 2 years, not 5. No external validation. Performance may differ where baseline risk differs.",
+   "verified": "as_released_v2.4.0",
+   "added": "2026-10-24"
+  },
+  {
+   "id": "robien2024",
+   "status": "peer-reviewed (editorial)",
+   "cite": "Robien K, DiPietro L. Obesity, metabolic syndrome, and lung cancer prevention: time to add obesity prevention to our recommendations? CHEST 2024;165(1):14-15 (commenting on Li et al., CHEST 2024;165(1):213-223).",
+   "design": "Editorial summarising a UK Biobank analysis (2,425 lung cancers, median follow-up 10.9 years).",
+   "findings": "BMI inversely associated with lung cancer while waist circumference was positively associated; metabolic syndrome linked to higher risk, strongest for adenocarcinoma, rising with the number of indicators and stronger in women and tobacco users. Names reverse confounding, detection bias and smoking confounding as threats.",
+   "use": "Candidate biological-sense indicator for V (metabolic-syndrome components) and a reason to stratify by sex, smoking and histology.",
+   "limits": "Secondary summary: read the primary paper before citing effect sizes. Observational.",
+   "verified": "as_released_v2.4.0",
+   "added": "2026-10-24"
+  },
+  {
+   "id": "nguyen2025",
+   "status": "peer-reviewed",
+   "cite": "Nguyen KT, Pham TH, Ngo VL, et al. Real-world data on stage III non-small cell lung cancer in Vietnam. Oncol Res 2025;33(12):4013-4028. doi:10.32604/or.2025.069281",
+   "design": "Retrospective single-centre cohort, 731 stage III NSCLC (AJCC 8th), Nghe An Oncology Hospital, 2018-2024.",
+   "findings": "Median OS 20.5 months; by stage IIIA 32.4, IIIB 18.1, IIIC 13.9 months. Independent favourable factors: ECOG PS <2, stage IIIA, adenocarcinoma, driver mutation. Age, sex, smoking and surgery (p=0.056) were not independent. Treatment allocation tracked performance status and age (surgery 10.5% with PS <2 v 0.7% with PS >=2). 84% male, 74.1% ever-smokers, 25.9% never-smokers; driver mutation tested in only 38.2%.",
+   "use": "Supports performance status, stage, histology and mutation status as strata, the ordering IIIA < IIIB < IIIC for the C scale, and ECOG as the anchor for the provisional rho_bio ladder. Shows an Asian cohort differs demographically from UK risk-model cohorts.",
+   "limits": "Stage III only, treated patients, single centre, selective molecular testing. Only the dichotomy PS <2 v >=2 is supported, not a five-step gradient. Table 3 hazard ratios sit on the unfavourable rows although the text reads them as reductions for the favourable category; the text reading is used here. The abstract and text give different 2024 systemic-therapy shares (21.7% v 25.8%).",
+   "verified": "as_released_v2.4.0",
+   "added": "2026-10-24"
+  },
+  {
+   "id": "draft_rtp",
+   "status": "draft, unpublished",
+   "cite": "Manuscript in preparation (risk versus treatment and prognosis in lung cancer screening).",
+   "design": "Not used.",
+   "findings": "Not used. Figures are still being revised and are deliberately absent from this release.",
+   "use": "Method idea only: occurrence risk is not benefit, because factors that raise risk also lower the chance of curative treatment.",
+   "limits": "Unpublished. Enter final values privately once published.",
+   "verified": "as_released_v2.4.0",
+   "added": "2026-10-24"
+  },
+  {
+   "id": "jang2014",
+   "status": "peer-reviewed",
+   "verified": "abstract",
+   "cite": "Jang RW, Caraiscos VB, Swami N, et al. Simple prognostic model for patients with advanced cancer based on performance status. J Oncol Pract 2014;10(5):e335-e341. doi:10.1200/JOP.2014.001457",
+   "design": "Single-centre outpatient palliative-care clinic (Princess Margaret, Toronto), 1,655 advanced-cancer patients, 2007-2010; ECOG, PPS and KPS rated by physicians.",
+   "findings": "Median survival by ECOG level 0 to 4: 293, 197, 104, 55 and 25.5 days; survival approximately halved per worsening level (the first step, 293 to 197, is about a one-third drop).",
+   "use": "Only source found that reports all five ECOG levels separately. Supports the ORDER of the rho_bio ladder and a steeper rise at the poor end.",
+   "limits": "Mixed advanced cancers, not lung-specific; palliative clinic, so ECOG 0 here is not a screening-population ECOG 0; physician-rated; medians only, no adjusted hazard ratios; wide CI at ECOG 4 (17-51 days). Not a calibration source for rho_bio values.",
+   "supports": [
+    "ecog_five_level_order"
+   ],
+   "cancer_scope": "mixed_advanced",
+   "n": 1655
+  },
+  {
+   "id": "lee2024",
+   "status": "peer-reviewed",
+   "verified": "full_text",
+   "cite": "Lee M, et al. Revisiting the association of ECOG performance status with clinical outcomes in diverse patients with cancer. J Natl Compr Canc Netw 2024;22(2D). doi:10.6004/jnccn.2023.7111",
+   "design": "Retrospective cohort, 21,730 adults on IV systemic therapy at 18 Kaiser Permanente Northern California centres, 2017-2019; nurse-rated ECOG; 6-month follow-up.",
+   "findings": "ECOG 0/1/2/3/4 = 42.5/42.5/10.5/4.0/0.4%. ECOG 3-4 (pooled) versus 0: 6-month mortality aHR 7.34 (6.64-8.11), 30-day hospitalisation 4.70, 30-day ED visit 3.85. Effect larger under age 40 and in breast cancer.",
+   "use": "Large real-world anchor for a four-step ordering (0, 1, 2, 3-4) and for effect heterogeneity by age and cancer type.",
+   "limits": "Authors pooled ECOG 3 and 4 because of low numbers, so five separate steps are not supported; mixed cancer types, not lung; IV-therapy patients only; six-month horizon; ECOG 1 and 2 hazard ratios are in a table not reviewed here.",
+   "supports": [
+    "ecog_four_level_order",
+    "ecog_effect_heterogeneity"
+   ],
+   "cancer_scope": "mixed",
+   "n": 21730
+  },
+  {
+   "id": "howard2025",
+   "status": "peer-reviewed",
+   "verified": "full_text",
+   "cite": "Howard HR, Hasanova M, Tiwari A, et al. The landscape of conventional and artificial intelligence-based clinical prediction models in non-small-cell lung cancer: from development to real-world validation. ESMO Open 2025;10(9):105557. doi:10.1016/j.esmoop.2025.105557",
+   "design": "Narrative review of published NSCLC prediction models (early-stage, metastatic, AI-based).",
+   "findings": "Concludes no reviewed model is ready for routine clinical adoption without prospective validation and external real-world testing. Reports PS-alone AUCs near chance for recurrence and OS in one curative-radiotherapy comparison (Hindocha 2022). Ganti geriatric model scores ECOG 1 at +3 and ECOG 2 at +8.",
+   "use": "Supports research-only posture, the saturation caveat for ECOG in curative or screening settings, and a graded (non-linear) use of ECOG in a published points model.",
+   "limits": "Review: not a source of primary effect sizes. Cite the primary papers for numbers.",
+   "supports": [
+    "research_only_posture",
+    "ecog_saturation"
+   ],
+   "cancer_scope": "lung",
+   "n": null
+  },
+  {
+   "id": "kaesmann2019",
+   "status": "peer-reviewed",
+   "verified": "abstract",
+   "cite": "Kaesmann L, Taugner J, Eze C, et al. Performance status and its changes predict outcome for patients with inoperable stage III NSCLC undergoing multimodal treatment. Anticancer Res 2019;39(9):5077-5083.",
+   "design": "Retrospective, 99 stage III NSCLC patients receiving chemoradiotherapy.",
+   "findings": "Median event-free survival by ECOG 0, 1, 2, 3 at first follow-up: 9.6, 9.0, 7.9, 3.5 months (p=0.018). Median OS ECOG 0 versus 1: 26.4 v 18.9 months (p=0.1).",
+   "use": "Lung-specific graded gradient for ECOG 0 to 3 (event-free survival).",
+   "limits": "n=99, single centre, stage III only; PS measured after treatment; EFS not OS; 0-versus-1 OS difference not significant; no ECOG 4.",
+   "supports": [
+    "ecog_four_level_order"
+   ],
+   "cancer_scope": "lung_stage_III",
+   "n": 99
+  },
+  {
+   "id": "kawaguchi2010",
+   "status": "peer-reviewed",
+   "verified": "full_text",
+   "cite": "Kawaguchi T, Takada M, Kubo A, et al. Performance status and smoking status are independent favorable prognostic factors for survival in non-small cell lung cancer: a comprehensive analysis of 26,957 patients with NSCLC. J Thorac Oncol 2010;5(5):620-630.",
+   "design": "Retrospective registry analysis, National Hospital Study Group for Lung Cancer (42 national hospitals, Japan), 1990-2005, last follow-up January 2007 (43.3% dead). 26,957 NSCLC patients, 26,900 with WHO performance status recorded: PS 0/1/2/3/4 = 12,613 / 9,243 / 2,879 / 1,453 / 712. Cox model adjusted for age, sex, smoking, histology, stage, period, surgery, radiation and chemotherapy.",
+   "findings": "Adjusted hazard ratio for death versus PS 0 (Table 7): PS 1 1.293 (1.229-1.359); PS 2 2.044 (1.914-2.183); PS 3 2.944 (2.714-3.193); PS 4 4.179 (3.756-4.650); all p<0.0001 and the intervals of adjacent levels do not overlap. Median OS (months, unadjusted) PS 0 to 4: 51.5, 15.4, 6.7, 3.9, 2.4. Non-surgical subgroup (n=13,697): 1.311, 2.035, 2.816, 4.014. Surgical subgroup: 1.356, 1.889, 1.952 (1.128-3.376), and PS 4 0.970 (0.401-2.349, p=0.95), which breaks the monotone pattern (about 10 PS 4 patients had surgery). Within each AJCC stage, median OS falls with worsening PS (Table 5; not strictly monotone at PS 3 in stage I).",
+   "use": "Lung-specific, five separate levels, adjusted, very large: the best available anchor for the ORDER of the rho_bio ladder and for face-validity checks of its step sizes (registry ladder-check). Supports an independent effect of PS after stage, histology, smoking and treatment, which is the independence the rho_bio rule needs.",
+   "limits": "WHO PS (like ECOG without level 5), physician-recorded; Japanese national-hospital registry run largely by surgeons, so skewed to early stage (PS 0 = 46.9%); diagnoses 1990-2005 (before modern targeted therapy and immunotherapy); treated patients, PS at diagnosis; the model adjusts for treatment, which is partly a consequence of PS, so the PS effect may be understated; proportional hazards not reported as tested; survival in patients with cancer, not occurrence risk, so it informs reserve (rho_bio) and not L. Printing inconsistencies that do not affect the numbers used: stage I PS 0 N is 7,197 in Table 5 but 7,179 in Tables 1 and 3; Table 8 subgroup sizes (13,453; 13,697) differ from Table 1 (13,271 surgery; 13,470 none).",
+   "supports": [
+    "ecog_five_level_order",
+    "ecog_adjusted_hr_all_levels"
+   ],
+   "cancer_scope": "lung_NSCLC",
+   "n": 26957,
+   "adjusted_hr": {
+    "reference_level": 0,
+    "model": "Cox, adjusted (age, sex, smoking, histology, stage, period, surgery, radiation, chemotherapy)",
+    "levels": {
+     "1": {
+      "hr": 1.293,
+      "lo": 1.229,
+      "hi": 1.359
+     },
+     "2": {
+      "hr": 2.044,
+      "lo": 1.914,
+      "hi": 2.183
+     },
+     "3": {
+      "hr": 2.944,
+      "lo": 2.714,
+      "hi": 3.193
+     },
+     "4": {
+      "hr": 4.179,
+      "lo": 3.756,
+      "hi": 4.65
+     }
+    }
+   },
+   "added": "2026-10-25"
+  },
+  {
+   "id": "katki2016",
+   "status": "peer-reviewed",
+   "cite": "Katki HA, Kovalchik SA, Berg CD, Cheung LC, Chaturvedi AK. Development and validation of risk models to select ever-smokers for CT lung cancer screening. JAMA 2016;315:2300-2311. doi:10.1001/jama.2016.6255. Comparison: Katki HA et al. Ann Intern Med 2018;169:10-19. doi:10.7326/M17-2701. Variables: NCI lcmodels manual v4.1.1.",
+   "design": "LCRAT: lung cancer incidence model for ever-smokers, 5-year risk by default (nyears 1-10 allowed), validated in the PLCO and NLST chest-radiography arms. Estimation range ages 40-98.",
+   "findings": "Incidence and death models well calibrated in PLCO and NLST. In the 2018 comparison of nine models, LCRAT was one of four best-calibrated (expected/observed 0.92-1.12 across the four; AUC 0.75-0.79 across the four) and selected similar ever-smokers at a 5-year risk threshold of about 2%.",
+   "use": "A validated 5-year source for L (set nyears = 5). Its variable list drives the overlap check against V items.",
+   "limits": "Ever-smokers only (never-smokers need another tool). US development and validation cohorts. The 2018 comparison reported LCRAT underestimating risk in the Asian/other subgroup. Contains BMI (see metabolic-syndrome V item). Even well-calibrated models overestimated risk in the highest quintile. Read at abstract and tool-manual level only; confirm full text before pre-registration.",
+   "verified": "abstract_partial",
+   "supports": [
+    "five_year_L_source"
+   ],
+   "added": "2026-10-27"
+  }
+ ],
+ "supplementary": [
+  {
+   "id": "ersconf2020_stage3",
+   "status": "conference-abstract",
+   "verified": "abstract",
+   "cite": "Conference abstract: Performance status and body mass index: prognosis impact of their changes in patients with stage III NSCLC. Eur Respir J 2020;56(suppl 64):1639.",
+   "design": "65 stage III NSCLC patients, 2016-2018, single centre; PS after multimodal treatment.",
+   "findings": "Median OS by PS 0, 1, 2, 3 after treatment: 43.6, 18, 12 and 5 months.",
+   "use": "Illustrates the same monotone pattern; hypothesis-generating only.",
+   "limits": "Conference abstract, not peer-reviewed in full; n=65; PS measured after treatment (reverse-causation risk).",
+   "supports": [],
+   "cancer_scope": "lung_stage_III",
+   "n": 65
+  },
+  {
+   "id": "ncctg_lung",
+   "status": "secondary-analysis",
+   "verified": "abstract",
+   "cite": "Survival analysis of advanced lung cancer, NCCTG data (R survival package 'lung'). Acta Medica Info (Cluj).",
+   "design": "226 advanced lung-cancer patients from a North Central Cancer Treatment Group study.",
+   "findings": "Median survival 394, 306 and 199 days for ECOG 0, 1, 2; none above 2.",
+   "use": "Clean three-step gradient in lung cancer.",
+   "limits": "Secondary analysis of an old trial dataset; no ECOG 3-4; cite the original NCCTG report for a primary reference.",
+   "supports": [],
+   "cancer_scope": "lung_advanced",
+   "n": 226
+  }
+ ]
+}

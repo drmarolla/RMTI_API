@@ -1,0 +1,23 @@
+# Private instance with HTTPS (Caddy gets and renews certificates automatically).
+services:
+  app:
+    build: .
+    env_file: .env
+    environment:
+      RMTI_ENABLE_VAULT: "1"
+      RMTI_DB: /app/data/rmti_secure.db
+    volumes:
+      - ./data:/app/data          # holds ciphertext only; back this folder up
+    restart: unless-stopped
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    environment:
+      RMTI_DOMAIN: ${RMTI_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [app]
+    restart: unless-stopped
+volumes:
+  caddy_data:

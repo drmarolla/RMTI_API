@@ -1,0 +1,56 @@
+{
+ "cohorts": [
+  {
+   "id": "nguyen2025_nghean",
+   "source_evidence_id": "nguyen2025",
+   "centre": "Nghe An Oncology Hospital",
+   "period": "2018-2024",
+   "n": 731,
+   "cancer_scope": "lung_stage_III",
+   "ecog_levels_reported": "0-4 reported; modelled as <2 v >=2",
+   "ecog_pooling": "<2 v >=2"
+  },
+  {
+   "id": "jang2014_pmcc",
+   "source_evidence_id": "jang2014",
+   "centre": "Princess Margaret Cancer Centre",
+   "period": "2007-2010",
+   "n": 1655,
+   "cancer_scope": "mixed_advanced",
+   "ecog_levels_reported": "0,1,2,3,4",
+   "ecog_pooling": "none"
+  },
+  {
+   "id": "lee2024_kpnc",
+   "source_evidence_id": "lee2024",
+   "centre": "Kaiser Permanente Northern California",
+   "period": "2017-2019",
+   "n": 21730,
+   "cancer_scope": "mixed",
+   "ecog_levels_reported": "0,1,2,3,4 (distribution); outcomes 0,1,2,3-4",
+   "ecog_pooling": "3 and 4 pooled"
+  },
+  {
+   "id": "kaesmann2019_lmu",
+   "source_evidence_id": "kaesmann2019",
+   "centre": "LMU Munich",
+   "period": "unspecified in abstract",
+   "n": 99,
+   "cancer_scope": "lung_stage_III",
+   "ecog_levels_reported": "0,1,2,3",
+   "ecog_pooling": "none (no ECOG 4)"
+  },
+  {
+   "id": "kawaguchi2010_nhsglc",
+   "source_evidence_id": "kawaguchi2010",
+   "centre": "National Hospital Study Group for Lung Cancer (42 national hospitals, Japan)",
+   "period": "1990-2005",
+   "n": 26957,
+   "cancer_scope": "lung_NSCLC",
+   "ecog_levels_reported": "WHO PS 0,1,2,3,4 (all reported separately, adjusted HR for each)",
+   "ecog_pooling": "none",
+   "overlap_flags": [],
+   "added": "2026-10-25"
+  }
+ ]
+}

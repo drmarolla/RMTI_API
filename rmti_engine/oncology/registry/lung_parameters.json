@@ -1,0 +1,106 @@
+{
+ "registry_version": "2026.10.4",
+ "engine_version": "2.4.0",
+ "site": "lung",
+ "status": "provisional",
+ "locked": false,
+ "lock_note": "Set locked=true only at pre-registration. A locked parameter set can change only through a new major registry version with a stated reason.",
+ "L_anchors": {
+  "r_lo": 0.001,
+  "r_hi": 0.1
+ },
+ "rho_bio_ladder": [
+  {
+   "value": 0.16,
+   "label": "little",
+   "ecog": 4,
+   "evidence": "moderate",
+   "descriptor": "ECOG 4: completely disabled; cannot carry on any self-care; totally confined to bed or chair"
+  },
+  {
+   "value": 0.41,
+   "label": "limited",
+   "ecog": 3,
+   "evidence": "strong",
+   "descriptor": "ECOG 3: capable of only limited self-care; confined to bed or chair more than half of waking hours"
+  },
+  {
+   "value": 0.59,
+   "label": "moderate",
+   "ecog": 2,
+   "evidence": "strong",
+   "descriptor": "ECOG 2: ambulatory and capable of all self-care but unable to work; up and about more than half of waking hours"
+  },
+  {
+   "value": 0.74,
+   "label": "good",
+   "ecog": 1,
+   "evidence": "strong",
+   "descriptor": "ECOG 1: restricted in physically strenuous activity but ambulatory and able to do light work"
+  },
+  {
+   "value": 0.8,
+   "label": "excellent",
+   "ecog": 0,
+   "evidence": "reference",
+   "descriptor": "ECOG 0: fully active, no restriction on pre-disease performance"
+  }
+ ],
+ "evidence_grade_key": {
+  "strong": "Separated from its neighbours with non-overlapping adjusted intervals in a very large lung cohort, and consistent with other cohorts",
+  "moderate": "Ordering supported and the step separates in the largest cohort, but the level is rare or its effect is unstable in a subgroup",
+  "weak": "Single or tiny sources; level rarely observed",
+  "reference": "Reference level"
+ },
+ "active_ladder": "B",
+ "rho_bio_ceiling": 0.8,
+ "ladder_name": "B: shaped to Kawaguchi 2010 adjusted hazard ratios, (1 - rho_k) = 0.20 x HR_k, ceiling raised to 0.80 (v2.4 draft)",
+ "ladder_alternatives": {
+  "A": {
+   "ceiling": 0.7,
+   "name": "A: equal steps, shared 0.10-0.70 ladder (v2.4.0)",
+   "ladder": [
+    {
+     "value": 0.1,
+     "label": "little",
+     "ecog": 4,
+     "evidence": "moderate",
+     "descriptor": "ECOG 4: completely disabled; cannot carry on any self-care; totally confined to bed or chair"
+    },
+    {
+     "value": 0.25,
+     "label": "limited",
+     "ecog": 3,
+     "evidence": "strong",
+     "descriptor": "ECOG 3: capable of only limited self-care; confined to bed or chair more than half of waking hours"
+    },
+    {
+     "value": 0.4,
+     "label": "moderate",
+     "ecog": 2,
+     "evidence": "strong",
+     "descriptor": "ECOG 2: ambulatory and capable of all self-care but unable to work; up and about more than half of waking hours"
+    },
+    {
+     "value": 0.55,
+     "label": "good",
+     "ecog": 1,
+     "evidence": "strong",
+     "descriptor": "ECOG 1: restricted in physically strenuous activity but ambulatory and able to do light work"
+    },
+    {
+     "value": 0.7,
+     "label": "excellent",
+     "ecog": 0,
+     "evidence": "reference",
+     "descriptor": "ECOG 0: fully active, no restriction on pre-disease performance"
+    }
+   ]
+  }
+ },
+ "ladder_derivation": {
+  "source": "kawaguchi2010",
+  "rule": "1 - rho_k = (1 - rho_ref) * adjusted_HR_k, rho_ref = 0.80, rounded to 0.01",
+  "circularity": "B is derived from Kawaguchi 2010, so that cohort cannot validate it; evaluate B only in independent cohorts."
+ }
+}
