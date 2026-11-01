@@ -30,6 +30,7 @@ src = st.radio("Source", list(bundled) + ["Upload a file", "Synthetic demo (pipe
 
 with st.expander("Data format and blank template"):
     st.write("**Columns:** " + ", ".join(meta["columns"]) + "  ·  **required:** " + ", ".join(meta["required"]))
+    st.caption("rho means ρ (resilience): file headers are written in ASCII, and a Greek ρ (for example ρ_care) is accepted too. Save Excel files as CSV UTF-8 so the symbol survives.")
     st.caption(meta["notes"] + " Outcome columns are optional: time_years (> 0) and cause (1 event, 2 competing event, 0 censored; a 0/1 column named event also works). stratum is an optional subgroup label.")
     st.download_button("Download blank template (CSV)", ",".join(meta["columns"]) + "\n", f"{disease}_template.csv", key=k("tpl"))
 
@@ -125,6 +126,7 @@ if oc:
             st.warning(f"Only {oc['events']} events: C-index and incidence estimates are unstable.")
     bt = pd.DataFrame(oc["by_tier"])
     cif = [x for x in bt.columns if x.startswith("cif_")]
+    bt["person_years"] = bt["person_years"].round(1)
     bt = bt.rename(columns={"tier": "Tier", "n": "Patients", "events": "Events", "competing": "Competing", "person_years": "Person-years", "crude_per_100py": "Crude per 100 PY",
                             **{x: f"Cumulative incidence {x[4:-1]}-year" for x in cif}})
     st.dataframe(bt.round(4), hide_index=True)
@@ -138,11 +140,16 @@ else:
 ex = out.get("extras") or {}
 if ex.get("by_etiology"):
     st.markdown("#### By aetiology")
-    st.dataframe(pd.DataFrame(ex["by_etiology"]).round(3), hide_index=True)
+    st.dataframe(pd.DataFrame(ex["by_etiology"]).rename(columns={"etiology": "Aetiology", "n": "Patients", "mean_L": "Mean L", "mean_V": "Mean V", "R_now": "R (ρ now)", "tier_now": "Tier (ρ now)",
+                 "R_after": "R (ρ after)", "tier_after": "Tier (ρ after)", "events": "Events", "person_years": "Person-years", "crude_per_100py": "Crude per 100 PY"}).round({"mean_L": 3, "mean_V": 3, "R_now": 3, "R_after": 3, "person_years": 1, "crude_per_100py": 2, "Mean L": 3, "Mean V": 3, "R (ρ now)": 3, "R (ρ after)": 3, "Person-years": 1, "Crude per 100 PY": 2}), hide_index=True)
     st.caption(ex["by_etiology_note"])
 if ex.get("observed_vs_published"):
     st.markdown("#### Observed incidence against the published aMAP ranges")
-    st.dataframe(pd.DataFrame(ex["observed_vs_published"]).round(3), hide_index=True)
+    ov = pd.DataFrame(ex["observed_vs_published"])
+    ov["inside_published_range"] = ov["inside_published_range"].map({True: "Yes", False: "No"})
+    st.dataframe(ov.rename(columns={"risk_group": "aMAP group", "n": "Patients", "events": "Events", "person_years": "Person-years", "observed_per_100py": "Observed per 100 PY",
+                                    "published_low_per_100py": "Published low", "published_high_per_100py": "Published high", "inside_published_range": "Observed within published range"})
+                 .round({"Person-years": 1, "Observed per 100 PY": 2, "Published low": 2, "Published high": 2}), hide_index=True)
     st.caption("Published ranges: Fan 2020, J Hepatol, per 100 person-years. Crude rates, not adjusted for competing risks.")
 
 d = st.columns(3)

@@ -41,7 +41,7 @@ DISEASES = {
     "breast": dict(label="Breast cancer", status="SCAFFOLD ONLY. No breast instruments or anchors exist in the engine, and none are invented here. You supply L, E, V, rho per patient from your own pre-registered mapping.",
                    template=["patient_id", "L", "V", "E", "rho", "stratum", "time_years", "cause"],
                    required=["L", "V"],
-                   notes="L, V (and optional E, rho) must already be on 0-1 (rho on 0 to <1). E and rho fall back to the settings values when the column is absent. "
+                   notes="L, V (and optional E, rho = ρ) must already be on 0-1 (ρ on 0 to <1; a header written as ρ also works). E and ρ fall back to the settings values when the column is absent. "
                          "No variable may feed two terms: declare the variables behind L and behind V in the settings and overlaps are refused. "
                          "Add a disease-specific module (README: 'add a disease by writing a new module') before reporting results."),
 }
@@ -67,7 +67,9 @@ def templates():
 
 # ---------------------------------------------------------------- data in
 def _norm_col(c):
-    return {"l": "L", "v": "V", "e": "E"}.get(str(c).strip().lower(), str(c).strip().lower())
+    """Column names are case-insensitive; a Greek rho in a header is accepted (ρ_care -> rho_care). Wire names stay ASCII."""
+    c = str(c).strip().replace("ρ", "rho").replace("₀", "0")
+    return {"l": "L", "v": "V", "e": "E"}.get(c.lower(), c.lower())
 
 
 def _infer_disease(cols):

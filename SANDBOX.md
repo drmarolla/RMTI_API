@@ -32,6 +32,13 @@ Every `*.csv` in `cohort_data/` is offered as a bundled cohort (set `RMTI_COHORT
 - Every bundled file passes the identifier guard when loaded; a file with a column such as `patient_name` is refused.
 - `GET /v1/sandbox/datasets` lists what the server has. Each result carries the file name, row count and SHA-256 so a run can be traced to the exact data.
 
+## The Greek letter ρ
+On screen the resilience term is always written ρ (ρ now, ρ after, ρ₀). File headers and API fields stay ASCII (`rho`, `rho_now`, `rho_after`, `rho0`) because JSON keys and Excel-saved CSVs mangle Greek letters unless saved as UTF-8.
+A header written with the Greek letter (`ρ0`, `ρ_now`, `ρ_care`) is accepted in uploads.
+
+## Domains
+Medical wording belongs to the Oncoclastics domain. The Disaster Science domain uses assets and areas (`asset_id`, strata such as coastal / inland / river basin), its own demo file `sample_data/synthetic_disaster_serial.csv`, and its own disclaimer banner.
+
 ## Look and accessibility
 `.streamlit/config.toml` sets the site-wide theme (also on the existing main page). `style.py` holds the shared look: no green (as in `app.py.py`), text and graphics meet WCAG 2.2 AA contrast
 (tested in `tests/test_sandbox.py`), and a tier is never shown by colour alone (number and name always appear).

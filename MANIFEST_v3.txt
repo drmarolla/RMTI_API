@@ -1,0 +1,11 @@
+PATCH v3 (goes ON TOP of add-on v2, which you already installed). Domain wording, Greek rho, table polish.
+Copy each file to the SAME path in the repo root. Use a branch and pull request so GitHub shows the exact lines that change.
+
+CHANGED  app.py.py                                  your main app; 76 lines touched, list in REVIEW_app.py.py.diff.txt (do NOT upload that file)
+NEW      sample_data/synthetic_disaster_serial.csv  synthetic demo for Disaster Science (assets and hazard zones; replaces smoking-status data there)
+CHANGED  sandbox.py                                 accepts a Greek rho in headers
+CHANGED  pages/2_Cohort_Sandbox.py                  readable table headings, Yes/No column, rounded person-years
+CHANGED  SANDBOX.md                                 documents rho and domains
+NEW      tests/test_domains.py                      5 tests: no medical words in Disaster Science, Greek rho, demo file
+
+NOT CHANGED: requirements.txt, service.py, registry.py, rmti_engine/*, api.py, DISCLAIMER.md, the .streamlit theme, cohort_data/*.
