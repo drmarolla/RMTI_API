@@ -1,0 +1,21 @@
+ADD-ON v2: calculator + HCC / lung / breast sandboxes + API routes + site theme + cohort file management
+This REPLACES the first add-on zip. Copy each file to the SAME path in the repo root. Nothing else in your repo is replaced.
+Do NOT upload app.py.py or requirements.txt (not in this zip, no new packages needed).
+
+NEW     .streamlit/config.toml                       site-wide theme (also restyles the existing main page); telemetry off.
+                                                     Hidden folder: if your computer hides it, in GitHub use Add file > Create new file, type  .streamlit/config.toml  and paste the contents.
+NEW     style.py                                     shared look: palette, tier chips, result cards (WCAG AA tested)
+NEW     sandbox.py                                   scoring, outcome statistics, drop-in cohort discovery
+NEW     api_sandbox.py                               FastAPI router: /v1/sandbox/*  (templates, datasets, {disease}/score)
+NEW     ui_common.py                                 access gate + API-or-in-process helper for the new pages
+NEW     pages/1_HCC_Calculator.py                    Streamlit page
+NEW     pages/2_Cohort_Sandbox.py                    Streamlit page
+NEW     cohort_data/ogaki_hcc_cohort.csv             Ogaki cohort, 3,101 patients (pseudonymised)
+NEW     cohort_data/ogaki_hcc_cohort.meta.json       id, label, description, reference file
+NEW     cohort_data/ogaki_reference.json             reference values from the Excel workbook (+ data fingerprint)
+NEW     tests/test_sandbox.py                        27 tests
+NEW     SANDBOX.md                                   documentation
+NEW     SUGGESTED_DISCLAIMER_UPDATE.md               wording to bring DISCLAIMER.md in line with reality (your decision)
+CHANGED api.py                                       5 lines APPENDED at the end. Nothing else touched. (Same change as the first add-on.)
+
+NOT CHANGED (on purpose): app.py.py, requirements.txt, service.py, registry.py, secure_store.py, rmti_engine/*, README.md, DISCLAIMER.md, Dockerfile, start.sh.

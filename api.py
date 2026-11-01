@@ -283,3 +283,8 @@ def registry_propose(b: ProposalIn):
 @app.get("/v1/registry/proposals", dependencies=[Depends(require_admin)])
 def registry_proposals():
     return R.list_proposals()
+
+
+# ---- cohort sandboxes (HCC, lung, breast): see sandbox.py, api_sandbox.py ---------------------------------------------
+from api_sandbox import router as _sandbox_router
+app.include_router(_sandbox_router)
