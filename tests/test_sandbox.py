@@ -145,11 +145,13 @@ class CumulativeIncidence(unittest.TestCase):
 
 class Sandboxes(unittest.TestCase):
     def test_all_diseases_run_on_synthetic_demo(self):
+        mp = {"L": dict(column="feat_texture", lo=0, hi=6), "E": dict(column="feat_intensity_var", lo=500, hi=3500),
+              "V": dict(column="feat_adc", lo=0.6, hi=2.0, invert=True), "rho": dict(column="feat_sphericity", lo=0.3, hi=0.95)}
         for d in B.DISEASES:
-            o = B.run(d, records=B.demo_records(d))
+            o = B.run(d, records=B.demo_records(d), options={"mapping": mp} if d == "imaging" else None)
             self.assertEqual(o["n"], 300)
             self.assertEqual(len(o["patients"]), 300)
-            self.assertIsNotNone(o["outcomes"])
+            self.assertTrue(o["outcomes"] is not None or d == "imaging")
 
     def test_lung_refuses_two_year_risk_and_percentages(self):
         rows = [dict(patient_id="a", risk5=0.03, v_count=1, risk_horizon_years=2)]
@@ -196,7 +198,7 @@ class Api(unittest.TestCase):
 
     def test_templates_and_score(self):
         t = self.c.get("/v1/sandbox/templates").json()
-        self.assertEqual(sorted(t), ["breast", "hcc", "lung"])
+        self.assertEqual(sorted(t), ["breast", "hcc", "imaging", "lung"])
         r = self.c.post("/v1/sandbox/lung/score", json={"records": B.demo_records("lung")})
         self.assertEqual(r.status_code, 200)
         self.assertIn("X-RMTI-Registry", r.headers)

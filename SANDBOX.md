@@ -32,6 +32,24 @@ Every `*.csv` in `cohort_data/` is offered as a bundled cohort (set `RMTI_COHORT
 - Every bundled file passes the identifier guard when loaded; a file with a column such as `patient_name` is refused.
 - `GET /v1/sandbox/datasets` lists what the server has. Each result carries the file name, row count and SHA-256 so a run can be traced to the exact data.
 
+## Breast cancer (female): proposed scaffold
+Main app: choose "Breast cancer, female (proposed scaffold)" under Oncoclastics. L is a 5-year invasive-cancer risk from a validated tool (BCRAT, BCSC...), rescaled with two PLACEHOLDER anchors in `rmti_breast.py`
+(0.5% and 10%, invented so the arithmetic runs; the published 5-year cut-points 1.67% and 3% are shown as markers, not used as anchors). Other horizons are refused.
+Deliberately absent: a V-item list, a rho_bio ladder, evidence grades, a pre-registration. Lung's ECOG ladder must not be reused. Posture text is a draft for clinical review.
+Sandbox: columns `risk5` (or `L`), `V`, optional `E`, `rho`, `sex`, `prior_breast_cancer`. Non-female rows and prior-breast-cancer rows are refused.
+
+## Imaging ROI features (research scaffold)
+Scores a table of features already extracted from an already-segmented region (offline, e.g. PyRadiomics). It cannot find a tumour and it does not diagnose.
+You give, for each of L, E, V, rho: a column, `lo`, `hi` and `invert`; nothing is assumed. API: `options.mapping`. Rules: a column may feed only one term; rows with a missing or non-numeric value
+are excluded and counted, never zero-filled; values outside the anchors are clipped and counted; strongly rank-correlated terms are flagged; tiers are the platform's fixed tiers.
+With a `label` (1 malignant, 0 benign) and ideally a `split` (dev / test) it reports AUC of R against each term alone and a plain average, a term pointing the wrong way, and the proportion malignant per tier.
+
+## Ogaki cohorts
+`cohort_data/ogaki_hcc_cohort.csv` is the bundled 3,101-patient cohort (workbook v2.4.1). The 2025 workbook (3,483 patients, 116 columns) is IDENTIFIABLE (date of birth, exact dates): never commit or upload it.
+Convert it on your own computer with `python tools/prepare_ogaki_cohort.py WORKBOOK.xlsx cohort_data/ogaki_2025.csv --salt "private phrase" --include-tumour --check`; the CSV and its `.meta.json` are then listed automatically.
+The converter's time and cause rules are inferred (the workbook's dictionary does not define them) and reproduce the bundled 3,101 / 376 HCC / 413 deaths; have the data owner confirm them.
+The HCC sandbox shows tumour size, nodules and portal-vein invasion by baseline tier for patients who developed HCC, using only recorded values. No tumour location exists in this data.
+
 ## The Greek letter ρ
 On screen the resilience term is always written ρ (ρ now, ρ after, ρ₀). File headers and API fields stay ASCII (`rho`, `rho_now`, `rho_after`, `rho0`) because JSON keys and Excel-saved CSVs mangle Greek letters unless saved as UTF-8.
 A header written with the Greek letter (`ρ0`, `ρ_now`, `ρ_care`) is accepted in uploads.

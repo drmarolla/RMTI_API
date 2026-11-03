@@ -14,6 +14,7 @@ from dynamic.rmti_dynamic import (TrajectoryParams, HCC_PARAMS, DISASTER_PARAMS,
 from oncology import rmti_lung as LUNG
 from oncology import rmti_hcc_cohort as HCC_COHORT
 from oncology import lung_evidence as LUNG_EVIDENCE
+import rmti_breast as BREAST                                 # female breast cancer: proposed scaffold, see rmti_breast.py
 import fhir_export
 from oncoclastics.rmti_oncoclastics import (score_two_senses, care_disruption, run_two_sense_trajectory,
                                             oncoclastic_events, combine_rho, RHO_BIO_ANCHORS, RHO_BIO_DESCRIPTORS, RHO_BIO_CEILING)
@@ -34,7 +35,7 @@ def resolve_domain(domain, site=None):
 
 def _params(domain, overrides=None):
     domain = resolve_domain(domain)
-    base = {"hcc": HCC_PARAMS, "lung": LUNG.LUNG_PARAMS}.get(domain, DISASTER_PARAMS)
+    base = {"hcc": HCC_PARAMS, "lung": LUNG.LUNG_PARAMS, "breast": BREAST.BREAST_PARAMS}.get(domain, DISASTER_PARAMS)
     d = {**base.__dict__, **(overrides or {})}
     return TrajectoryParams(**d)
 
@@ -45,13 +46,15 @@ def snapshot(domain, N, L, E, V, rho_now, rho_after=None, C=5):
         return assess_patient(N, L, E, V, rho_now, rho_after, C)
     if domain == "lung":
         return LUNG.assess_patient(N, L, E, V, rho_now, rho_after, C)
+    if domain == "breast":
+        return BREAST.assess_patient(N, L, E, V, rho_now, rho_after, C)
     return assess(N, L, E, V, rho_now, rho_after, C)
 
 
 def trajectory(domain, L, E, C, rho0, observations, delivery, params=None):
     domain = resolve_domain(domain)
     p = _params(domain, params)
-    post = {"hcc": HCC_TIER_POSTURE, "lung": LUNG.LUNG_TIER_POSTURE}.get(domain)
+    post = {"hcc": HCC_TIER_POSTURE, "lung": LUNG.LUNG_TIER_POSTURE, "breast": BREAST.BREAST_TIER_POSTURE}.get(domain)
     on = run_trajectory(L, E, C, rho0, observations, delivery, p, post)
     off = run_trajectory(L, E, C, rho0, observations, delivery,
                          TrajectoryParams(**{**p.__dict__, "filter_on": False}), post)
@@ -68,11 +71,15 @@ def cohort(domain, rows):
         r.setdefault("C", 5)
         if domain == "lung" and "risk5" in r:                 # 5-year risk (fraction) -> scaled L
             r["L"] = LUNG.l_from_risk(r.pop("risk5"))
+        if domain == "breast" and "risk5" in r:                # 5-year risk (fraction) -> scaled L, breast placeholder anchors
+            r["L"] = BREAST.l_from_risk(r.pop("risk5"))
         if domain == "disaster":
             r["E_sel"] = r.pop("E")
         d[name] = r
     if domain == "hcc":
         return rank_cohort_hcc(d)
+    if domain == "breast":
+        return BREAST.rank_cohort_breast(d)
     return LUNG.rank_cohort_lung(d) if domain == "lung" else rank_cohort(d)
 
 
@@ -131,7 +138,7 @@ def validate_serial(df, domain="hcc", params=None):
         if obs[0] is None:
             raise ValueError(f"Patient {pid}: baseline y is missing")
         tr = run_trajectory(g_("L", 0.3), g_("E", 0.6), int(g_("C", 5)), g_("rho0", 0.2),
-                            obs, dlv, p, {"hcc": HCC_TIER_POSTURE, "lung": LUNG.LUNG_TIER_POSTURE}.get(domain))
+                            obs, dlv, p, {"hcc": HCC_TIER_POSTURE, "lung": LUNG.LUNG_TIER_POSTURE, "breast": BREAST.BREAST_TIER_POSTURE}.get(domain))
         last, base = tr[-1], tr[0]
         rec = {"patient_id": pid, "R_baseline": base["R"], "R_final": last["R"],
                "tier_final": last["tier"], "dR": last["R"] - base["R"], "cycles": len(tr)}

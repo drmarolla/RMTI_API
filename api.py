@@ -20,14 +20,14 @@ def require_key(request: Request, x_api_key: Optional[str] = Header(None)):
 
 app = FastAPI(title="Oncoclastics API", version=S.ENGINE_VERSION, dependencies=[Depends(require_key)],
               description="Oncoclastics applies one hazard-exposure-vulnerability-resilience engine (RMTI) to oncology (cancer) and to disaster science. " + S.DISCLAIMER + " Engine: RMTI time-indexed v" + S.ENGINE_VERSION)
-# RMTI v2.3.0 vocabulary: domain "oncoclastics" (+ site "hcc" or "lung") or "disaster_science". Internal keys hcc/lung/disaster still work.
-Domain = Literal["oncoclastics", "disaster_science", "hcc", "lung", "disaster"]
+# RMTI v2.3.0 vocabulary: domain "oncoclastics" (+ site "hcc", "lung" or "breast") or "disaster_science". Internal keys hcc/lung/disaster still work.
+Domain = Literal["oncoclastics", "disaster_science", "hcc", "lung", "breast", "disaster"]
 U = Field(..., ge=0, le=1)
 
 
 class SnapshotIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = Field(None, description="Cancer-site module when domain is oncoclastics (default hcc)")
+    site: Optional[Literal["hcc", "lung", "breast"]] = Field(None, description="Cancer-site module when domain is oncoclastics (default hcc)")
     N: float = Field(100_000, gt=0, description="At-risk population / cohort size")
     L: float = U; E: float = U; V: float = U
     rho_now: float = Field(..., ge=0, lt=1)
@@ -37,7 +37,7 @@ class SnapshotIn(BaseModel):
 
 class TrajectoryIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = None
+    site: Optional[Literal["hcc", "lung", "breast"]] = None
     L: float = U; E: float = U
     C: int = Field(3, ge=1, le=5)
     rho0: float = Field(..., ge=0, le=0.95)
@@ -52,7 +52,7 @@ class CohortRow(SnapshotIn):
 
 class CohortIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = None
+    site: Optional[Literal["hcc", "lung", "breast"]] = None
     patients: List[CohortRow]
 
 
@@ -101,7 +101,7 @@ def cohort(b: CohortIn):
 
 class ValidateIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = None
+    site: Optional[Literal["hcc", "lung", "breast"]] = None
     records: List[dict] = Field(..., description="Long-format serial rows: patient_id, cycle, y, [delivery, L, E, C, rho0, event, time]")
     bootstrap: int = Field(0, ge=0, le=2000, description="Bootstrap resamples for 95% CIs (0 = off)")
 

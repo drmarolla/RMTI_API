@@ -18,6 +18,8 @@ LABELS = {
                 unit="surveillance cycle (e.g. 6-monthly)", who="patient / cohort"),
     "lung": dict(y="Allostatic-load indicator count (0-4)", delivery="Screening-pathway delivery, ρ_care (0-1)", ymax=4.0,
                  unit="screening round (e.g. annual or 2-yearly)", who="patient / cohort"),
+    "breast": dict(y="Vulnerability indicator count (0-4; items still to be pre-registered)", delivery="Screening-pathway delivery, ρ_care (0-1)", ymax=4.0,
+                   unit="screening round (e.g. 2-yearly)", who="patient / cohort"),
     "disaster": dict(y="Vulnerability indicator index (0-10)", delivery="Resilience programme delivered (0-1)", ymax=10.0,
                      unit="review cycle (e.g. annual)", who="city / asset / portfolio"),
 }
@@ -73,7 +75,8 @@ BANNER = st.empty()      # filled once the domain is known, so the wording match
 FAMILIES = {"Oncoclastics (cancer)": "oncoclastics", "Disaster Science": "disaster_science"}
 family = FAMILIES[st.sidebar.radio("RMTI domain", list(FAMILIES))]
 if family == "oncoclastics":
-    SITES = {"HCC (published application)": "hcc", "Lung cancer (proposed extension)": "lung"}
+    SITES = {"HCC (published application)": "hcc", "Lung cancer (proposed extension)": "lung",
+             "Breast cancer, female (proposed scaffold)": "breast"}
     domain = SITES[st.sidebar.radio("Cancer-site module", list(SITES))]
 else:
     domain = "disaster"
@@ -141,6 +144,13 @@ def l_input(container, key):
         L = S.LUNG.l_from_risk(r5)
         container.caption(f"Scaled L = {L:.2f} (placeholder log scale; NHS high-risk cut-point is 2.5%)")
         return L
+    if domain == "breast":
+        r5 = container.number_input("5-year invasive breast-cancer risk (%) from a validated tool (e.g. BCRAT, BCSC)", 0.0, 50.0, 1.0, 0.1,
+                                    key=f"r5_{key}") / 100
+        L = S.BREAST.l_from_risk(r5)
+        mk = ", ".join(f"{100 * v:g}% sits at L = {S.BREAST.l_from_risk(v):.2f}" for v in S.BREAST.REFERENCE_POINTS.values())
+        container.caption(f"Scaled L = {L:.2f} (PLACEHOLDER log scale {100 * S.BREAST.L_ANCHORS['r_lo']:g}% to {100 * S.BREAST.L_ANCHORS['r_hi']:g}%; published 5-year cut-points: {mk})")
+        return L
     return container.slider("L: likelihood (annual incidence / hazard)", 0.0, 1.0, 0.30, 0.01, key=f"L_{key}")
 
 
@@ -151,6 +161,7 @@ st.sidebar.markdown(
 
 names = (["Snapshot", "Trajectory", "Cohort ranking", "Retrospective validation"]
          + (["Lung: evidence and mapping"] if domain == "lung" else [])
+         + (["Breast: scope and limits"] if domain == "breast" else [])
          + (["My cases"] if auth else []) + ["About and limits"])
 T = dict(zip(names, st.tabs(names)))
 tab_snap, tab_traj, tab_cohort, tab_val, tab_about = (T["Snapshot"], T["Trajectory"], T["Cohort ranking"],
@@ -199,6 +210,8 @@ with tab_snap:
                     ecog_pick = st.selectbox("ECOG performance status (optional helper)", ["not scored", 0, 1, 2, 3, 4], key="ecog_snap")
                     if ecog_pick != "not scored":
                         rb_default = S.LUNG.rho_bio_from_ecog(int(ecog_pick))
+                if domain == "breast":
+                    st.info("No breast ρ_bio ladder exists yet, and lung's ECOG ladder must not be reused. Leave ρ_bio at 0 (not scored) until a breast ladder is agreed.")
                 rb = st.slider("ρ_bio (0.10 little · 0.25 limited · 0.40 moderate · 0.55 good · 0.70 excellent)", 0.0, S.RHO_BIO_CEILING, float(rb_default), 0.05, key=f"rb_snap_{ecog_pick}")
                 after = st.slider("ρ_care after a disruption of care (care-system sense)", 0.0, 0.99, max(0.0, round(rho_now - 0.15, 2)), 0.01, key="rc_after")
                 ts = S.two_sense_snapshot(L, E, V, rb, rho_now, C, after)
@@ -308,10 +321,11 @@ with tab_cohort:
     if src is not None:
         df = read_csv(src)
     else:
-        fn = {"hcc": "published_cohorts_snapshot.csv", "lung": "synthetic_lung_cohort.csv", "disaster": "published_disaster_cohort.csv"}[domain]
+        fn = {"hcc": "published_cohorts_snapshot.csv", "lung": "synthetic_lung_cohort.csv", "breast": "synthetic_breast_cohort.csv", "disaster": "published_disaster_cohort.csv"}[domain]
         df = pd.read_csv(os.path.join(os.path.dirname(__file__), "sample_data", fn))
         st.caption({"hcc": "Showing the six published HCC cohorts from the manuscript as an example.",
                     "lung": "Showing SYNTHETIC lung examples (risk5 = 5-year risk as a fraction, scaled to L internally).",
+                    "breast": "Showing SYNTHETIC breast examples (risk5 = 5-year invasive-cancer risk as a fraction, scaled to L internally with placeholder anchors).",
                     "disaster": "Showing the published Sub-Saharan Africa and California cases as an example."}[domain])
     df = st.data_editor(df, num_rows="dynamic", use_container_width=True, key="coh_editor")
     try:
@@ -327,6 +341,9 @@ with tab_cohort:
 # ------------------------------------------------------------------ validation
 with tab_val:
     st.subheader("Retrospective validation on serial data")
+    if domain == "hcc":
+        st.info("Looking for the Ogaki HCC cohort (3,101 patients)? It is baseline labs plus follow-up, not repeated per-cycle measurements, so it is not scored here. "
+                "Open the **Cohort Sandbox** page in the sidebar, choose HCC, then Ogaki cohort (bundled) or upload your own file.")
     st.caption(f"Long format, one row per {VOC['unit']} per cycle: {VOC['ids']}, cycle, y, optional delivery, L, E, C, ρ₀ (file column rho0, or ρ0), and per {VOC['unit']} "
                f"event (0/1) and time, and optionally a stratum column ({VOC['sub']}). Computes final-cycle and baseline R per {VOC['unit']}, then discrimination and tier-wise event rates. "
                f"{VOC['perm']}; the example is synthetic.")
@@ -389,6 +406,20 @@ with tab_val:
         st.download_button(VOC["dl"], shown.to_csv(index=False), "rmti_validation_assets.csv" if DIS else "rmti_validation_patients.csv")
     except ValueError as e:
         st.error(str(e))
+
+# ------------------------------------------------------------------ breast scope and limits
+if domain == "breast":
+    with T["Breast: scope and limits"]:
+        st.subheader("Female breast cancer in Oncoclastics: what exists and what does not")
+        st.caption("Proposed scaffold, not part of the published RMTI papers. Research prototype: not a medical device and not for patient-care decisions.")
+        st.markdown("**L** is a 5-year invasive breast-cancer risk from a validated tool, rescaled to 0-1 on a log scale between two **placeholder** anchors "
+                    f"({100 * S.BREAST.L_ANCHORS['r_lo']:g}% and {100 * S.BREAST.L_ANCHORS['r_hi']:g}%, invented only so the arithmetic runs). Tiers depend on them, so pre-register your own. "
+                    "Other horizons (10-year, lifetime) are refused.")
+        st.dataframe(pd.DataFrame([{"Tool": k, "Horizons": ", ".join(str(h) for h in v["horizons_years"]), "Not valid for": v["not_valid_for"]} for k, v in S.BREAST.TOOLS.items()]),
+                     hide_index=True)
+        st.markdown("**Not yet defined (deliberately left empty):** a list of V items, a ρ_bio ladder, tier-specific evidence, and a pre-registration document. "
+                    "No variable already inside the L tool may be reused for E, V or ρ. Posture wording is a DRAFT for clinical review.")
+        st.markdown("**Reference markers (not anchors):** " + "; ".join(f"{k}: {100 * v:g}%" for k, v in S.BREAST.REFERENCE_POINTS.items()) + ".")
 
 # ------------------------------------------------------------------ lung evidence and mapping
 if domain == "lung":
@@ -529,6 +560,7 @@ with tab_about:
         "It does not diagnose, stage or prescribe. Posture text describes surveillance-programme intensity for discussion by a clinical team.",
         "Do not enter names or identifying information. Real patient data require ethics review and data-use agreements. The practitioner workspace stores only pseudonymous, encrypted cases and is available only on servers that enable it.",
         "**Lung cancer** is a proposed Oncoclastics module. L is a 5-year risk from a validated tool, rescaled with placeholder log anchors on which the fixed tiers depend. Any variable already in that tool cannot be reused for E, V or ρ. Defaults come only from peer-reviewed sources listed in the module; unpublished manuscript figures are deliberately absent. Lung cancer is heterogeneous (smoking status, histology, sex, performance status, mutation status, ancestry), so use the subgroup table in the Validation tab and do not read a pooled result as universal.",
+        "**Breast cancer (female)** is a proposed Oncoclastics scaffold. L is a 5-year risk from a validated tool with placeholder log anchors; there is no V-item list and no ρ_bio ladder yet, and lung's must not be reused. Posture wording is a draft for clinical review.",
     ]
     ABOUT_DIS = [
         "For disaster, infrastructure and climate use, scores are relative, rubric-based indices, not forecasts, engineering assessments or actuarial figures; worked examples are teaching illustrations.",

@@ -1,0 +1,18 @@
+PATCH v4 (goes ON TOP of add-on v2 and patch v3, which you already installed): breast cancer, imaging scaffold, Ogaki converter, tumour table.
+Copy each file to the SAME path in the repo root. Use a branch and pull request: GitHub then shows the exact lines that change in your three existing files.
+REVIEW_v4_changes.diff.txt lists those lines (do NOT upload that file).
+
+NEW      rmti_breast.py                              female breast cancer scaffold (5-year risk, placeholder anchors, no invented items)
+NEW      sample_data/synthetic_breast_cohort.csv     6 SYNTHETIC rows for the Cohort tab
+NEW      tools/prepare_ogaki_cohort.py               run on YOUR computer: identifiable workbook -> de-identified CSV
+NEW      tests/test_breast_imaging.py                 18 tests (breast, imaging, tumour table, converter, main app)
+CHANGED  app.py.py                                   breast site + tab, Ogaki pointer, About bullet (about 45 lines)
+CHANGED  service.py                                   breast branches: _params, snapshot, trajectory, cohort, validate (about 12 lines)
+CHANGED  api.py                                       site Literal now includes "breast" (5 one-word edits)
+CHANGED  sandbox.py                                   breast via 5-year risk, imaging scaffold, tumour table
+CHANGED  pages/2_Cohort_Sandbox.py                    imaging mapping editor, breast anchors, new result tables
+CHANGED  tests/test_sandbox.py                        expects four diseases
+CHANGED  SANDBOX.md                                   documentation
+
+NOT CHANGED: requirements.txt (no new packages), registry.py, rmti_engine/*, DISCLAIMER.md, the theme, cohort_data/*.
+NOT INCLUDED ON PURPOSE: any patient-level data from the 2025 workbook.

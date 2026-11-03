@@ -23,7 +23,7 @@ T, DS = B.templates(), B.datasets()
 st.markdown("### 1. Choose data")
 disease = st.radio("Disease", list(T), format_func=lambda k: B.DISEASES[k]["label"], horizontal=True)
 meta, dflt = T[disease], T[disease]["defaults"]
-(st.warning if disease == "breast" else st.info)(meta["status"])
+(st.warning if disease in ("breast", "imaging") else st.info)(meta["status"])
 k = lambda s: f"{disease}_{s}"
 bundled = {f"{d['label']} (bundled)": i for i, d in DS.items() if d["disease"] == disease}
 src = st.radio("Source", list(bundled) + ["Upload a file", "Synthetic demo (pipeline test only)"], horizontal=True, key=k("src"))
@@ -55,10 +55,14 @@ else:
 
 st.markdown("### 2. Settings")
 c = st.columns(4)
-o = dict(E=c[0].slider("E: exposure", 0.0, 1.0, dflt["E"], 0.05, key=k("E"), help="Used for every patient unless the file has an E column."),
-         rho=c[1].slider("ρ now" + (" (ρ_care)" if disease == "lung" else ""), 0.0, 0.99, dflt["rho"], 0.01, key=k("rho")),
-         rho_after=c[2].slider("ρ after", 0.0, 0.99, dflt["rho_after"], 0.01, key=k("ra")),
-         C=c[3].select_slider("C: consequence index", [1, 2, 3, 4, 5], dflt["C"], key=k("C")))
+if disease == "imaging":
+    o = dict(E=dflt["E"], rho=dflt["rho"], rho_after=dflt["rho"], C=c[0].select_slider("C: consequence index", [1, 2, 3, 4, 5], dflt["C"], key=k("C")))
+    style.note("For imaging, E and ρ come from the mapped feature columns below, not from sliders.")
+else:
+    o = dict(E=c[0].slider("E: exposure", 0.0, 1.0, dflt["E"], 0.05, key=k("E"), help="Used for every patient unless the file has an E column."),
+             rho=c[1].slider("ρ now" + (" (ρ_care)" if disease == "lung" else ""), 0.0, 0.99, dflt["rho"], 0.01, key=k("rho")),
+             rho_after=c[2].slider("ρ after", 0.0, 0.99, dflt["rho_after"], 0.01, key=k("ra")),
+             C=c[3].select_slider("C: consequence index", [1, 2, 3, 4, 5], dflt["C"], key=k("C")))
 with st.expander("More settings"):
     c = st.columns(3)
     o["horizons"] = [float(x) for x in c[0].text_input("Cumulative-incidence horizons (years)", "5, 10", key=k("hz")).replace(",", " ").split() if x]
@@ -75,6 +79,37 @@ with st.expander("More settings"):
         o["declared_l_variables"] = [x.strip() for x in st.text_input("Variables behind L (comma-separated, optional)", key=k("lv")).split(",") if x.strip()]
         o["declared_v_variables"] = [x.strip() for x in st.text_input("Variables behind V (comma-separated, optional)", key=k("vv")).split(",") if x.strip()]
         st.caption("A variable named in both lists is refused: no measured variable may feed two terms.")
+if disease == "breast":
+    st.markdown("**L anchors for the 5-year risk (PLACEHOLDERS: invented so the arithmetic runs; pre-register your own)**")
+    cc = st.columns(3)
+    o["r_lo"] = cc[0].number_input("5-year risk that maps to L = 0", 0.0001, 0.5, float(dflt["r_lo"]), 0.0005, format="%.4f", key=k("rlo"))
+    o["r_hi"] = cc[1].number_input("5-year risk that maps to L = 1", 0.001, 1.0, float(dflt["r_hi"]), 0.01, format="%.3f", key=k("rhi"))
+    if o["r_lo"] >= o["r_hi"]:
+        st.error("The lower anchor must be smaller than the upper anchor."); st.stop()
+    try:
+        mk = B.BR.reference_markers(o["r_lo"], o["r_hi"])
+        cc[2].caption("Published 5-year cut-points on this scale: " + "; ".join(f"{k_.split(',')[0].split(' ')[0]} {v:.2f}" for k_, v in mk.items()))
+    except ValueError:
+        pass
+if disease == "imaging":
+    recs = payload.get("records")
+    cols_ = [c_ for c_ in (pd.DataFrame(recs).select_dtypes("number").columns if recs else []) if c_ not in ("label",)]
+    if not cols_:
+        st.info("Load a file (or the synthetic demo) with numeric feature columns, then map them here."); st.stop()
+    st.markdown("**Map one numeric column to each term and give its anchors.** Nothing is assumed: the anchors are your decision, ideally fixed on development rows before you look at test rows.")
+    mp = {}
+    names = {"L": "L: likelihood (e.g. a texture or shape-alignment feature)", "E": "E: exposure (e.g. a signal-intensity feature)",
+             "V": "V: vulnerability (e.g. a diffusion or perfusion feature)", "rho": "ρ: resilience (e.g. a boundary-integrity feature)"}
+    for i, t in enumerate(["L", "E", "V", "rho"]):
+        cc = st.columns([3, 1, 1, 1])
+        col = cc[0].selectbox(names[t], cols_, index=min(i, len(cols_) - 1), key=k(f"mc_{t}"))
+        x = pd.to_numeric(pd.DataFrame(recs)[col], errors="coerce")
+        lo = cc[1].number_input("value → 0", value=float(x.quantile(0.05)) if x.notna().any() else 0.0, key=k(f"ml_{t}"), format="%.4f")
+        hi = cc[2].number_input("value → 1", value=float(x.quantile(0.95)) if x.notna().any() else 1.0, key=k(f"mh_{t}"), format="%.4f")
+        inv = cc[3].checkbox("invert", key=k(f"mi_{t}"), help="Tick when a LOWER raw value should mean a HIGHER term (for example restricted diffusion raising V).")
+        mp[t] = dict(column=col, lo=lo, hi=hi, invert=inv)
+    style.note("The suggested anchors are the 5th and 95th percentile of the file you loaded. That is a convenience, not a calibration: choosing anchors on the data you later validate on makes every result optimistic.")
+    o["mapping"] = mp
 if disease == "hcc" and o["l_tool"] == "aMAP" and not o["allow_overlap"]:
     st.error("Not scored: aMAP and ALBI share albumin and bilirubin. Choose aMAP-ref, or tick the overlap box in More settings."); st.stop()
 payload["options"] = o
@@ -134,10 +169,42 @@ if oc:
     if oc.get("by_stratum"):
         st.markdown("**Discrimination by subgroup.** A pooled C-index can hide a subgroup where the score fails.")
         st.dataframe(pd.DataFrame(oc["by_stratum"]).round(3), hide_index=True)
-else:
+elif disease != "imaging":
     st.info("No usable time_years and cause columns: showing scores and tiers only.")
 
+im = out.get("imaging")
+if im:
+    st.markdown("#### What was scored, and what to be careful about")
+    c = st.columns(4)
+    c[0].metric("Rows scored", f"{im['rows_scored']:,}"); c[1].metric("Excluded (missing value)", im["rows_excluded_missing"])
+    c[2].metric("Clipped to anchors", sum(im["values_clipped_to_anchors"].values())); c[3].metric("Correlated term pairs", len(im["correlated_term_pairs"]))
+    for w in im["warnings"]:
+        st.warning(w)
+    if im["correlated_term_pairs"]:
+        st.dataframe(pd.DataFrame(im["correlated_term_pairs"]).round(2), hide_index=True)
+    vd = im.get("validation")
+    if vd:
+        st.markdown("#### Against the labels (pathology)")
+        rows = [{"Rows": name, "n": v["n"], "Malignant": v["malignant"], **{k_: (round(a, 3) if a is not None else None) for k_, a in v["auc"].items()}} for name, v in vd["by_split"].items()]
+        st.dataframe(pd.DataFrame(rows), hide_index=True)
+        st.caption("AUC of the product R against each term alone and a plain average. If R does not beat its own best single term or the simple mean, the multiplicative form is adding nothing here.")
+        tb = pd.DataFrame(vd["by_tier"])
+        tb["95% interval"] = tb["wilson95"].apply(lambda w: f"{100 * w[0]:.0f}% to {100 * w[1]:.0f}%")
+        st.dataframe(tb.drop(columns=["wilson95"]).rename(columns={"tier": "Tier", "n": "n", "malignant": "Malignant", "proportion_malignant": "Proportion malignant"}).round({"Proportion malignant": 3}), hide_index=True)
+        for w in vd.get("direction_warnings", []):
+            st.error(w["message"])
+        st.warning(vd["note"] + " " + vd["reading"])
+    else:
+        st.info("Add a label column (1 malignant, 0 benign) and, ideally, a split column (dev / test) to see how R ranks against pathology.")
+
 ex = out.get("extras") or {}
+if ex.get("tumour_at_diagnosis_by_tier"):
+    st.markdown("#### Tumour at diagnosis, by baseline tier (cases only)")
+    tt = pd.DataFrame(ex["tumour_at_diagnosis_by_tier"]).rename(columns={"baseline_tier": "Baseline tier", "cases": "HCC cases", "median_diameter_cm": "Median size (cm)", "median_nodules": "Median nodules", "pct_over_3cm": "% over 3 cm", "n_size_recorded": "n size", "pct_multinodular": "% 2+ nodules", "n_nodules_recorded": "n nodules", "n_vp_recorded": "n Vp",
+         "pct_portal_vein_invasion": "% portal-vein invasion", "median_afp_ng_ml": "Median AFP (ng/mL)", "median_dcp_ng_ml": "Median DCP (ng/mL)"})
+    st.dataframe(tt.round(1), hide_index=True)
+    st.caption(ex["tumour_note"])
+
 if ex.get("by_etiology"):
     st.markdown("#### By aetiology")
     st.dataframe(pd.DataFrame(ex["by_etiology"]).rename(columns={"etiology": "Aetiology", "n": "Patients", "mean_L": "Mean L", "mean_V": "Mean V", "R_now": "R (ρ now)", "tier_now": "Tier (ρ now)",
