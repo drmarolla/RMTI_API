@@ -1,15 +1,17 @@
-"""Oncoclastics API (FastAPI), built on the RMTI engine. Run: uvicorn api:app --port 8000   Docs: /docs"""
+"""Risk Mechanism Theory Index (RMTI) API (FastAPI). Core logic created and formulated by Dr. Cesar Marolla.
+Run: uvicorn api:app --port 8000   Portal: /   Reference: /docs   Widget: /widget"""
 from typing import List, Optional, Literal
 import hmac, os
-from fastapi import Request, FastAPI, HTTPException, Depends, Header
+from fastapi import Request, FastAPI, HTTPException, Depends, Header, Security
 from pydantic import BaseModel, Field
 import service as S
 import registry as R
+import portal
 
-def require_key(request: Request, x_api_key: Optional[str] = Header(None)):
+def require_key(request: Request, x_api_key: Optional[str] = Security(portal.api_key_header)):
     """If RMTI_API_KEYS (comma-separated) is set, every /v1 call needs a matching X-API-Key header.
-    /health is always open so load balancers and Cloud Run can probe it; it exposes only versions and the disclaimer."""
-    if request.url.path == "/health":
+    /health, the portal (/), /docs, /redoc, /openapi.json and /widget are open: they carry versions, schema and a client-side viewer only."""
+    if portal.is_public(request.url.path):
         return
     keys = [k for k in os.environ.get("RMTI_API_KEYS", "").split(",") if k]
     if not keys and os.environ.get("RMTI_ENV", "").lower() == "production":
@@ -18,16 +20,20 @@ def require_key(request: Request, x_api_key: Optional[str] = Header(None)):
         raise HTTPException(401, "Missing or invalid X-API-Key")
 
 
-app = FastAPI(title="Oncoclastics API", version=S.ENGINE_VERSION, dependencies=[Depends(require_key)],
-              description="Oncoclastics applies one hazard-exposure-vulnerability-resilience engine (RMTI) to oncology (cancer) and to disaster science. " + S.DISCLAIMER + " Engine: RMTI time-indexed v" + S.ENGINE_VERSION)
-# RMTI v2.3.0 vocabulary: domain "oncoclastics" (+ site "hcc", "lung" or "breast") or "disaster_science". Internal keys hcc/lung/disaster still work.
-Domain = Literal["oncoclastics", "disaster_science", "hcc", "lung", "breast", "disaster"]
+app = FastAPI(title=portal.TITLE, version=S.ENGINE_VERSION, dependencies=[Depends(require_key)],
+              summary=portal.BYLINE + " | " + portal.TAGLINE,
+              description=portal.DESCRIPTION + "\n\n" + S.DISCLAIMER + " Engine: RMTI time-indexed v" + S.ENGINE_VERSION,
+              openapi_tags=portal.TAGS, docs_url=None, redoc_url="/redoc",
+              contact={"name": "Dr. Cesar Marolla", "url": "https://orcid.org/0000-0001-8498-7380"},
+              license_info={"name": "Apache-2.0", "url": "https://www.apache.org/licenses/LICENSE-2.0.html"})
+# RMTI v2.3.0 vocabulary: domain "oncoclastics" (+ site "hcc" or "lung") or "disaster_science". Internal keys hcc/lung/disaster still work.
+Domain = Literal["oncoclastics", "disaster_science", "hcc", "lung", "disaster"]
 U = Field(..., ge=0, le=1)
 
 
 class SnapshotIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung", "breast"]] = Field(None, description="Cancer-site module when domain is oncoclastics (default hcc)")
+    site: Optional[Literal["hcc", "lung"]] = Field(None, description="Cancer-site module when domain is oncoclastics (default hcc)")
     N: float = Field(100_000, gt=0, description="At-risk population / cohort size")
     L: float = U; E: float = U; V: float = U
     rho_now: float = Field(..., ge=0, lt=1)
@@ -37,7 +43,7 @@ class SnapshotIn(BaseModel):
 
 class TrajectoryIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung", "breast"]] = None
+    site: Optional[Literal["hcc", "lung"]] = None
     L: float = U; E: float = U
     C: int = Field(3, ge=1, le=5)
     rho0: float = Field(..., ge=0, le=0.95)
@@ -52,7 +58,7 @@ class CohortRow(SnapshotIn):
 
 class CohortIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung", "breast"]] = None
+    site: Optional[Literal["hcc", "lung"]] = None
     patients: List[CohortRow]
 
 
@@ -101,7 +107,7 @@ def cohort(b: CohortIn):
 
 class ValidateIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung", "breast"]] = None
+    site: Optional[Literal["hcc", "lung"]] = None
     records: List[dict] = Field(..., description="Long-format serial rows: patient_id, cycle, y, [delivery, L, E, C, rho0, event, time]")
     bootstrap: int = Field(0, ge=0, le=2000, description="Bootstrap resamples for 95% CIs (0 = off)")
 
@@ -285,6 +291,5 @@ def registry_proposals():
     return R.list_proposals()
 
 
-# ---- cohort sandboxes (HCC, lung, breast): see sandbox.py, api_sandbox.py ---------------------------------------------
-from api_sandbox import router as _sandbox_router
-app.include_router(_sandbox_router)
+# ---- developer portal (/), themed reference (/docs), embeddable widget (/widget); also groups the routes above into tags
+portal.mount(app, S.ENGINE_VERSION)
