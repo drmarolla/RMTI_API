@@ -238,7 +238,7 @@ with tab_cohort:
                           "<br>ρ=%{customdata[1]:.2f} R=%{customdata[2]:.3f}<extra></extra>",
             marker=dict(size=np.where(view["backlog"], 5, 3), color=view["rho"], colorscale=RHO_SCALE,
                         cmin=0, cmax=1, opacity=0.75, colorbar=dict(title="ρ", thickness=12),
-                        line=dict(width=np.where(view["backlog"], 1, 0), color="#263238"))))
+                        line=dict(width=0, color="#263238"))))
         fig3.update_layout(scene=cube_scene(), height=600, margin=dict(l=0, r=0, t=10, b=0))
         st.plotly_chart(fig3, use_container_width=True)
         st.caption("Outlined points are in the backlog zone (high exposure, low resilience). Up to 5,000 points drawn.")
