@@ -1,0 +1,11 @@
+Delete these files from the REPOSITORY ROOT on github.com (open the file, click the three dots, Delete file, commit).
+They are copies uploaded to the wrong place; the correct versions go into pages/, tools/ and tests/ via this kit.
+
+  3_4D_Risk_Matrix (1).py
+  3_4D_Risk_Matrix.py
+  4_RMTI_Step_by_Step (1).py
+  make_rmti_video.py
+  video_narration.py
+  test_cases.py
+
+Do NOT delete: demo_mode.py and rmti_cases.py in the root (they are replaced by the new versions), UPLOAD_GUIDE.md, or anything in rmti_engine/.
