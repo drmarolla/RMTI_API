@@ -30,3 +30,33 @@ class CaseTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LeverTests(unittest.TestCase):
+    def test_liver_matches_workbook(self):
+        exp = {"hbv_untreated": (0.31185, "3 High", 0.190575, "3 High"), "viral_cirrhosis": (0.102025, "2 Moderate", 0.0714175, "2 Moderate"),
+               "alcohol_cirrhosis": (0.0936, "2 Moderate", 0.0585, "2 Moderate"), "hcv_cured": (0.0576, "2 Moderate", 0.0324, "1 Low")}
+        for c in K.LIVER_CASES:
+            rn, tn, ra, ta = exp[c["key"]]
+            e = K.evaluate(c)
+            self.assertAlmostEqual(e["R_now"], rn, 6); self.assertAlmostEqual(e["R_after"], ra, 6)
+            self.assertEqual((e["tier_now"], e["tier_after"]), (tn, ta))
+
+    def test_flood_heat_matches_workbook(self):
+        exp = {"lagos": (0.3744, 0.2106), "bamako": (0.408, 0.2142), "lilongwe": (0.42, 0.2912)}
+        for c in K.FLOOD_HEAT_CASES:
+            e = K.evaluate(c)
+            self.assertAlmostEqual(e["R_now"], exp[c["key"]][0], 6); self.assertAlmostEqual(e["R_after"], exp[c["key"]][1], 6)
+
+    def test_next_tier_solves_boundary(self):
+        for c in K.PRESETS.values():
+            nt = K.to_next_tier(c)
+            if nt is None:
+                continue
+            for lever, v in nt["need"].items():
+                if v is not None and nt["feasible"][lever]:
+                    self.assertAlmostEqual(K.r_with(c, **{lever: v}), nt["target"], 9)
+
+    def test_tornado_directions(self):
+        base, d = K.tornado(K.FLOOD_HEAT_CASES[0])
+        self.assertTrue(all(x <= 0 for x in d.values()))
