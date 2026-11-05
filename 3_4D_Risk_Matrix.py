@@ -17,6 +17,14 @@ import streamlit as st
 
 st.set_page_config(page_title="RMTI 4D Risk Matrix", layout="wide")
 
+try:                       # demo_mode.py and rmti_cases.py live at the repo root next to app.py
+    from demo_mode import DEMO, banner
+except Exception:          # noqa: BLE001  (fallback keeps the page safe if the file is missing)
+    DEMO = True
+
+    def banner():
+        st.error("DEMO MODE · public sandbox · synthetic or published aggregate values only · do not enter patient data.")
+
 try:                       # service.py lives at the repo root next to app.py
     import service as S
 except Exception as _e:    # noqa: BLE001
@@ -42,6 +50,38 @@ def cube_scene():
 
 def msize(r, lo=6, hi=24):
     return lo + (hi - lo) * np.sqrt(np.clip(np.asarray(r, dtype=float), 0, 1))
+
+
+def show_case_study(kind):
+    """Published / aggregate case studies from rmti_cases.py (no patient-level data)."""
+    import rmti_cases as K
+    onc = "oncology" in kind
+    cases = K.ONCOLOGY_CASES if onc else K.DISASTER_CASES
+    rows = []
+    for c in cases:
+        e = K.evaluate(c)
+        rows.append(dict(case=c["name"], label=c["label"], L=c["L"], E=c["E"], V=round(c["V"], 3),
+                         rho_now=c["rho_now"], rho_after=c["rho_after"], R_now=round(e["R_now"], 4),
+                         tier_now=e["tier_now"], R_after=round(e["R_after"], 4), tier_after=e["tier_after"]))
+    d = pd.DataFrame(rows)
+    fig = go.Figure(go.Scatter3d(
+        x=d["L"], y=d["E"], z=d["V"], mode="markers+text", text=d["label"], textposition="top center",
+        customdata=d[["case", "rho_now", "R_now", "tier_now"]].values,
+        hovertemplate="<b>%{customdata[0]}</b><br>L=%{x:.2f} E=%{y:.2f} V=%{z:.3f}<br>ρ now=%{customdata[1]:.2f}"
+                      "<br>R now=%{customdata[2]:.3f} (%{customdata[3]})<extra></extra>",
+        marker=dict(size=msize(d["R_now"]), color=d["rho_now"], colorscale=RHO_SCALE, cmin=0, cmax=1,
+                    colorbar=dict(title="ρ now", thickness=12), line=dict(width=1, color="#263238"))))
+    fig.update_layout(scene=cube_scene(), height=560, margin=dict(l=0, r=0, t=10, b=0))
+    st.plotly_chart(fig, use_container_width=True)
+    st.dataframe(d.drop(columns=["label"]), use_container_width=True)
+    if onc:
+        st.caption(f"Only V is anchored to published data: ALBI-grade counts from the Faria et al. cohort "
+                   f"(Harvard Dataverse, doi:{K.FARIA_DOI}); no patient-level rows are used. L, E and ρ are "
+                   "illustrative working values, identical for both groups, so any difference comes from V alone.")
+    else:
+        st.caption("Contact: cesar.marolla@alumni.harvard.edu")
+        st.caption("Published rubric values from the RMTI disaster calculator (v2.3.0). R is a relative index, not a "
+                   "forecast, damage estimate or engineering assessment. ρ-after values are scenario targets, not observations.")
 
 
 def draw_path(df, thr, interv, animate, r_label="R"):
@@ -103,6 +143,7 @@ def draw_path(df, thr, interv, animate, r_label="R"):
 # ---------------------------------------------------------------------------
 st.title("RMTI 4D Risk Matrix")
 st.caption("Axes L · E · V fixed to 0–1 · colour = ρ (resilience) · size = R = L·E·V·(1−ρ)")
+banner()
 st.warning("Research prototype. Not validated, not a medical device, not for patient-care or emergency "
            "decisions. Parameters are uncalibrated placeholders. Enter synthetic or de-identified data only.")
 
@@ -185,7 +226,13 @@ with tab_traj:
 with tab_cohort:
     st.subheader("Cohort-wide matrix and surveillance-backlog detection")
     st.caption("View uses R = L·E·V·(1−ρ) on columns you supply. For engine-ranked tiers use the Cohort ranking tab on the main page.")
-    src = st.radio("Data source", ["Synthetic demo cohort", "Upload CSV (de-identified)"], horizontal=True)
+    opts = ["Synthetic demo cohort", "Case study: oncology (Faria et al., HCC)", "Case study: disaster science"]
+    if not DEMO:
+        opts.append("Upload CSV (de-identified)")      # upload exists only on a private, approved instance
+    src = st.radio("Data source", opts, horizontal=True)
+    if src.startswith("Case study"):
+        show_case_study(src)
+        st.stop()
 
     if src == "Synthetic demo cohort":
         n = st.slider("Synthetic cohort size", 200, 5000, 1500, 100)
@@ -231,15 +278,25 @@ with tab_cohort:
 
     if len(coh):
         view = coh.sample(min(len(coh), 5000), random_state=1)
-        fig3 = go.Figure(go.Scatter3d(
-            x=view["L"], y=view["E"], z=view["V"], mode="markers",
-            customdata=view[["site", "rho", "R"]].values,
-            hovertemplate="%{customdata[0]}<br>L=%{x:.2f} E=%{y:.2f} V=%{z:.2f}"
-                          "<br>ρ=%{customdata[1]:.2f} R=%{customdata[2]:.3f}<extra></extra>",
-            marker=dict(size=np.where(view["backlog"], 5, 3), color=view["rho"], colorscale=RHO_SCALE,
-                        cmin=0, cmax=1, opacity=0.75, colorbar=dict(title="ρ", thickness=12),
-                        line=dict(width=np.where(view["backlog"], 1, 0), color="#263238"))))
-        fig3.update_layout(scene=cube_scene(), height=600, margin=dict(l=0, r=0, t=10, b=0))
+        hov = ("%{customdata[0]}<br>L=%{x:.2f} E=%{y:.2f} V=%{z:.2f}"
+               "<br>ρ=%{customdata[1]:.2f} R=%{customdata[2]:.3f}<extra></extra>")
+        fig3 = go.Figure()
+        # Two traces: Scatter3d marker.line.width must be a single number (not an array), so the
+        # backlog group is drawn as its own trace with a dark outline.
+        for flag, name, size, lw, show_bar in [(False, "outside backlog zone", 3, 0, True),
+                                               (True, "backlog zone", 5, 1.5, False)]:
+            part = view[view["backlog"] == flag]
+            if part.empty:
+                continue
+            fig3.add_trace(go.Scatter3d(
+                x=part["L"], y=part["E"], z=part["V"], mode="markers", name=name,
+                customdata=part[["site", "rho", "R"]].values, hovertemplate=hov,
+                marker=dict(size=size, color=part["rho"], colorscale=RHO_SCALE, cmin=0, cmax=1,
+                            opacity=0.8, showscale=show_bar,
+                            colorbar=dict(title="ρ", thickness=12) if show_bar else None,
+                            line=dict(width=lw, color="#263238"))))
+        fig3.update_layout(scene=cube_scene(), height=600, margin=dict(l=0, r=0, t=10, b=0),
+                           legend=dict(orientation="h", y=1.02))
         st.plotly_chart(fig3, use_container_width=True)
         st.caption("Outlined points are in the backlog zone (high exposure, low resilience). Up to 5,000 points drawn.")
 
@@ -262,3 +319,4 @@ with tab_cohort:
             st.dataframe(by_site, use_container_width=True)
         st.download_button("Download flagged records (CSV)", coh[coh["backlog"]].to_csv(index=False),
                            "rmti_backlog.csv", "text/csv")
+st.caption("Contact: cesar.marolla@alumni.harvard.edu")
