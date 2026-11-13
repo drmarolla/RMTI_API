@@ -1,0 +1,315 @@
+1
+00:00:00,000 --> 00:00:03,738
+Case studies, part two: disaster science.
+
+2
+00:00:04,098 --> 00:00:08,767
+We apply the same equation to flood
+and heat risk in three African cities:
+
+3
+00:00:09,017 --> 00:00:14,307
+Lilongwe in Malawi, Lagos in
+Nigeria, and Bamako in Mali.
+
+4
+00:00:14,838 --> 00:00:21,153
+A reminder before we start. RMTI is
+a research prototype: not validated,
+
+5
+00:00:21,256 --> 00:00:25,626
+not a medical device, and not for
+patient-care or emergency decisions.
+
+6
+00:00:25,941 --> 00:00:30,618
+Everything here uses illustrative values,
+published rows, or aggregate counts.
+
+7
+00:00:30,900 --> 00:00:35,403
+No patient data appears. Here is
+how the inputs map to a city,
+
+8
+00:00:35,403 --> 00:00:38,333
+using the RMTI indicator backbone.
+
+9
+00:00:38,760 --> 00:00:42,971
+Exposure is raised by hazards,
+climate change and urbanisation.
+
+10
+00:00:43,401 --> 00:00:47,251
+Vulnerability is raised by
+poverty, governance and pollution.
+
+11
+00:00:47,666 --> 00:00:51,415
+Resilience comes from risk-management
+strategy, infrastructure,
+
+12
+00:00:51,489 --> 00:00:55,803
+and health and water security. What
+can each lever mean on the ground?
+
+13
+00:00:56,153 --> 00:01:00,210
+These are illustrative examples,
+not evidence-based effect sizes.
+
+14
+00:01:00,574 --> 00:01:04,921
+For flood: keep people out of the
+floodplain, which acts on exposure;
+
+15
+00:01:05,269 --> 00:01:09,397
+improve housing and keep services
+running, which acts on vulnerability;
+
+16
+00:01:09,737 --> 00:01:13,502
+and build early warning, drainage
+and emergency health capacity,
+
+17
+00:01:13,583 --> 00:01:16,294
+which raises resilience. For heat:
+
+18
+00:01:16,565 --> 00:01:19,422
+reduce the share of people in
+the hottest neighbourhoods,
+
+19
+00:01:19,591 --> 00:01:24,033
+improve housing and tackle energy
+poverty, and build cooling centres,
+
+20
+00:01:24,033 --> 00:01:26,337
+heat-health plans and reliable power.
+
+21
+00:01:26,811 --> 00:01:30,824
+Published rubric values from the
+disaster calculator: Lilongwe,
+
+22
+00:01:31,058 --> 00:01:36,747
+pluvial and river flood; Lagos,
+coastal and pluvial flood; and Bamako,
+
+23
+00:01:36,998 --> 00:01:40,197
+a multi-hazard case of
+drought, flood and heat.
+
+24
+00:01:40,500 --> 00:01:44,256
+These are rubric scores, not
+damage or casualty estimates.
+
+25
+00:01:44,662 --> 00:01:46,582
+Each city travels the cube.
+
+26
+00:01:46,898 --> 00:01:51,050
+All three combine high likelihood
+with high exposure and vulnerability.
+
+27
+00:01:51,354 --> 00:01:55,490
+With today’s resilience, all
+three land in tier 4, severe:
+
+28
+00:01:55,862 --> 00:02:01,091
+R of 0.42 for Lilongwe, 0.37 for Lagos,
+
+29
+00:02:01,250 --> 00:02:05,977
+and 0.41 for Bamako. Under
+scenario resilience targets,
+
+30
+00:02:06,105 --> 00:02:11,064
+all three fall to tier 3, high.
+These after values are targets,
+
+31
+00:02:11,064 --> 00:02:15,826
+not observed results. Lever
+one, resilience, for Lilongwe.
+
+32
+00:02:16,175 --> 00:02:19,091
+The calculator’s target pathway is 0.43
+
+33
+00:02:19,091 --> 00:02:23,324
+to 0.53 by 2027 to 2030.
+
+34
+00:02:23,640 --> 00:02:26,062
+R drops below the severe threshold of
+
+35
+00:02:26,062 --> 00:02:30,487
+0.35 once resilience passes about 0.38,
+
+36
+00:02:30,663 --> 00:02:33,097
+and the target pathway
+goes well beyond it.
+
+37
+00:02:33,483 --> 00:02:37,670
+Lever two, exposure, shows
+why inputs must be audited.
+
+38
+00:02:37,975 --> 00:02:42,508
+For Lagos the published
+rubric uses exposure 0.65,
+
+39
+00:02:42,712 --> 00:02:46,384
+but the population-based
+helper gives about 0.98.
+
+40
+00:02:46,647 --> 00:02:48,724
+Same city, same equation:
+
+41
+00:02:49,032 --> 00:02:53,452
+R would rise from 0.37 to 0.56,
+
+42
+00:02:53,637 --> 00:02:56,031
+still severe but close to critical.
+
+43
+00:02:56,454 --> 00:03:00,981
+Sensitivity like this is exactly what
+an auditable index should expose.
+
+44
+00:03:01,505 --> 00:03:07,453
+Lever three, vulnerability, for Bamako,
+where drought, flood and heat combine.
+
+45
+00:03:07,798 --> 00:03:12,570
+At vulnerability 0.75, R is 0.41.
+
+46
+00:03:12,943 --> 00:03:14,089
+Housing quality,
+
+47
+00:03:14,089 --> 00:03:17,921
+service continuity and support for
+the poorest would move this lever.
+
+48
+00:03:18,312 --> 00:03:24,054
+R drops below 0.35 once
+vulnerability falls to about 0.64.
+
+49
+00:03:24,515 --> 00:03:28,693
+For Bamako, which single lever
+would be enough to leave tier 4?
+
+50
+00:03:29,156 --> 00:03:35,397
+Resilience at least 0.31;
+vulnerability at most 0.64;
+
+51
+00:03:35,820 --> 00:03:39,023
+exposure at most 0.73;
+
+52
+00:03:39,425 --> 00:03:42,690
+or likelihood at most 0.69.
+
+53
+00:03:43,157 --> 00:03:47,335
+Likelihood is the hardest to move,
+because it is set largely by climate.
+
+54
+00:03:47,736 --> 00:03:52,128
+Realistic plans combine levers.
+Side by side for Bamako,
+
+55
+00:03:52,262 --> 00:03:58,454
+each lever moved by ten points, from largest
+to smallest: vulnerability, resilience,
+
+56
+00:03:58,564 --> 00:04:03,818
+likelihood and exposure. The grey
+bar is likelihood: it moves R,
+
+57
+00:04:03,818 --> 00:04:08,732
+but a city cannot choose it. The teal
+bars are the levers a programme can pull.
+
+58
+00:04:09,099 --> 00:04:11,265
+What this shows and does not show.
+
+59
+00:04:11,725 --> 00:04:18,097
+The arithmetic and the levers are RMTI’s
+own, applied to published rubric values.
+
+60
+00:04:18,480 --> 00:04:23,362
+The after values are scenario targets,
+R is a relative rubric index,
+
+61
+00:04:23,498 --> 00:04:28,072
+and none of this is a forecast, an
+engineering assessment, or a loss estimate.
+
+62
+00:04:28,372 --> 00:04:32,232
+Investment decisions need local
+data and professional assessment.
+
+63
+00:04:32,618 --> 00:04:38,337
+That is RMTI on flood
+and heat: one equation,
+
+64
+00:04:38,337 --> 00:04:42,368
+four levers, and a clear view of what
+each would take to leave a tier.
+
+65
+00:04:42,777 --> 00:04:45,469
+I’m Dr. Cesar Marolla.
+
+66
+00:04:45,725 --> 00:04:47,817
+The code is open under Apache 2.0,
+the demo uses no patient data,
+
+67
+00:04:47,952 --> 00:04:50,273
+and nothing here is engineering advice.
+

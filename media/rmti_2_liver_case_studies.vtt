@@ -1,0 +1,251 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:03.416
+Case studies, part one: liver cancer.
+
+00:00:03.784 --> 00:00:10.015
+We use RMTI as a triage layer for
+hepatocellular carcinoma surveillance.
+
+00:00:10.317 --> 00:00:14.179
+The question is: which patient
+groups need surveillance first,
+
+00:00:14.309 --> 00:00:16.892
+and which lever moves each group the most?
+
+00:00:17.271 --> 00:00:23.848
+A reminder before we start. RMTI is
+a research prototype: not validated,
+
+00:00:23.988 --> 00:00:28.986
+not a medical device, and not for
+patient-care or emergency decisions.
+
+00:00:29.317 --> 00:00:34.195
+Everything here uses illustrative values,
+published rows, or aggregate counts.
+
+00:00:34.458 --> 00:00:38.961
+No patient data appears. Here is
+how the inputs map to the liver.
+
+00:00:39.288 --> 00:00:41.780
+L comes from a validated risk score.
+
+00:00:42.084 --> 00:00:46.195
+E is the share of the at-risk population
+in the surveillance footprint.
+
+00:00:46.483 --> 00:00:49.746
+V is liver reserve, from the ALBI grade.
+
+00:00:50.022 --> 00:00:56.261
+And rho is surveillance effectiveness, on
+a published ladder from none, at 0.15,
+
+00:00:56.445 --> 00:00:59.138
+to optimised, at 0.65.
+
+00:00:59.468 --> 00:01:04.148
+Four published cohort rows
+from the RMTI HCC calculator:
+
+00:01:04.439 --> 00:01:10.080
+untreated hepatitis B, active viral
+cirrhosis, alcohol-related cirrhosis,
+
+00:01:10.215 --> 00:01:12.695
+and cured hepatitis C cirrhosis.
+
+00:01:13.009 --> 00:01:17.298
+The after values for resilience are
+back-solved to match the published table,
+
+00:01:17.531 --> 00:01:20.298
+so they are scenarios, not observations.
+
+00:01:20.679 --> 00:01:25.656
+Each group travels the cube:
+likelihood, exposure, vulnerability.
+
+00:01:26.038 --> 00:01:30.215
+Notice how far out untreated
+hepatitis B sits on likelihood.
+
+00:01:30.510 --> 00:01:36.147
+With today’s surveillance, untreated
+hepatitis B is the only group in tier 3, high,
+
+00:01:36.377 --> 00:01:42.308
+with R of 0.31. The three cirrhosis
+groups sit in tier 2, moderate.
+
+00:01:42.568 --> 00:01:47.520
+After the improvement package, cured
+hepatitis C falls to tier 1, low.
+
+00:01:47.870 --> 00:01:51.773
+But untreated hepatitis
+B stays in tier 3, high,
+
+00:01:52.039 --> 00:01:54.966
+even though its R falls by 39 percent.
+
+00:01:55.429 --> 00:02:01.165
+Lever one: resilience. Walk untreated
+hepatitis B up the surveillance ladder.
+
+00:02:01.441 --> 00:02:06.438
+None, usual care, outreach,
+specialist: R falls,
+
+00:02:06.438 --> 00:02:10.585
+but stays in tier 3. Only
+optimised surveillance,
+
+00:02:10.585 --> 00:02:15.475
+ultrasound plus AFP with reliable
+access to cure, at 0.65,
+
+00:02:15.656 --> 00:02:21.840
+brings R to 0.12, below 0.15, into tier 2.
+
+00:02:22.221 --> 00:02:25.240
+Which single lever would
+be enough to leave tier 3?
+
+00:02:25.608 --> 00:02:31.376
+Resilience needs to reach at least
+0.57, which the optimised rung exceeds.
+
+00:02:31.682 --> 00:02:35.202
+Vulnerability would have to fall to 0.26,
+
+00:02:35.410 --> 00:02:40.999
+below the lowest ALBI anchor of
+0.35, so reserve alone cannot do it.
+
+00:02:41.303 --> 00:02:47.050
+Exposure would need to fall to
+0.34, or likelihood to 0.43.
+
+00:02:47.577 --> 00:02:51.359
+Lever two: treat the cause.
+In the published table,
+
+00:02:51.557 --> 00:02:56.206
+untreated hepatitis B
+carries a likelihood of 0.90,
+
+00:02:56.470 --> 00:02:59.872
+and suppressed hepatitis B 0.20.
+
+00:03:00.120 --> 00:03:04.441
+Move only that lever, holding the
+other inputs of the untreated group,
+
+00:03:04.616 --> 00:03:09.157
+and R falls from 0.31 to 0.07,
+
+00:03:09.376 --> 00:03:14.506
+from tier 3 to tier 2.
+Lever three: liver reserve.
+
+00:03:14.776 --> 00:03:19.786
+In the framework, fibrosis progression
+and decompensation raise vulnerability.
+
+00:03:20.036 --> 00:03:24.858
+Using the ALBI anchors as a what-if
+on the active viral cirrhosis group:
+
+00:03:25.349 --> 00:03:30.131
+at grade one, R is 0.067; at grade two,
+
+00:03:30.266 --> 00:03:35.338
+0.115; at grade three, 0.164,
+
+00:03:35.512 --> 00:03:40.435
+crossing into tier 3. This is a
+what-if sweep, not patient data.
+
+00:03:40.738 --> 00:03:46.256
+To ground V in real measurements,
+we use the Faria et al.
+
+00:03:46.432 --> 00:03:49.812
+cohort from Harvard Dataverse. From
+measured albumin and bilirubin,
+
+00:03:49.812 --> 00:03:52.703
+each person has an ALBI grade,
+and we use only the group counts,
+
+00:03:52.703 --> 00:03:54.571
+never patient-level records.
+
+00:03:54.864 --> 00:03:58.290
+Weighting the grade anchors by
+those counts gives vulnerability:
+
+00:03:58.489 --> 00:04:03.798
+0.52 for the cancer cohort
+and 0.48 for cirrhosis.
+
+00:04:04.100 --> 00:04:06.559
+A real measurement, feeding one lever.
+
+00:04:06.869 --> 00:04:12.244
+Putting the levers side by side for untreated
+hepatitis B, each moved by ten points,
+
+00:04:12.244 --> 00:04:18.175
+from largest to smallest: vulnerability,
+exposure, likelihood and resilience.
+
+00:04:18.502 --> 00:04:22.138
+R falls by 0.057 at most.
+
+00:04:22.401 --> 00:04:28.010
+The ranking depends on the group,
+which is why RMTI is run per cohort.
+
+00:04:28.287 --> 00:04:33.996
+What this shows and does not show. The
+arithmetic and the levers are RMTI’s own,
+
+00:04:33.996 --> 00:04:35.996
+applied to published rows.
+
+00:04:36.242 --> 00:04:39.781
+But fibrosis-stage inputs are
+not in the current calculators,
+
+00:04:39.919 --> 00:04:43.795
+so ALBI anchors stand in, the
+after values are scenarios,
+
+00:04:43.938 --> 00:04:46.965
+and nothing here is validated
+against incident cancer.
+
+00:04:47.167 --> 00:04:51.218
+Surveillance decisions rest
+with clinicians and guidelines.
+
+00:04:51.502 --> 00:04:56.874
+That is RMTI on the liver: one
+equation, three levers you can pull,
+
+00:04:56.874 --> 00:04:58.188
+and a clear view of what each would take.
+
+00:04:58.277 --> 00:05:03.544
+I’m Dr. Cesar Marolla. The
+code is open under Apache 2.0,
+
+00:05:03.813 --> 00:05:08.016
+the demo uses no patient data, and
+nothing here is medical advice.
+
