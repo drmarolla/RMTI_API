@@ -51,7 +51,7 @@ Interactive explainer videos, case studies and an embeddable 3D/4D widget: see t
 
 TAGS = [
     {"name": "Scoring", "description": "Core RMTI engine: single assessment, time-indexed trajectory, cohort ranking."},
-    {"name": "Oncology", "description": "Cancer-site modules (HCC, lung), two-sense resilience, retrospective validation."},
+    {"name": "Oncology", "description": "Cancer-site modules (HCC, lung, breast), two-sense resilience, retrospective validation."},
     {"name": "Interoperability", "description": "FHIR R4 RiskAssessment export (status 'preliminary', research use)."},
     {"name": "Registry and governance", "description": "Evidence, parameters, cohorts, ladder checks and reviewed proposals. Constants change only by reviewed release."},
     {"name": "Health", "description": "Liveness, versions and disclaimer."},
@@ -360,7 +360,14 @@ def widget_html():
 
 # ----------------------------------------------------------------------------------------------- mount
 def mount(app, version):
-    app.add_api_route("/", lambda: HTMLResponse(landing_html(version)), methods=["GET"], include_in_schema=False)
+    def _home():   # serves developer_portal.html (next to this file) if present, else the built-in landing page
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "developer_portal.html")
+        try:
+            with open(p, encoding="utf-8") as fh:
+                return HTMLResponse(fh.read())
+        except OSError:
+            return HTMLResponse(landing_html(version))
+    app.add_api_route("/", _home, methods=["GET"], include_in_schema=False)
     app.add_api_route("/docs", lambda: HTMLResponse(swagger_html()), methods=["GET"], include_in_schema=False)
     app.add_api_route("/widget", lambda: HTMLResponse(widget_html()), methods=["GET"], include_in_schema=False)
     app.add_api_route("/favicon.ico", lambda: Response(status_code=204), methods=["GET"], include_in_schema=False)

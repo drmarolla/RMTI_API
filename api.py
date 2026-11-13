@@ -26,14 +26,15 @@ app = FastAPI(title=portal.TITLE, version=S.ENGINE_VERSION, dependencies=[Depend
               openapi_tags=portal.TAGS, docs_url=None, redoc_url="/redoc",
               contact={"name": "Dr. Cesar Marolla", "url": "https://orcid.org/0000-0001-8498-7380"},
               license_info={"name": "Apache-2.0", "url": "https://www.apache.org/licenses/LICENSE-2.0.html"})
-# RMTI v2.3.0 vocabulary: domain "oncoclastics" (+ site "hcc" or "lung") or "disaster_science". Internal keys hcc/lung/disaster still work.
-Domain = Literal["oncoclastics", "disaster_science", "hcc", "lung", "disaster"]
+# RMTI v2.3.0 vocabulary: domain "oncoclastics" (+ site "hcc", "lung" or "breast") or "disaster_science". Internal keys hcc/lung/breast/disaster still work.
+Domain = Literal["oncoclastics", "disaster_science", "hcc", "lung", "breast", "disaster"]   # CHANGED: added "breast"
+Site = Literal["hcc", "lung", "breast"]                                                     # CHANGED: one place to list cancer sites
 U = Field(..., ge=0, le=1)
 
 
 class SnapshotIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = Field(None, description="Cancer-site module when domain is oncoclastics (default hcc)")
+    site: Optional[Site] = Field(None, description="Cancer-site module when domain is oncoclastics (default hcc)")
     N: float = Field(100_000, gt=0, description="At-risk population / cohort size")
     L: float = U; E: float = U; V: float = U
     rho_now: float = Field(..., ge=0, lt=1)
@@ -43,7 +44,7 @@ class SnapshotIn(BaseModel):
 
 class TrajectoryIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = None
+    site: Optional[Site] = None
     L: float = U; E: float = U
     C: int = Field(3, ge=1, le=5)
     rho0: float = Field(..., ge=0, le=0.95)
@@ -58,7 +59,7 @@ class CohortRow(SnapshotIn):
 
 class CohortIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = None
+    site: Optional[Site] = None
     patients: List[CohortRow]
 
 
@@ -107,7 +108,7 @@ def cohort(b: CohortIn):
 
 class ValidateIn(BaseModel):
     domain: Domain = "hcc"
-    site: Optional[Literal["hcc", "lung"]] = None
+    site: Optional[Site] = None
     records: List[dict] = Field(..., description="Long-format serial rows: patient_id, cycle, y, [delivery, L, E, C, rho0, event, time]")
     bootstrap: int = Field(0, ge=0, le=2000, description="Bootstrap resamples for 95% CIs (0 = off)")
 
