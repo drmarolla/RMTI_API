@@ -1,7 +1,0 @@
-{
- "id": "ogaki",
- "disease": "hcc",
- "label": "Ogaki cohort (Japan)",
- "description": "3,101 patients from the Japan_Cohort sheet of workbook v2.4.1. cause 1 = incident HCC (376), 2 = death without HCC (413), 0 = censored. Pseudonymised; research use.",
- "reference_file": "ogaki_reference.json"
-}
