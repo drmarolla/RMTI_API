@@ -10,9 +10,6 @@ NEW     api_sandbox.py                               FastAPI router: /v1/sandbox
 NEW     ui_common.py                                 access gate + API-or-in-process helper for the new pages
 NEW     pages/1_HCC_Calculator.py                    Streamlit page
 NEW     pages/2_Cohort_Sandbox.py                    Streamlit page
-NEW     cohort_data/ogaki_hcc_cohort.csv             Ogaki cohort, 3,101 patients (pseudonymised)
-NEW     cohort_data/ogaki_hcc_cohort.meta.json       id, label, description, reference file
-NEW     cohort_data/ogaki_reference.json             reference values from the Excel workbook (+ data fingerprint)
 NEW     tests/test_sandbox.py                        27 tests
 NEW     SANDBOX.md                                   documentation
 NEW     SUGGESTED_DISCLAIMER_UPDATE.md               wording to bring DISCLAIMER.md in line with reality (your decision)
