@@ -49,20 +49,30 @@ footer{background:var(--surface);border-top:1px solid var(--line);padding:1.5rem
 .fa{fill:var(--accent)}.fb{fill:var(--surface);stroke:var(--line)}.ta{fill:var(--on);font:600 14px "Source Sans 3",sans-serif}.tb{fill:var(--ink);font:600 14px "Source Sans 3",sans-serif}.ln{stroke:var(--muted);stroke-width:1.6}.lb{fill:var(--muted);font:12.5px ui-monospace,Consolas,monospace}.sh{fill:var(--ink);font:700 15px "Source Sans 3",sans-serif}
 @media(max-width:860px){.stage .in{grid-template-columns:1fr}.viewer{height:300px}}
 
-:root,:root:not([data-theme="light"]){--bg:#fff;--surface:#f4f3fd;--ink:#14163a;--muted:#555a7a;--line:#dcdcf0;--accent:#3b2fc9;--on:#fff;--mark:#e0242b;color-scheme:light}
+:root,:root:not([data-theme="light"]){--bg:#fff;--surface:#f4f3fd;--ink:#14163a;--muted:#555a7a;--line:#dcdcf0;--accent:#1d6fd0;--on:#fff;--mark:#e0242b;color-scheme:light}
 .btn{background:#d9262c;border-color:#d9262c;color:#fff}.btn:hover{background:#b81e24}
-.stage{background:linear-gradient(115deg,#1b2596 0%,#3b2fc9 55%,#7a3fe0 100%);padding:2.5rem 1.25rem}
+.stage{background:linear-gradient(115deg,#1d6fd0 0%,#1d6fd0 55%,#1d6fd0 100%);padding:2.5rem 1.25rem}
 .stage h1{font-size:clamp(2.1rem,4.6vw,3.5rem);line-height:1.1}.stage p{color:#e6e6fa;font-size:1.08rem}
-.viewer{background:rgba(255,255,255,.1)}.og button[aria-pressed=true]{background:#fff;color:#3b2fc9;border-color:#fff}.og{flex-wrap:wrap}
+.viewer{background:rgba(255,255,255,.1)}.og button[aria-pressed=true]{background:#fff;color:#1d6fd0;border-color:#fff}.og{flex-wrap:wrap}
 .stage .btn.ghost{background:transparent;color:#fff;border-color:#fff}.pw{color:#e6e6fa}
 .lg svg rect{transform-box:fill-box;transform-origin:bottom;animation:pu 3.2s ease-in-out infinite}.lg svg rect:nth-child(2){animation-delay:.3s}.lg svg rect:nth-child(3),.lg svg rect:nth-child(4),.lg svg rect:nth-child(5){animation-delay:.6s}.lg svg rect:nth-child(6){animation-delay:.9s}
 @keyframes pu{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.82)}}
 .wm{display:flex;flex-direction:column;line-height:1}.wm small{font:600 .52rem "Source Sans 3",sans-serif;letter-spacing:.28em;margin-top:.2rem;opacity:.85}
 .win{position:absolute;right:12px;top:12px;width:215px;background:#fff;color:#14163a;border-radius:10px;padding:8px 10px;font-size:.72rem;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.wt{font-weight:700;margin-bottom:4px}.wt i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e0242b;margin-right:3px}.wt i+i{background:#f0a020}.wt i+i+i{background:#3b2fc9;margin-right:6px}
+.wt{font-weight:700;margin-bottom:4px}.wt i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e0242b;margin-right:3px}.wt i+i{background:#f0a020}.wt i+i+i{background:#1d6fd0;margin-right:6px}
 .ln2{stroke-dasharray:1;stroke-dashoffset:1;animation:dr 4s ease-in-out infinite}@keyframes dr{0%{stroke-dashoffset:1}70%,100%{stroke-dashoffset:0}}
 .chips span{display:inline-block;background:#f4f3fd;border-radius:99px;padding:1px 7px;margin:2px 2px 0 0}.chips span:nth-child(2){background:#fde3e4;color:#a3161b}
 @media(prefers-reduced-motion:reduce){.lg svg rect,.ln2{animation:none}.ln2{stroke-dashoffset:0}}
+
+:root,:root:not([data-theme="light"]){--surface:#f3f8fd;--ink:#0f2a4a;--muted:#4a6482;--line:#d9e6f2;--accent:#1d6fd0;--mark:#d9262c}
+body,h1,h2,h3,.lg{font-family:"Inter","Segoe UI",system-ui,sans-serif}h1,h2,h3{font-weight:700}
+.notice{background:#eaf4ff;color:#0f2a4a}
+.stage{background:linear-gradient(180deg,#eaf4ff,#fff);color:#0f2a4a;padding:1rem}
+.stage h1{font-size:clamp(1.6rem,3vw,2.4rem)}.stage p,.pw{color:#3b5877}.pw .lg{color:#0f2a4a}
+.viewer{background:#f3f8fd;box-shadow:0 10px 30px rgba(29,111,208,.15)}
+.og button{color:#1d6fd0;border-color:#b8d3f0}.og button[aria-pressed=true]{background:#1d6fd0;color:#fff;border-color:#1d6fd0}
+.stage .btn.ghost{color:#1d6fd0;border-color:#1d6fd0;background:transparent}
+.win{box-shadow:0 8px 24px rgba(15,42,74,.2);border:1px solid #d9e6f2}
 </style></head><body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="top"><div class="bar"><a class="brand" href="#overview"><span class="lg"></span> <span style="font-weight:400;color:var(--muted)">/ Developer</span></a>
@@ -124,7 +134,7 @@ h+="<h3>Response <span class='req'>200</span></h3>"+(e.r?tbl(["Field","Type","De
 var a=EP[i-1],b=EP[i+1];h+="<div class='pn'><span>"+(a?"<a href='#ep-"+a.id+"'>Previous: "+a.t+"</a>":"")+"</span><span>"+(b?"<a href='#ep-"+b.id+"'>Next: "+b.t+"</a>":"")+"</span></div>";return h}
 function ids(g){return EP.filter(function(e){return g.indexOf(e.g)>-1}).map(function(e){return"ep-"+e.id})}
 var N=[["Getting started",["overview","quickstart","auth"]],["Service",ids("h")],["Scoring",ids("s")],["Validation and export",ids("v")],["Registry",ids("r")],["Libraries and mobile",["client","mobile","arch","changelog"]],["Operations",["errors","deploy"]]];
-var LG='<svg viewBox="0 0 40 32" width="34" height="28" aria-hidden="true"><rect x="0" y="16" width="7" height="16" rx="1.5" fill="#1f7ae0"/><rect x="10" y="8" width="7" height="24" rx="1.5" fill="#3b2fc9"/><rect x="20" y="0" width="7" height="9" rx="1.5" fill="#e0242b"/><rect x="20" y="12" width="7" height="6" rx="1.5" fill="#e0242b"/><rect x="20" y="21" width="7" height="11" rx="1.5" fill="#e0242b"/><rect x="30" y="12" width="7" height="20" rx="1.5" fill="#8a3ff0"/></svg><span class="wm"><b>RMTI</b><small>ONCOCLASTICS</small></span>';
+var LG='<svg viewBox="0 0 40 32" width="34" height="28" aria-hidden="true"><rect x="0" y="16" width="7" height="16" rx="1.5" fill="#6cb4f5"/><rect x="10" y="8" width="7" height="24" rx="1.5" fill="#1d6fd0"/><rect x="20" y="0" width="7" height="9" rx="1.5" fill="#e0242b"/><rect x="20" y="12" width="7" height="6" rx="1.5" fill="#e0242b"/><rect x="20" y="21" width="7" height="11" rx="1.5" fill="#e0242b"/><rect x="30" y="12" width="7" height="20" rx="1.5" fill="#0f2a4a"/></svg><span class="wm"><b>RMTI</b><small>ONCOCLASTICS</small></span>';
 document.querySelectorAll(".lg").forEach(function(x){x.innerHTML=LG});
 function setr(id,r,ex){EP.forEach(function(e){if(e.id==id){e.r=P(r);if(ex)e.ex=ex}})}
 setr("snapshot",["R_now|number|Risk score now.","tier_now|string|Tier now. A tier, not a probability.","(more)|object|The domain module may return further fields."]);
