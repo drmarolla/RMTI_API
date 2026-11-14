@@ -1,0 +1,8 @@
+0:00 Introduction and limits
+0:46 Why an index? Narrative to algorithm
+1:13 How R = L·E·V·(1−ρ) works
+2:48 The five fixed tiers
+3:12 Which lever matters most?
+3:41 Beyond R: expected annual loss
+4:23 One engine, two domains
+5:02 Closing
