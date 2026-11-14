@@ -1,5 +1,8 @@
-VIDEO RECOLOR (blue, red, white; new RMTI logo bottom-left of every slide)
-1. Upload rmti_video_engine.py and storyboards.py to the repository root, replacing the old ones.
-2. The MP4 files are NOT changed by this. On your computer, in the repo folder, run the same command you used before to make the videos
-   (likely: python make_videos.py), then upload the new rmti_*.mp4 files to GitHub with the same names.
-3. One narration sentence changed ("teal bars" is now "blue bars"), so the voice must be regenerated too. The script does that.
+SITE FILES ONLY. No videos, no video scripts.
+Upload to GitHub (Add file > Upload files):
+  repository root:  Home.py, developer_portal.html, rmti_theme.py, demo_mode.py
+  pages folder:     pages/0_Risk_Calculator.py, pages/7_Live_Risk_Matrix.py
+  .streamlit folder: .streamlit/config.toml   (open the existing .streamlit folder first; it replaces your config)
+Delete pages/6_Developer_Portal.py (Home.py replaces it).
+Then share.streamlit.io > Settings > Main file path = Home.py > Save > Reboot app.
+Home.py only PLAYS rmti_1_explained.mp4 if it exists; it never changes any video.
