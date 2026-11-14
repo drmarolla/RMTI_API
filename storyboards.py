@@ -241,7 +241,7 @@ def sb_flood_heat():
     order = sorted(items, key=lambda x: -abs(x[1]))
     out.append(tornado_segment("fh_tor",
         f"Side by side for Bamako, each lever moved by ten points, from largest to smallest: {order[0][0].split()[1]}, {order[1][0].split()[1]}, {order[2][0].split()[1]} and {order[3][0].split()[1]}. "
-        "The grey bar is likelihood: it moves R, but a city cannot choose it. The teal bars are the levers a programme can pull.",
+        "The grey bar is likelihood: it moves R, but a city cannot choose it. The blue bars are the levers a programme can pull.",
         items, "Which lever moves R most? Bamako", f"R now = {base:.3f}. Each lever moves by 0.10 in the risk-reducing direction.", "Illustrative equal steps, not intervention effect sizes."))
     out.append(seg("take", "What this shows and does not show. The arithmetic and the levers are RMTI's own, applied to published rubric values. The after values are scenario targets, R is a relative rubric index, "
                            "and none of this is a forecast, an engineering assessment, or a loss estimate. Investment decisions need local data and professional assessment.",

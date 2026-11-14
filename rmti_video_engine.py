@@ -26,12 +26,12 @@ API_TITLE = "Risk Mechanism Theory Index (RMTI) API"
 ORCID = "ORCID 0000-0001-8498-7380"
 DEMO_URL = "oncoclastics.streamlit.app"
 FPS, W, H = 20, 1280, 720
-CMAP = LinearSegmentedColormap.from_list("rho", ["#b3261e", "#e8a317", "#1b7f5c"])
-TIER_COL = ["#7F8FA6", "#4A6FA5", "#C9A227", "#C2662D", "#9B2C2C"]
+CMAP = LinearSegmentedColormap.from_list("rho", ["#d9262c", "#c9d8ee", "#1d6fd0"])
+TIER_COL = ["#a9c8ec", "#5b9be0", "#e48a8e", "#d9262c", "#8f1419"]
 TIER_EDGES = [(0, .05), (.05, .15), (.15, .35), (.35, .60), (.60, 5)]
 TIER_NAMES = ["1 Low", "2 Moderate", "3 High", "4 Severe", "5 Critical"]
-BAR_COL = ["#b3261e", "#e8a317", "#1b7f5c"]
-INK, SLATE, DARK, TEAL = "#0b3b40", "#37474f", "#0b3b40", "#0b5c63"
+BAR_COL = ["#d9262c", "#7fa7d6", "#1d6fd0"]
+INK, SLATE, DARK, TEAL = "#0f2a4a", "#3b5877", "#0f2a4a", "#1d6fd0"
 FOOT = ("Research prototype · not validated · not a medical device · not for patient-care or emergency decisions · "
         "R is a relative index, not a probability")
 LEVER_LABEL = {"L": "L  likelihood", "E": "E  exposure", "V": "V  vulnerability", "rho": "ρ  resilience"}
@@ -50,10 +50,22 @@ def new_axes(fig, dark=False):
     return a
 
 
+def logo(a, dark=False, s=0.8, x0=0.018, y0=0.012):
+    """RMTI mark: four bars (time index), the third one fragmented. Sizes in pixels, converted to axes units."""
+    px, py = s / W, s / H
+    for bx, by, bw, bh, col in [(0, 0, 7, 16, "#6cb4f5"), (10, 0, 7, 24, "#1d6fd0"), (20, 0, 7, 11, "#d9262c"), (20, 14, 7, 6, "#d9262c"),
+                                (20, 23, 7, 9, "#d9262c"), (30, 0, 7, 20, "#e3eefa" if dark else "#0f2a4a")]:
+        a.add_patch(plt.Rectangle((x0 + bx * px, y0 + by * py), bw * px, bh * py, color=col, lw=0))
+    tc = "white" if dark else "#0f2a4a"
+    a.text(x0 + 43 * px, y0 + 22 * py, "RMTI", fontsize=12, weight="bold", color=tc, va="bottom")
+    a.text(x0 + 43 * px, y0 + 3 * py, "ONCOCLASTICS", fontsize=5, weight="bold", color="#9db5d0" if dark else "#4a6482", va="bottom")
+
+
 def chrome(a, dark=False):
-    sub = "#9fb8bb" if dark else "#78909c"
-    a.text(0.985, 0.968, "DEMO MODE · NO PATIENT DATA", ha="right", va="top", fontsize=9.5, weight="bold", color="#7c2d12",
-           bbox=dict(boxstyle="round,pad=0.4", fc="#fff7ed", ec="#b45309"))
+    sub = "#9db5d0" if dark else "#78909c"
+    a.text(0.985, 0.968, "DEMO MODE · NO PATIENT DATA", ha="right", va="top", fontsize=9.5, weight="bold", color="#7a1a1d",
+           bbox=dict(boxstyle="round,pad=0.4", fc="#fdf0f0", ec="#d9262c"))
+    logo(a, dark)
     a.text(0.5, 0.043, FOOT, ha="center", fontsize=8.5, color=sub)
     a.text(0.5, 0.018, f"{NAME} · RMTI · Apache-2.0 · independent academic work", ha="center", fontsize=8.5, color=sub)
 
@@ -109,15 +121,15 @@ def tier_bands(bx, ymax, labels=True):
 # ======================================================================= renderers (state dict -> draws on fig)
 def r_title(fig, s):
     a = new_axes(fig, True); chrome(a, True)
-    a.text(0.07, 0.86, s["kicker"], fontsize=13, weight="bold", color="#e8a317", va="top")
+    a.text(0.07, 0.86, s["kicker"], fontsize=13, weight="bold", color="#ff7b80", va="top")
     y = wrap(a, API_TITLE, 0.07, 0.80, 40, 35, "white", "bold", dy=0.085)
-    a.text(0.07, y - 0.005, ROLE, fontsize=17, color="#d0e3e5", va="top")
-    a.text(0.07, y - 0.065, TAGLINE, fontsize=15, color="#9bd1d6", va="top")
+    a.text(0.07, y - 0.005, ROLE, fontsize=17, color="#e3eefa", va="top")
+    a.text(0.07, y - 0.065, TAGLINE, fontsize=15, color="#a9c8ec", va="top")
     a.text(0.07, y - 0.15, "R = L · E · V · (1 − ρ)", fontsize=28, color="white", va="top")
-    a.add_patch(plt.Rectangle((0.07, 0.10), 0.006, 0.12, color="#e8a317"))
+    a.add_patch(plt.Rectangle((0.07, 0.10), 0.006, 0.12, color="#d9262c"))
     a.text(0.09, 0.215, NAME, fontsize=22, weight="bold", color="white", va="top")
-    a.text(0.09, 0.165, "Developer of the Risk Mechanism Theory Index (RMTI)", fontsize=13, color="#d0e3e5", va="top")
-    a.text(0.09, 0.125, ORCID, fontsize=11, color="#9fb8bb", va="top")
+    a.text(0.09, 0.165, "Developer of the Risk Mechanism Theory Index (RMTI)", fontsize=13, color="#e3eefa", va="top")
+    a.text(0.09, 0.125, ORCID, fontsize=11, color="#9db5d0", va="top")
 
 
 def r_bullets(fig, s):
@@ -126,7 +138,7 @@ def r_bullets(fig, s):
     y = 0.79
     for kind, text in s["items"]:
         if kind == "h":
-            a.text(0.05, y, text, fontsize=16, weight="bold", color="#b45309", va="top"); y -= 0.06
+            a.text(0.05, y, text, fontsize=16, weight="bold", color="#1d6fd0", va="top"); y -= 0.06
         else:
             a.text(0.06, y, "•", fontsize=15, color=SLATE, va="top")
             y = wrap(a, text, 0.085, y, s.get("width", 88), s.get("size", 14.5), SLATE, dy=0.046) - 0.016
@@ -134,8 +146,8 @@ def r_bullets(fig, s):
 
 def r_section(fig, s):
     a = new_axes(fig); chrome(a)
-    a.add_patch(plt.Rectangle((0.05, 0.38), 0.006, 0.32, color="#e8a317"))
-    a.text(0.07, 0.69, s["kicker"], fontsize=16, color="#b45309", weight="bold", va="top")
+    a.add_patch(plt.Rectangle((0.05, 0.38), 0.006, 0.32, color="#d9262c"))
+    a.text(0.07, 0.69, s["kicker"], fontsize=16, color="#1d6fd0", weight="bold", va="top")
     y = wrap(a, s["title"], 0.07, 0.63, 46, 30, INK, "bold", dy=0.082)
     for t in s["lines"]:
         y = wrap(a, t, 0.07, y - 0.01, 95, 14.5, SLATE, dy=0.048)
@@ -153,8 +165,8 @@ def r_tiers(fig, s):
         a.text(x + 0.085, 0.678, labels[i], fontsize=10.5, color="white", ha="center", va="center")
         wrap(a, K.POSTURE_HCC[i + 1], x, 0.60, 21, 9.5, SLATE, dy=0.036)
         wrap(a, K.POSTURE_DISASTER[i + 1], x, 0.36, 21, 9.5, SLATE, dy=0.036)
-    a.text(0.05, 0.635, "Liver (HCC) surveillance posture", fontsize=11, color="#b45309", weight="bold", va="top")
-    a.text(0.05, 0.395, "Disaster and infrastructure posture", fontsize=11, color="#b45309", weight="bold", va="top")
+    a.text(0.05, 0.635, "Liver (HCC) surveillance posture", fontsize=11, color="#1d6fd0", weight="bold", va="top")
+    a.text(0.05, 0.395, "Disaster and infrastructure posture", fontsize=11, color="#1d6fd0", weight="bold", va="top")
     wrap(a, "The same thresholds apply to every patient, city and year. A tier is a reading of a research framework for discussion, "
             "not a clinical or engineering decision.", 0.05, 0.20, 120, 11.5, "#78909c", dy=0.04)
 
@@ -181,9 +193,9 @@ def r_concept(fig, s):
     bx.set_ylim(0, 1); bx.set_xticks(range(6)); bx.set_xticklabels(labels, fontsize=8)
     bx.set_title("Running product", fontsize=11); bx.spines[["top", "right"]].set_visible(False)
     if s.get("onc"):
-        a.text(0.04, 0.175, "Oncology  ", fontsize=11.5, color="#b45309", weight="bold", va="top")
+        a.text(0.04, 0.175, "Oncology  ", fontsize=11.5, color="#1d6fd0", weight="bold", va="top")
         a.text(0.135, 0.175, s["onc"], fontsize=11.5, color=SLATE, va="top")
-        a.text(0.04, 0.125, "Disaster  ", fontsize=11.5, color="#b45309", weight="bold", va="top")
+        a.text(0.04, 0.125, "Disaster  ", fontsize=11.5, color="#1d6fd0", weight="bold", va="top")
         a.text(0.135, 0.125, s["dis"], fontsize=11.5, color=SLATE, va="top")
 
 
@@ -192,7 +204,7 @@ def r_albi(fig, s):
     a.text(0.05, 0.93, "From ALBI grades to vulnerability V", fontsize=25, weight="bold", color=INK, va="top")
     a.text(0.05, 0.855, f"Faria et al. cohort · Harvard Dataverse · doi:{K.FARIA_DOI} · aggregate grade counts only, no patient-level records",
            fontsize=11.5, color="#546e7a", va="top")
-    gcol = ["#9ccfd3", "#4A9aa3", "#0b5c63"]; an = K.ALBI_ANCHORS
+    gcol = ["#bcd6f3", "#5b9be0", "#1d6fd0"]; an = K.ALBI_ANCHORS
     rows = [("HCC cohort", K.FARIA_COUNTS["HCC cohort"]), ("Cirrhosis cohort", K.FARIA_COUNTS["Cirrhosis cohort"])]
     bx = fig.add_axes([0.20, 0.50, 0.72, 0.26])
     for r, (nm, cnt) in enumerate(rows):
@@ -298,7 +310,7 @@ def r_tornado(fig, s):
 def r_threshold(fig, s):
     c = s["case"]; nt = K.to_next_tier(c)
     a = new_axes(fig); chrome(a); head(a, s["title"], s["sub"])
-    rows = [("rho", "ρ  resilience", "at least", "#1b7f5c"), ("V", "V  vulnerability", "at most", "#b3261e"), ("E", "E  exposure", "at most", "#b3261e"), ("L", "L  likelihood", "at most", "#b3261e")]
+    rows = [("rho", "ρ  resilience", "at least", "#1d6fd0"), ("V", "V  vulnerability", "at most", "#d9262c"), ("E", "E  exposure", "at most", "#d9262c"), ("L", "L  likelihood", "at most", "#d9262c")]
     y = 0.74
     for k, lab, rel, col in rows:
         cur = K._val(c, k); need = nt["need"][k]; fl = s.get("floors", {}).get(k)
@@ -331,8 +343,8 @@ def r_eal(fig, s):
     bx = fig.add_axes([0.08, 0.22, 0.50, 0.52])
     for i, p in enumerate(pats):
         R = K.r_score(p["L"], p["E"], p["V"], p["rho"]); Cn = {1: .1, 2: .3, 3: .5, 4: .75, 5: 1.0}[p["C"]]; EAL = p["L"] * Cn * (1 - p["rho"])
-        bx.bar(i - 0.2, R * s["g1"], 0.36, color="#4A6FA5", label="R (residual risk)" if i == 0 else None)
-        bx.bar(i + 0.2, EAL * s["g2"], 0.36, color="#C2662D", label="EAL (L × C × (1 − ρ))" if i == 0 else None)
+        bx.bar(i - 0.2, R * s["g1"], 0.36, color="#4f8fdc", label="R (residual risk)" if i == 0 else None)
+        bx.bar(i + 0.2, EAL * s["g2"], 0.36, color="#d9262c", label="EAL (L × C × (1 − ρ))" if i == 0 else None)
         if s["g1"] > .05: bx.text(i - 0.2, R * s["g1"] + 0.006, f"{R:.3f}", ha="center", fontsize=11)
         if s["g2"] > .05: bx.text(i + 0.2, EAL * s["g2"] + 0.006, f"{EAL:.3f}", ha="center", fontsize=11)
     bx.set_xticks(range(len(pats))); bx.set_xticklabels([p["label"] for p in pats], fontsize=11); bx.set_ylim(0, 0.25)
@@ -340,24 +352,24 @@ def r_eal(fig, s):
     y = 0.72
     for p in pats:
         y = wrap(a, p["text"], 0.62, y, 36, 11.5, SLATE, dy=0.04) - 0.03
-    a.text(0.62, y - 0.01, s["foot"], fontsize=11, weight="bold", color="#b45309", va="top", wrap=True)
+    a.text(0.62, y - 0.01, s["foot"], fontsize=11, weight="bold", color="#1d6fd0", va="top", wrap=True)
 
 
 def r_close(fig, s):
     a = new_axes(fig, True); chrome(a, True)
     a.text(0.07, 0.82, s.get("title", "RMTI · one equation, two domains"), fontsize=32, weight="bold", color="white", va="top")
-    a.text(0.07, 0.72, "R = L · E · V · (1 − ρ)", fontsize=25, color="#9bd1d6", va="top")
-    a.add_patch(plt.Rectangle((0.07, 0.45), 0.006, 0.17, color="#e8a317"))
+    a.text(0.07, 0.72, "R = L · E · V · (1 − ρ)", fontsize=25, color="#a9c8ec", va="top")
+    a.add_patch(plt.Rectangle((0.07, 0.45), 0.006, 0.17, color="#d9262c"))
     a.text(0.09, 0.61, NAME, fontsize=25, weight="bold", color="white", va="top")
-    a.text(0.09, 0.545, ROLE, fontsize=14, color="#d0e3e5", va="top")
-    a.text(0.09, 0.495, ORCID, fontsize=12, color="#9fb8bb", va="top")
+    a.text(0.09, 0.545, ROLE, fontsize=14, color="#e3eefa", va="top")
+    a.text(0.09, 0.495, ORCID, fontsize=12, color="#9db5d0", va="top")
     y = 0.37
     for t in [f"Public demo (synthetic and published aggregate data only): {DEMO_URL}",
               "Open code under Apache-2.0 · Research prototype, not validated, not a medical device",
               "Independent academic work. Not an official product of the World Bank Group, Harvard University or any other institution.",
               "No patient data is used or shown. Nothing here is medical or engineering advice."]:
-        y = wrap(a, t, 0.07, y, 108, 12.5, "#d0e3e5", dy=0.045)
-    a.text(0.07, y - 0.015, "Contact: cesar.marolla@alumni.harvard.edu", fontsize=16, weight="bold", color="#ffd37a", va="top")
+        y = wrap(a, t, 0.07, y, 108, 12.5, "#e3eefa", dy=0.045)
+    a.text(0.07, y - 0.015, "Contact: cesar.marolla@alumni.harvard.edu", fontsize=16, weight="bold", color="#a9c8ec", va="top")
 
 
 RENDER = dict(title=r_title, bullets=r_bullets, section=r_section, tiers=r_tiers, concept=r_concept, albi=r_albi, case=r_case,
