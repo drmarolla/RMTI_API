@@ -1,6 +1,6 @@
-"""Risk Calculator page: runs the original main app (app.py.py) unchanged, now that Home.py is the entry page."""
+"""Risk Calculator page: runs the original calculator, now saved as risk_calculator_app.py (app.py.py is the home page)."""
 import runpy
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-runpy.run_path(str(ROOT / "app.py.py"), run_name="__main__")
+runpy.run_path(str(ROOT / "risk_calculator_app.py"), run_name="__main__")
