@@ -61,3 +61,22 @@ privacy review. The app stores nothing server-side, but hosting it publicly does
 
 ## Updating evidence, cohorts and parameters
 See `UPDATING.md`. Evidence and cohort metadata are data (versioned, hashed, validated); model constants change only through a reviewed release; every API response carries `X-RMTI-Registry`.
+## 4D Lab Live Motion Videos & Case Studies (`files 3D Lab live.zip`)
+This archive contains live motion video demonstrations, closed-caption subtitle tracks, chapter markers, and Python scripts illustrating the RMTI modules across Oncoclastics and Disaster Science:
+
+* **Module 1: RMTI Explained**
+  * `rmti_1_explained.mp4` & `rmti_1_explained_CC.mp4` — Core framework overview (standard and burned-in closed captions)
+  * `rmti_1_explained.srt` & `.vtt` — Subtitle tracks
+  * `rmti_1_explained_chapters.py` — Chapter timestamp definitions
+* **Module 2: Liver Case Studies (Oncoclastics / HCC)**
+  * `rmti_2_liver_case_studies.mp4` & `rmti_2_liver_case_studies_CC.mp4` — Liver trajectory case study video
+  * `rmti_2_liver_case_studies.srt` & `.vtt` — Subtitle tracks
+  * `rmti_2_liver_case_studies_chapters.py` — Chapter timestamp definitions
+* **Module 3: Flood & Heat Case Studies (Disaster Science)**
+  * `rmti_3_flood_heat_case_studies.mp4` & `rmti_3_flood_heat_case_studies_CC.mp4` — Disaster science case study video
+  * `rmti_3_flood_heat_case_studies.srt` & `.vtt` — Subtitle tracks
+  * `rmti_3_flood_heat_case_studies_chapters.py` — Chapter timestamp definitions
+* **Lab Script**
+  * `6_Live_4D_Lab.py` — Main Python source script for the 4D Lab session
+
+To use: download `files 3D Lab live.zip` from the repository root (or pull via Git LFS), extract the archive locally, and keep the `.srt`/`.vtt` files in the same folder as the `.mp4` videos for automatic caption loading.
