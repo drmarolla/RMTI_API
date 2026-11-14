@@ -2,6 +2,8 @@
 import streamlit as st
 
 st.set_page_config(page_title="Live Risk Matrix", page_icon="🧬", layout="wide")
+import rmti_theme
+rmti_theme.apply()
 st.title("Live Risk Matrix")
 st.caption("R = L · E · V · (1 − ρ). Research prototype. Synthetic, illustrative values only. Not for patient care.")
 

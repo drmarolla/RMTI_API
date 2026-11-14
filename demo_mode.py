@@ -11,14 +11,14 @@ import streamlit as st
 DEMO = os.environ.get("RMTI_DEMO_MODE", "1").strip() != "0"
 
 _DEMO_HTML = (
-    '<div style="border:2px solid #b45309;background:#fff7ed;color:#7c2d12;padding:10px 16px;border-radius:8px;'
+    '<div style="border:2px solid #d9262c;background:#fdf0f0;color:#7a1a1d;padding:10px 16px;border-radius:8px;'
     'margin:4px 0 12px 0;font-size:0.95rem;line-height:1.45">'
     '<b>DEMO MODE</b> · public sandbox. Synthetic, illustrative or published aggregate values only. '
     '<b>Do not enter patient data</b> or any identifying information. Not validated · not a medical device · '
     'not for patient-care or emergency decisions.</div>'
 )
 _PRIVATE_HTML = (
-    '<div style="border:2px solid #1e40af;background:#eff6ff;color:#1e3a8a;padding:10px 16px;border-radius:8px;'
+    '<div style="border:2px solid #1d6fd0;background:#eaf4ff;color:#0f2a4a;padding:10px 16px;border-radius:8px;'
     'margin:4px 0 12px 0;font-size:0.95rem">'
     '<b>PRIVATE MODE</b> · approved instance only. Pseudonymous, ethics-approved data only. '
     'Research prototype, not for patient-care decisions.</div>'

@@ -1,3 +1,3 @@
-Upload to GitHub (Add file > Upload files): Home.py, developer_portal.html (repository root), pages/0_Risk_Calculator.py, pages/7_Live_Risk_Matrix.py, .streamlit/config.toml
-Delete pages/6_Developer_Portal.py (replaced by Home.py).
-share.streamlit.io > Settings > Main file path = Home.py > Save > Reboot app.
+Upload to the repository ROOT, replacing the old ones: rmti_theme.py, demo_mode.py
+Upload into the pages folder: pages/7_Live_Risk_Matrix.py (replaces the one from the last zip)
+Then Reboot app. Colors change on every page that calls rmti_theme.apply().
