@@ -48,19 +48,34 @@ footer{background:var(--surface);border-top:1px solid var(--line);padding:1.5rem
 .stage .btn.ghost{color:var(--hero-ink);border-color:#4b5c74}
 .fa{fill:var(--accent)}.fb{fill:var(--surface);stroke:var(--line)}.ta{fill:var(--on);font:600 14px "Source Sans 3",sans-serif}.tb{fill:var(--ink);font:600 14px "Source Sans 3",sans-serif}.ln{stroke:var(--muted);stroke-width:1.6}.lb{fill:var(--muted);font:12.5px ui-monospace,Consolas,monospace}.sh{fill:var(--ink);font:700 15px "Source Sans 3",sans-serif}
 @media(max-width:860px){.stage .in{grid-template-columns:1fr}.viewer{height:300px}}
+
+:root,:root:not([data-theme="light"]){--bg:#fff;--surface:#f4f3fd;--ink:#14163a;--muted:#555a7a;--line:#dcdcf0;--accent:#3b2fc9;--on:#fff;--mark:#e0242b;color-scheme:light}
+.btn{background:#d9262c;border-color:#d9262c;color:#fff}.btn:hover{background:#b81e24}
+.stage{background:linear-gradient(115deg,#1b2596 0%,#3b2fc9 55%,#7a3fe0 100%);padding:2.5rem 1.25rem}
+.stage h1{font-size:clamp(2.1rem,4.6vw,3.5rem);line-height:1.1}.stage p{color:#e6e6fa;font-size:1.08rem}
+.viewer{background:rgba(255,255,255,.1)}.og button[aria-pressed=true]{background:#fff;color:#3b2fc9;border-color:#fff}.og{flex-wrap:wrap}
+.stage .btn.ghost{background:transparent;color:#fff;border-color:#fff}.pw{color:#e6e6fa}
+.lg svg rect{transform-box:fill-box;transform-origin:bottom;animation:pu 3.2s ease-in-out infinite}.lg svg rect:nth-child(2){animation-delay:.3s}.lg svg rect:nth-child(3),.lg svg rect:nth-child(4),.lg svg rect:nth-child(5){animation-delay:.6s}.lg svg rect:nth-child(6){animation-delay:.9s}
+@keyframes pu{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.82)}}
+.wm{display:flex;flex-direction:column;line-height:1}.wm small{font:600 .52rem "Source Sans 3",sans-serif;letter-spacing:.28em;margin-top:.2rem;opacity:.85}
+.win{position:absolute;right:12px;top:12px;width:215px;background:#fff;color:#14163a;border-radius:10px;padding:8px 10px;font-size:.72rem;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.wt{font-weight:700;margin-bottom:4px}.wt i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e0242b;margin-right:3px}.wt i+i{background:#f0a020}.wt i+i+i{background:#3b2fc9;margin-right:6px}
+.ln2{stroke-dasharray:1;stroke-dashoffset:1;animation:dr 4s ease-in-out infinite}@keyframes dr{0%{stroke-dashoffset:1}70%,100%{stroke-dashoffset:0}}
+.chips span{display:inline-block;background:#f4f3fd;border-radius:99px;padding:1px 7px;margin:2px 2px 0 0}.chips span:nth-child(2){background:#fde3e4;color:#a3161b}
+@media(prefers-reduced-motion:reduce){.lg svg rect,.ln2{animation:none}.ln2{stroke-dashoffset:0}}
 </style></head><body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="top"><div class="bar"><a class="brand" href="#overview"><span class="lg"></span> <span style="font-weight:400;color:var(--muted)">/ Developer</span></a>
 <nav class="main" aria-label="Primary"><a href="#quickstart">Quickstart</a><a href="#auth">Authentication</a><a href="#ep-trajectory">API reference</a><a href="#errors">Errors</a><a href="#deploy">Security</a></nav>
-<button class="btn ghost" id="theme" type="button">Theme</button><a class="btn" href="#auth">Get an API key</a></div>
+<a class="btn" href="#auth">Request access</a></div>
 <div class="notice" role="note">Research prototype. Not validated, not a medical device, not for patient-care or emergency decisions.</div></header>
-<div class="stage" id="stage"><div class="in"><div class="viewer"><canvas id="cv" role="img" aria-label="Rotating 3D liver model. Drag to turn."></canvas><div class="pw">Powered by <span class="lg"></span></div></div>
-<div><h1>RMTI risk engine API</h1><p>Score hazard, exposure, vulnerability and resilience over time, for liver, lung and breast cancer and for disaster science. JSON in, JSON out.</p>
-<div class="og" role="group" aria-label="Choose an organ model"><button data-o="liver" aria-pressed="true">Liver</button><button data-o="lung" aria-pressed="false">Lung</button><button data-o="breast" aria-pressed="false">Breast</button></div>
+<div class="stage" id="stage"><div class="in"><div class="viewer"><canvas id="cv" role="img" aria-label="Rotating 3D liver model. Drag to turn."></canvas><div class="win" aria-hidden="true"><div class="wt"><i></i><i></i><i></i>Trajectory: synthetic data</div><svg viewBox="0 0 200 60"><polyline class="ln2" pathLength="1" points="0,48 40,40 80,44 120,26 160,20 200,10" fill="none" stroke="#e0242b" stroke-width="3"/></svg><div class="chips"><span>P-01 moderate</span><span>P-02 high</span><span>P-03 low</span></div></div><div class="pw">Powered by <span class="lg"></span></div></div>
+<div><h1>Risk intelligence for cancer care and disaster science</h1><p>Score hazard, exposure, vulnerability and resilience over time for liver, lung and breast cancer and for floods and heat. One clear API, JSON in and out.</p>
+<div class="og" role="group" aria-label="Choose an organ model"><button data-o="liver" aria-pressed="true">Liver</button><button data-o="lung" aria-pressed="false">Lung</button><button data-o="breast" aria-pressed="false">Breast</button><button data-o="disaster" aria-pressed="false">Disaster science</button></div>
 <p class="capt" id="cap"></p><a class="btn" href="#quickstart">Quickstart</a> <a class="btn ghost" href="#ep-trajectory">API reference</a></div></div></div>
 <div class="docs"><aside aria-label="Documentation"><label for="f" style="position:absolute;left:-999px">Filter pages</label><input class="s" id="f" type="search" placeholder="Filter pages"><nav id="nav"></nav></aside>
 <main id="content" tabindex="-1"></main></div>
-<footer><div>Oncoclastics Platform on RMTI engine v2.4.0. Apache-2.0. Research use only.</div></footer>
+<footer><div>Oncoclastics Platform on RMTI engine v2.4.0. Apache-2.0. Research use only. drmarolla_rmti@2026</div></footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 var E=function(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")};
@@ -109,7 +124,7 @@ h+="<h3>Response <span class='req'>200</span></h3>"+(e.r?tbl(["Field","Type","De
 var a=EP[i-1],b=EP[i+1];h+="<div class='pn'><span>"+(a?"<a href='#ep-"+a.id+"'>Previous: "+a.t+"</a>":"")+"</span><span>"+(b?"<a href='#ep-"+b.id+"'>Next: "+b.t+"</a>":"")+"</span></div>";return h}
 function ids(g){return EP.filter(function(e){return g.indexOf(e.g)>-1}).map(function(e){return"ep-"+e.id})}
 var N=[["Getting started",["overview","quickstart","auth"]],["Service",ids("h")],["Scoring",ids("s")],["Validation and export",ids("v")],["Registry",ids("r")],["Libraries and mobile",["client","mobile","arch","changelog"]],["Operations",["errors","deploy"]]];
-var LG='<svg viewBox="0 0 40 32" width="32" height="26" aria-hidden="true"><rect x="0" y="16" width="7" height="16" rx="1.5" fill="currentColor"/><rect x="10" y="8" width="7" height="24" rx="1.5" fill="currentColor"/><rect x="20" y="0" width="7" height="9" rx="1.5" fill="var(--mark)"/><rect x="20" y="12" width="7" height="6" rx="1.5" fill="var(--mark)"/><rect x="20" y="21" width="7" height="11" rx="1.5" fill="var(--mark)"/><rect x="30" y="12" width="7" height="20" rx="1.5" fill="currentColor"/></svg><span>RMTI</span>';
+var LG='<svg viewBox="0 0 40 32" width="34" height="28" aria-hidden="true"><rect x="0" y="16" width="7" height="16" rx="1.5" fill="#1f7ae0"/><rect x="10" y="8" width="7" height="24" rx="1.5" fill="#3b2fc9"/><rect x="20" y="0" width="7" height="9" rx="1.5" fill="#e0242b"/><rect x="20" y="12" width="7" height="6" rx="1.5" fill="#e0242b"/><rect x="20" y="21" width="7" height="11" rx="1.5" fill="#e0242b"/><rect x="30" y="12" width="7" height="20" rx="1.5" fill="#8a3ff0"/></svg><span class="wm"><b>RMTI</b><small>ONCOCLASTICS</small></span>';
 document.querySelectorAll(".lg").forEach(function(x){x.innerHTML=LG});
 function setr(id,r,ex){EP.forEach(function(e){if(e.id==id){e.r=P(r);if(ex)e.ex=ex}})}
 setr("snapshot",["R_now|number|Risk score now.","tier_now|string|Tier now. A tier, not a probability.","(more)|object|The domain module may return further fields."]);
@@ -124,6 +139,7 @@ PAGES.client=["Python client","<p>One file, <code>rmti_client.py</code>, in the 
 PAGES.mobile=["Mobile apps","<p>There is no native iOS or Android SDK for RMTI. A mobile app should call <i>your</i> server, and your server calls this API over HTTPS.</p>"+tbl(["Rule","Why"],[["Keep the API key on your server","A key inside an app can be extracted."],["Use HTTPS only","Requests carry clinical-style inputs."],["Send pseudonymous codes only","Never a name, MRN, date of birth, email or phone."],["Do not use for patient-care decisions","Research prototype, not a medical device."]])];
 PAGES.arch=["Structure","<p>The platform has five parts. The scoring maths lives in one place, so the API and the Streamlit app always agree.</p>"+tbl(["Part","File","Role"],[["Engine","rmti_engine/","RMTI time-indexed engine v2.4.0, vendored unchanged."],["Service layer","service.py","Framework-free functions used by both the API and the UI."],["REST API","api.py","FastAPI endpoints in this reference."],["Web app","app.py","Streamlit interface."],["Registry","registry.py","Versioned evidence and parameters, stamped on every response."]])+"<p>Requires Python 3 and the packages in <code>requirements.txt</code>. A Dockerfile is provided.</p>"];
 PAGES.changelog=["Changelog","<h3>November 2026</h3><ul><li>API accepts <code>breast</code> as a domain and as an oncoclastics site (proposed scaffold, placeholder parameters).</li><li>New developer portal with 3D organ viewer, flow diagram and per-endpoint pages.</li><li>Python client <code>rmti_client.py</code>.</li></ul><h3>Engine 2.4.0</h3><ul><li>Version served by this API in <code>/health</code> and <code>X-RMTI-Registry</code>.</li></ul>"];
+PAGES.auth[1]+="<h3>How access works</h3><p>There is no self-service sign-up yet. The API owner creates keys and shares them. <code>/health</code> is always open so uptime monitors can check the service. To turn protection on, create a key and set it on your API host:</p>"+blk("python -c \"import secrets; print(secrets.token_urlsafe(32))\"\n# then set on the host (Cloud Run, Docker, etc.):\nRMTI_API_KEYS=the-key-you-created")+"<p>Access requests: <a href='https://orcid.org/0000-0001-8498-7380'>Dr. Cesar Marolla</a>.</p>";
 function title(k){return k.indexOf("ep-")==0?EP.filter(function(e){return"ep-"+e.id==k})[0].t:PAGES[k][0]}
 function nav(){var f=document.getElementById("f").value.toLowerCase(),cur=location.hash.slice(1)||"overview";document.getElementById("nav").innerHTML=N.map(function(g){var l=g[1].filter(function(k){return title(k).toLowerCase().indexOf(f)>-1});return l.length?"<h2>"+g[0]+"</h2>"+l.map(function(k){return"<a href='#"+k+"'"+(k==cur?" aria-current='page'":"")+">"+title(k)+"</a>"}).join(""):""}).join("")}
 function show(){var k=location.hash.slice(1)||"overview",m=document.getElementById("content"),i=-1;document.getElementById("stage").hidden=(k!="overview");EP.forEach(function(e,x){if("ep-"+e.id==k)i=x});
@@ -133,7 +149,6 @@ document.addEventListener("click",function(ev){var t=ev.target,m=document.getEle
 if(t.dataset.l){m.querySelectorAll("[role=tab]").forEach(function(x){x.setAttribute("aria-selected",x==t)});m.querySelector("#cx pre").textContent=code(EP[m.dataset.i],t.dataset.l)}
 if(t.classList.contains("copy")){var s=t.dataset.x?m.querySelector("#cx pre"):document.getElementById(t.dataset.c);try{navigator.clipboard.writeText(s.textContent)}catch(e){}t.textContent="Copied";setTimeout(function(){t.textContent="Copy"},1500)}});
 document.getElementById("f").addEventListener("input",nav);window.addEventListener("hashchange",show);
-document.getElementById("theme").onclick=function(){var r=document.documentElement,d=r.getAttribute("data-theme")==="dark"||(!r.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme:dark)").matches);r.setAttribute("data-theme",d?"light":"dark")};
 show();
 </script><script>
 (function(){var cv=document.getElementById("cv");if(typeof THREE==="undefined"||!cv)return;
@@ -147,10 +162,11 @@ function tb(a,b,rad,c){var d=b.clone().sub(a),m=new THREE.Mesh(new THREE.Cylinde
 var V3=function(x,y,z){return new THREE.Vector3(x,y,z)};
 var M={liver:function(g){var a=el(1.8,1,1,0x8a4b48),p=a.geometry.attributes.position;for(var i=0;i<p.count;i++){var x=p.getX(i),y=p.getY(i);p.setY(i,x<0?y*(1+.45*x):y)}a.geometry.computeVertexNormals();g.add(a);g.add(el(.35,.22,.22,0xb99663,.6,-.9,.45));g.rotation.x=.3},
 lung:function(g){[-1,1].forEach(function(s){var l=el(.62,1.3,.55,0xc58f93,s*.9,-.2,0);l.rotation.z=-s*.1;g.add(l)});var k=V3(0,.9,0);g.add(tb(V3(0,2,0),k,.12,0x9fb0cc));[-1,1].forEach(function(s){var e=V3(s*.75,.2,0);g.add(tb(k,e,.08,0x9fb0cc));[[.15,-.5],[.35,-1]].forEach(function(o){g.add(tb(e,V3(s*(.75+o[0]),o[1],.1),.045,0x9fb0cc))})})},
+disaster:function(g){g.add(new THREE.Mesh(new THREE.SphereGeometry(1.3,32,20),mt(0x5aa0f0,{wireframe:true})));[1.7,2.1].forEach(function(r,i){var t=new THREE.Mesh(new THREE.TorusGeometry(r,.03,8,64),mt(0xe0242b));t.rotation.x=1.2+i*.5;g.add(t)});g.add(el(.12,.12,.12,0xe0242b,1.3,0,0))},
 breast:function(g){var sh=new THREE.Mesh(new THREE.SphereGeometry(1.6,48,32,0,Math.PI*2,0,Math.PI/2),mt(0xcfa7ad,{transparent:true,opacity:.2,side:THREE.DoubleSide}));sh.rotation.x=Math.PI/2;g.add(sh);
 function br(p,d,len,dep){if(dep>3){g.add(el(.07,.07,.07,0xc4636d,p.x,p.y,p.z));return}for(var i=0;i<(dep?2:5);i++){var v=d.clone().add(V3(rnd()-.5,rnd()-.5,rnd()-.5).multiplyScalar(dep?.9:1.3)).normalize(),q=p.clone().add(v.clone().multiplyScalar(len));g.add(tb(p,q,.035-dep*.007,0xc89aa1));br(q,v,len*.75,dep+1)}}
 br(V3(0,0,1.45),V3(0,0,-1),.5,0);g.rotation.x=-.4}};
-var CAP={liver:"Liver: RMTI-HCC, the published application.",lung:"Lung: proposed extension.",breast:"Breast: duct and lobule model. Proposed scaffold (rmti_breast)."};
+var CAP={disaster:"Disaster science: hazard, exposure, vulnerability and resilience for floods and heat.",liver:"Liver: RMTI-HCC, the published application.",lung:"Lung: proposed extension.",breast:"Breast: duct and lobule model. Proposed scaffold (rmti_breast)."};
 var grp=new THREE.Group();sc.add(grp);
 function load(k){while(grp.children.length)grp.remove(grp.children[0]);rs=7;var g=new THREE.Group();M[k](g);grp.add(g);document.getElementById("cap").textContent=CAP[k];cv.setAttribute("aria-label","Rotating 3D "+k+" model. Drag to turn.");document.querySelectorAll(".og button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.o==k)})}
 document.querySelectorAll(".og button").forEach(function(b){b.onclick=function(){load(b.dataset.o)}});load("liver");
