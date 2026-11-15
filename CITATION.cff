@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "rmti-elasticity: Elasticities of the Risk Mechanism Theory Index and their relation to the time-indexed layer"
+type: software
+version: v1.0.0
+license: Apache-2.0
+repository-code: "https://github.com/drmarolla/rmti-elasticity"
+authors:
+  - family-names: Marolla
+    given-names: Cesar
+    orcid: "https://orcid.org/0000-0001-8498-7380"

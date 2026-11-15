@@ -1,0 +1,101 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:07.055
+R M T I turns what we can measure into one score, and follows it over time.
+
+2
+00:00:07.105 --> 00:00:08.950
+Here: breast cancer.
+
+3
+00:00:09.000 --> 00:00:13.351
+Case study: O'Shaughnessy and colleagues, Breast Cancer Research and Treatment, 2026.
+
+4
+00:00:13.401 --> 00:00:24.950
+In five thousand forty-one women with metastatic hormone-receptor-positive breast cancer, survival after first post-endocrine chemotherapy was thirteen point five months, and thirty percent died before a second-line regimen.
+
+5
+00:00:25.000 --> 00:00:31.950
+Stage one. A small invasive tumor, with lymph nodes clear or minimally involved.
+
+6
+00:00:32.000 --> 00:00:38.950
+Stage two. A larger tumor, or involvement of axillary lymph nodes.
+
+7
+00:00:39.000 --> 00:00:45.950
+Stage three. Extensive nodal disease, or spread to the chest wall or skin.
+
+8
+00:00:46.000 --> 00:00:52.950
+Stage four. Distant metastasis, for example to bone or liver.
+
+9
+00:00:53.000 --> 00:00:53.969
+Data assessing.
+
+10
+00:00:54.019 --> 00:00:57.503
+Prior CDK four six inhibitor use informs likelihood.
+
+11
+00:00:57.553 --> 00:01:01.717
+Performance status and metastatic burden inform vulnerability.
+
+12
+00:01:01.767 --> 00:01:06.067
+The thirty percent who die before second line inform resilience.
+
+13
+00:01:06.117 --> 00:01:06.950
+Illustrative.
+
+14
+00:01:07.000 --> 00:01:11.037
+R equals L times E times V times one minus rho.
+
+15
+00:01:11.087 --> 00:01:17.559
+Here R is zero point zero five four, band two of the fixed five-band scale.
+
+16
+00:01:17.609 --> 00:01:20.950
+Expected Annual Loss adds consequences.
+
+17
+00:01:21.000 --> 00:01:21.782
+Trajectory.
+
+18
+00:01:21.832 --> 00:01:25.942
+Each review cycle updates vulnerability and resilience.
+
+19
+00:01:25.992 --> 00:01:36.379
+This synthetic example closes the delivery gap: R falls from zero point zero five four to zero point zero two three, band two to band one.
+
+20
+00:01:36.429 --> 00:01:38.950
+An illustration, not a prediction.
+
+21
+00:01:39.000 --> 00:01:40.605
+What R M T I does.
+
+22
+00:01:40.655 --> 00:01:51.180
+It quantifies risk as one score, assesses it on fixed bands, and tracks vulnerability and resilience across cycles.
+
+23
+00:01:51.230 --> 00:01:54.950
+Treatment decisions stay with clinicians.
+
+24
+00:01:55.000 --> 00:02:01.019
+R M T I is a research prototype: uncalibrated, synthetic examples, not a medical device.
+
+25
+00:02:01.069 --> 00:02:04.950
+Does trajectory add information beyond the current level?

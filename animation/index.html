@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RMTI – tumor events to trajectory: liver, lung, breast</title>
+<style>
+:root{color-scheme:dark;--bg:#0a0f18;--ink:#e8edf2;--mut:#98a4b3;--amb:#f0b45a;--red:#e0583f;--blu:#5aa9e6;--line:#26334a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.w{max-width:980px;margin:0 auto;padding:14px}
+h1{font:300 clamp(18px,3.6vw,26px) system-ui;margin:0 0 8px}
+#st{position:relative;aspect-ratio:16/9;min-height:300px;background:#05080e;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+#ov{position:absolute;inset:0;padding:3.5% 5% 17%;display:flex;flex-direction:column;justify-content:center}
+#cap{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);background:rgba(10,10,10,.85);padding:3px 10px;font-size:clamp(12px,2.2vw,21px);text-align:center;width:max-content;max-width:92%}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:var(--amb);width:0}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button,select{background:#141c2b;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:7px 12px;font-size:14px;cursor:pointer}
+button.on{border-color:var(--amb);color:var(--amb)}
+.big{font-size:clamp(24px,5.5vw,52px);font-weight:300}
+.row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:clamp(11px,1.9vw,16px)}
+.row b{width:34%;flex:none;font-weight:500}.row .tr{width:26%;flex:none}
+.tr{height:12px;background:#141c2b;border-radius:6px;overflow:hidden}.tr i{display:block;height:100%;width:0}
+.ev{display:flex;gap:6px;flex-wrap:wrap}.ev span{padding:5px 10px;border:1px solid var(--line);border-radius:14px;font-size:clamp(11px,1.8vw,15px);color:var(--mut);transition:.4s}
+.ev span.on{color:#fff;border-color:var(--red);background:rgba(224,88,63,.22)}
+.card{background:rgba(20,28,43,.92);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:clamp(12px,2vw,17px);line-height:1.5}
+.card h3{margin:0 0 4px;color:var(--amb);font-size:clamp(14px,2.3vw,20px);font-weight:500}.card li{margin:4px 0;opacity:0;transition:.6s}.card li.on{opacity:1}.card ul{margin:8px 0 0;padding-left:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.cards div{background:rgba(20,28,43,.92);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:clamp(11px,1.7vw,14px);opacity:0;transition:.6s}
+.cards div.on{opacity:1}.cards h3{margin:0 0 4px;color:var(--amb);font-size:clamp(13px,2vw,17px)}
+.note{color:var(--mut);font-size:12px;margin-top:8px}svg text{fill:var(--mut);font-size:11px}
+</style></head><body><div class="w">
+<h1>RMTI – from tumor events to trajectory</h1>
+<div id="st"><canvas id="cv"></canvas><div id="ov"></div><div id="cap"></div><div id="bar"></div></div>
+<div class="ctl"><button data-o="liver" class="on">Liver (HCC)</button><button data-o="lung">Lung</button><button data-o="breast">Female breast</button>
+<select id="sp" aria-label="Pace"><option value="1.4">Slow</option><option value="1" selected>Medium-slow</option><option value=".7">Medium</option></select>
+<span style="flex:1"></span><button id="pv">◀</button><button id="pp">Pause</button><button id="nx">▶</button><span id="sc" class="note"></span></div>
+<p class="note">Research prototype. Published figures are quoted as reported by the cited studies; the mapping of those figures onto L, E, V and ρ and every trajectory value are illustrative and uncalibrated, not validated, not a medical device, not for patient-care decisions. Stage descriptions are simplified. Independent academic work (Apache-2.0).</p>
+</div>
+<script>
+const O={
+liver:{n:'Liver (HCC)',met:['Lung','Bone'],L:.30,E:.65,V:[.52,.42,.36,.30],r:[.20,.35,.50,.58],
+st:['Stage 1 – single small tumor, no vessel invasion or spread; surgery, ablation or transplant possible','Stage 2 – single tumor involving blood vessels, or several small tumors confined to the liver','Stage 3 – larger or multiple tumors, or major portal/hepatic vein invasion; regional lymph nodes may be involved','Stage 4 – distant spread (lungs, bones, distant nodes); systemic therapy, immunotherapy or palliative care'],
+cs:{a:'Lau-Min KS et al. JAMA Netw Open 2025;8(12):e2551665',n:'4198 patients on systemic therapy for HCC (Flatiron database, 2011–2023)',f:['Median overall survival 8.1 months; median progression-free survival 3.9 months','Only 20.7% received second-line systemic therapy','Liver function matters: ALBI grade 3 vs 1, OS HR 2.65; atezolizumab-bevacizumab vs sorafenib, PFS HR 0.84']},
+an:[['V','Liver function (ALBI grade 3 vs 1): OS HR 2.65'],['E','Concomitant liver disease documented in 75.6%'],['ρ','Second-line therapy delivered to 20.7%']]},
+lung:{n:'Lung',met:['Brain','Bone'],L:.35,E:.70,V:[.50,.46,.40,.36],r:[.20,.30,.42,.50],
+st:['Stage 1 – small tumor confined to the lung, no lymph-node spread','Stage 2 – larger tumor and/or nearby lymph-node involvement','Stage 3 – spread to central chest lymph nodes or adjacent structures','Stage 4 – distant metastasis (for example brain, bone, liver, other lung)'],
+cs:{a:'Sabakhtarishvili G et al. JTO Clin Res Rep 2025;6:100899',n:'3647 low-dose CT screening participants, 13% Black (one US center, 2021–2023)',f:['Lung cancer found in 3.4% of Black and 3.7% of White participants within 2 years','Stage 4 at diagnosis, screened vs usual care: 13% vs 44% (Black), 13% vs 35% (White)','Lung-RADS 4 results: 5.2% vs 4.1% (p = 0.32)']},
+an:[['E','Smoking: mean 37.7 (Black) vs 41.8 (White) pack-years'],['L','Cancer found in 3.4–3.7% within 2 years of first scan'],['ρ','Screening delivered: stage 4 at diagnosis 13% vs 35–44% usual care']]},
+breast:{n:'Female breast',met:['Bone','Liver'],L:.25,E:.60,V:[.48,.44,.38,.34],r:[.25,.35,.45,.55],
+st:['Stage 1 – small invasive tumor, lymph nodes clear or minimally involved','Stage 2 – larger tumor and/or axillary lymph-node involvement','Stage 3 – extensive nodal disease or chest-wall/skin involvement','Stage 4 – distant metastasis (for example bone, liver, lung, brain)'],
+cs:{a:'O’Shaughnessy J et al. Breast Cancer Res Treat 2026;219:19',n:'5041 women with HR+/HER2− metastatic breast cancer after endocrine therapy (Flatiron, 2015–2024)',f:['Median real-world OS 13.5 months from first post-endocrine chemotherapy; 10.7, 8.5, 7.5, 7.4 months at lines 2–5','30% died before receiving a second-line regimen','Died vs alive: ECOG 2+ 24% vs 12%; liver metastases 59% vs 50%']},
+an:[['L','84% had prior CDK4/6 inhibitor; time to next treatment or death 5.1 → 3.3 months by line 5'],['V','ECOG 2+ 24% vs 12%; 3+ metastatic sites 45% vs 38% (died vs alive)'],['ρ','30% died before second line; rwOS 13.5 → 7.4 months by line 5']]}};
+const B=[0,.05,.15,.35,.60,1],band=R=>B.findIndex((b,i)=>R<B[i+1])+1,Rt=(o,i)=>o.L*o.E*o.V[i]*(1-o.r[i]),f3=x=>x.toFixed(3);
+let k='liver',o=O[k],s=0,t0=performance.now(),pause=false,P=0,spd=1;
+const ov=document.getElementById('ov'),cap=document.getElementById('cap'),bar=document.getElementById('bar'),cv=document.getElementById('cv'),x=cv.getContext('2d');
+const $=id=>document.getElementById(id);
+const S=[
+{d:9,c:()=>'Risk Mechanism Theory Index – '+o.n,h:()=>`<div class="big">R = L · E · V · (1 − ρ)</div><p style="color:var(--mut)">Likelihood · Exposure · Vulnerability · Resilience – followed across review cycles</p><p style="color:var(--amb)">Case studies: liver · lung · breast</p>`},
+{d:16,c:()=>'Published case study – '+o.cs.a,h:()=>`<div class="card"><h3>${o.cs.a}</h3>${o.cs.n}<ul>${o.cs.f.map((t,i)=>`<li id="f${i}">${t}</li>`).join('')}</ul></div>`,u:p=>o.cs.f.forEach((t,i)=>$('f'+i).classList.toggle('on',p>.12+i*.25))},
+{d:28,tum:1,c:p=>o.st[Math.min(3,p*4|0)],h:()=>`<div class="ev" style="margin-bottom:auto">${[1,2,3,4].map((n,i)=>`<span id="e${i}">Stage ${n}</span>`).join('')}</div>`,u:p=>[0,1,2,3].forEach(i=>$('e'+i).classList.toggle('on',i===Math.min(3,p*4|0)))},
+{d:14,c:()=>'Data assessing – published anchors feed L, E, V, ρ',h:()=>`<div style="color:var(--amb);font-size:12px;margin-bottom:6px">Illustrative mapping – not calibrated</div>`+[['L  likelihood',o.L,'--blu'],['E  exposure',o.E,'--blu'],['V  vulnerability',o.V[0],'--red'],['ρ  resilience',o.r[0],'--amb']].map((r,i)=>`<div class="row"><b>${r[0]}</b><div class="tr"><i id="g${i}" style="background:var(${r[2]})"></i></div><span>${r[1].toFixed(2)}</span></div>`).join('')+`<div class="card" style="margin-top:8px">${o.an.map(a=>`<div><b style="color:var(--amb)">${a[0]}</b> ← ${a[1]}</div>`).join('')}</div>`,u:p=>[o.L,o.E,o.V[0],o.r[0]].forEach((v,i)=>$('g'+i).style.width=Math.min(1,p*1.8)*v*100+'%')},
+{d:14,c:()=>'RMTI formula analytics',h:()=>`<div class="big" style="font-size:clamp(18px,4vw,36px)">${o.L.toFixed(2)} × ${o.E.toFixed(2)} × ${o.V[0].toFixed(2)} × (1 − ${o.r[0].toFixed(2)})</div><div class="big" id="rv" style="color:var(--amb)"></div><svg viewBox="0 0 600 50" width="100%"><rect x="0" y="14" width="600" height="14" fill="#141c2b"/>${B.slice(1,-1).map(b=>`<line x1="${b*600}" x2="${b*600}" y1="8" y2="34" stroke="#98a4b3"/><text x="${b*600-10}" y="46">${b}</text>`).join('')}<circle id="mk" cx="0" cy="21" r="8" fill="#e0583f"/></svg><div class="note" id="bd"></div>`,u:p=>{const R=Rt(o,0)*Math.min(1,p*1.6);$('rv').textContent='R = '+f3(R);$('mk').setAttribute('cx',R*600);$('bd').textContent='Fixed five-band scale (0 · 0.05 · 0.15 · 0.35 · 0.60 · 1.0): band '+band(R)+'  ·  EAL = L · C · (1 − ρ) adds the loss layer'}},
+{d:18,c:()=>'Trajectory – V(t) and ρ(t) across review cycles',h:()=>`<svg viewBox="0 0 600 230" width="100%"><line x1="40" y1="200" x2="580" y2="200" stroke="#26334a"/><polyline id="pl" fill="none" stroke="#f0b45a" stroke-width="3"/><g id="pt"></g>${[0,1,2,3].map(i=>`<text x="${68+i*150}" y="218">cycle ${i}</text>`).join('')}<text x="40" y="14">R(t)</text></svg><div class="note" id="tn"></div>`,u:p=>{const n=Math.min(4,Math.floor(p*5)+1),X=i=>90+i*150,Y=i=>200-Rt(o,i)/0.12*180;let a='',g='';for(let i=0;i<n;i++){a+=X(i)+','+Y(i)+' ';g+=`<circle cx="${X(i)}" cy="${Y(i)}" r="6" fill="#e0583f"/><text x="${X(i)-20}" y="${Y(i)-12}">${f3(Rt(o,i))}</text>`}$('pl').setAttribute('points',a);$('pt').innerHTML=g;$('tn').textContent='Synthetic example: V '+o.V[0]+' → '+o.V[3]+', ρ '+o.r[0]+' → '+o.r[3]+'; R moves from band '+band(Rt(o,0))+' to band '+band(Rt(o,3))+'.'}},
+{d:16,c:()=>'What RMTI quantifies, assesses and helps manage',h:()=>`<div class="cards"><div><h3>Quantify</h3>One score R and an Expected Annual Loss index from L, E, V, ρ.</div><div><h3>Assess</h3>Fixed bands and a surveillance-posture reading for a clinical team to discuss.</div><div><h3>Track</h3>V(t) and ρ(t) each cycle: is risk drifting, or is delivery closing the gap?</div><div><h3>Manage</h3>Shows which driver (vulnerability or delivery) to work on; treatment decisions stay with clinicians.</div></div>`,u:p=>document.querySelectorAll('.cards div').forEach((d,i)=>d.classList.toggle('on',p>.08+i*.2))},
+{d:10,c:()=>'Research prototype – not validated',h:()=>`<div style="font-size:clamp(13px,2.2vw,20px);line-height:1.6">Parameters (α, β, κ·H, λ, anchors) are uncalibrated placeholders.<br>Published figures belong to the cited studies; RMTI mappings are illustrative.<br>Open question: does trajectory add information beyond a well-measured current level?</div>`}];
+const rn=i=>{const v=Math.sin(i*127.1)*43758.5;return v-Math.floor(v)};
+function blob(cx,cy,n,R,sd,r){for(let i=0;i<n;i++){const a=rn(sd+i)*6.28,d=Math.sqrt(rn(sd+i+99))*R;x.fillStyle=`rgba(${205+rn(i)*40|0},${70+rn(i+5)*40|0},50,.85)`;x.beginPath();x.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d,r,0,7);x.fill()}}
+function flow(ax,ay,bx,by,n,q,r){for(let i=0;i<n;i++){const t=(q*1.5+i/n)%1;x.fillStyle='rgba(240,120,90,.95)';x.beginPath();x.arc(ax+(bx-ax)*t,ay+(by-ay)*t+Math.sin(t*9+i)*6,r,0,7);x.fill()}}
+function tumor(W,H,st,q){const u=H/100;x.fillStyle='rgba(150,70,60,.35)';x.strokeStyle='rgba(220,150,130,.6)';x.beginPath();x.ellipse(W*.28,H*.45,W*.2,H*.28,0,0,7);x.fill();x.stroke();
+x.strokeStyle='rgba(120,160,230,.7)';x.lineWidth=5;x.beginPath();x.moveTo(W*.14,H*.64);x.lineTo(W*.4,H*.6);x.lineTo(W*.62,H*.45);x.stroke();x.lineWidth=1;
+x.fillStyle=st>=3?'rgba(224,88,63,.8)':st===2?`rgba(224,88,63,${.25+q*.55})`:'rgba(90,120,170,.5)';x.beginPath();x.arc(W*.56,H*.28,u*5,0,7);x.fill();
+const sites=[[W*.86,H*.24],[W*.86,H*.74]];x.fillStyle='rgba(90,120,170,.4)';sites.forEach((p,i)=>{x.beginPath();x.arc(p[0],p[1],u*9,0,7);x.fill();x.fillStyle='#98a4b3';x.font=u*3.2+'px system-ui';x.fillText(o.met[i],p[0]-u*5,p[1]+u*13);x.fillStyle='rgba(90,120,170,.4)'});
+x.fillStyle='#98a4b3';x.font=u*3.2+'px system-ui';x.fillText('Primary organ',W*.2,H*.8);x.fillText('Vessel',W*.2,H*.7);x.fillText('Lymph node',W*.5,H*.2);
+const tx=W*.25,ty=H*.42;
+if(st===0)blob(tx,ty,3+q*10|0,u*(5+q*4),1,u*1.1);
+else if(st===1){blob(tx,ty,18+q*22|0,u*(10+q*5),1,u*1.3);flow(tx,ty,W*.4,H*.6,8,q,u*.9)}
+else{blob(tx,ty,42,u*15,1,u*1.4);blob(W*.17,H*.55,10+(st===2?q*10:20)|0,u*6,50,u*1.2);blob(W*.36,H*.33,10+(st===2?q*10:20)|0,u*6,80,u*1.2);flow(tx,ty,W*.56,H*.28,9,q,u*.9);
+if(st===3){sites.forEach((p,i)=>{flow(W*.4,H*.6,p[0],p[1],9,q,u*.9);blob(p[0],p[1],q*16|0,u*7,200+i*40,u*1.2)})}}}
+function draw(p){const W=cv.width=cv.clientWidth,H=cv.height=cv.clientHeight;x.fillStyle='#0b1b2b';x.fillRect(0,0,W,H);
+cells.forEach(c=>{c.x=(c.x+c.vx+1)%1;c.y=(c.y+c.vy+1)%1;const g=x.createRadialGradient(c.x*W,c.y*H,1,c.x*W,c.y*H,c.r);g.addColorStop(0,'rgba(120,180,240,.4)');g.addColorStop(1,'rgba(40,90,170,.1)');x.fillStyle=g;x.beginPath();x.arc(c.x*W,c.y*H,c.r,0,7);x.fill()});
+if(S[s].tum){const i=Math.min(3,p*4|0);tumor(W,H,i,p*4-i)}}
+const cells=Array.from({length:40},()=>({x:Math.random(),y:Math.random(),r:6+Math.random()*14,vx:(Math.random()-.5)*.0003,vy:(Math.random()-.5)*.0003}));
+const dur=()=>S[s].d*1000*spd;
+function go(i){s=(i+S.length)%S.length;t0=performance.now();P=0;ov.innerHTML=S[s].h();$('sc').textContent=(s+1)+' / '+S.length}
+document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{k=b.dataset.o;o=O[k];document.querySelectorAll('[data-o]').forEach(z=>z.classList.toggle('on',z===b));go(s)});
+$('sp').onchange=e=>{spd=+e.target.value;t0=performance.now()-P*dur()};
+$('pv').onclick=()=>go(s-1);$('nx').onclick=()=>go(s+1);
+$('pp').onclick=()=>{pause=!pause;$('pp').textContent=pause?'Play':'Pause';if(!pause)t0=performance.now()-P*dur()};
+function loop(n){if(!pause){P=Math.min(1,(n-t0)/dur());if(P>=1)go(s+1)}const c=S[s];cap.textContent=c.c(P);if(c.u)c.u(P);bar.style.width=P*100+'%';draw(P);requestAnimationFrame(loop)}
+go(0);requestAnimationFrame(loop);
+</script></body></html>

@@ -1,0 +1,8 @@
+{
+  "title": "rmti-elasticity: Elasticities of the Risk Mechanism Theory Index and their relation to the time-indexed layer",
+  "upload_type": "software",
+  "description": "Elasticities of R = L*E*V*(1 - rho), the logarithmic decomposition of changes in R, and their relation to the time-indexed layer, with tests. Research prototype; not validated against outcomes.",
+  "creators": [{"name": "Marolla, Cesar", "orcid": "0000-0001-8498-7380"}],
+  "license": "Apache-2.0",
+  "access_right": "open"
+}
