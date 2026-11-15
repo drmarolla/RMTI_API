@@ -95,13 +95,13 @@ def sb_explained():
     out.append(seg("eal", "R measures residual risk, not how bad a miss would be. A second layer, expected annual loss, multiplies likelihood by consequence and by one minus rho. "
                           f"Take two liver patients in the same tier. Patient A has R of {Ra:.3f} and would be caught early and cured. Patient B has R of {Rb:.3f} and would present advanced. "
                           f"R ranks A first, but EAL is {Eb:.2f} for B against {Ea:.3f} for A, nearly three times higher. Within a tier, EAL shows who has the most to lose if surveillance is slow.", est, 6))
-    out.append(seg("domains", "One engine, two domains. The same three indicator families feed E, V and rho. In disaster science, hazards, climate change and urbanisation raise exposure; poverty, "
+    out.append(seg("domains", "One engine, two domains. The same three indicator families feed E, V and rho. In disaster science, hazards, rapid urbanisation and environmental pressure raise exposure; poverty, "
                               "governance and pollution raise vulnerability; and risk-management strategy, infrastructure, and health and water security supply resilience. "
                               "In liver cancer, the size of the at-risk population feeds exposure; reduced liver reserve, metabolic disease and fibrosis progression feed vulnerability; "
                               "and surveillance uptake, test quality, access to cure and care coordination feed resilience.",
                    one(dict(kind="bullets", title="One engine, two domains: what feeds E, V and ρ", width=96, size=13, items=[
                        ("h", "Disaster science (indicator backbone)"),
-                       ("p", "E ← natural and man-made hazards, climate change, accelerated urbanism, health hazards"),
+                       ("p", "E ← natural and man-made hazards, environmental pressure, accelerated urbanism, health hazards"),
                        ("p", "V ← poverty and inequality, governance and rule of law, pollution and land degradation, fiscal stability"),
                        ("p", "ρ ← risk-management strategy, infrastructure quality (ICT, energy, urban), hospital capacity, water and food security"),
                        ("h", "Oncology (HCC surveillance)"),
@@ -191,10 +191,10 @@ def sb_flood_heat():
     cs = K.FLOOD_HEAT_CASES; lil, lag, bam = cs; ev = [K.evaluate(c) for c in cs]; P = K.POSTURE_DISASTER
     out = common_open("VIDEO 3 · CASE STUDIES · FLOOD AND HEAT IN AFRICAN CITIES",
                       "Case studies, part two: disaster science. We apply the same equation to flood and heat risk in three African cities: Lilongwe in Malawi, Lagos in Nigeria, and Bamako in Mali.")
-    out.append(seg("map", "Here is how the inputs map to a city, using the RMTI indicator backbone. Exposure is raised by hazards, climate change and urbanisation. Vulnerability is raised by poverty, "
+    out.append(seg("map", "Here is how the inputs map to a city, using the RMTI indicator backbone. Exposure is raised by hazards, rapid urbanisation and environmental pressure. Vulnerability is raised by poverty, "
                           "governance and pollution. Resilience comes from risk-management strategy, infrastructure, and health and water security.",
                    one(dict(kind="bullets", title="How the inputs map to a city (RMTI indicator backbone)", width=92, size=14, items=[
-                       ("p", "E ← natural and man-made hazards, climate change, accelerated urbanism, health hazards"),
+                       ("p", "E ← natural and man-made hazards, environmental pressure, accelerated urbanism, health hazards"),
                        ("p", "V ← poverty and inequality, governance and rule of law, pollution and land degradation, fiscal stability"),
                        ("p", "ρ ← risk-management strategy, ICT, energy and urban infrastructure quality, hospital capacity, water and food security"),
                        ("p", "L ← annual probability that the hazard materially strikes (analyst rubric, 1–5 band midpoints)")])), 8))
@@ -233,11 +233,11 @@ def sb_flood_heat():
         "Illustrative what-if on one input; all others fixed", [(0.75, "now"), (nb["need"]["V"], "leaves Severe")], P, 4.5))
     out.append(threshold_segment("fh_thr",
         f"For Bamako, which single lever would be enough to leave tier 4? Resilience at least {nb['need']['rho']:.2f}; vulnerability at most {nb['need']['V']:.2f}; exposure at most {nb['need']['E']:.2f}; "
-        f"or likelihood at most {nb['need']['L']:.2f}. Likelihood is the hardest to move, because it is set largely by climate. Realistic plans combine levers.",
+        f"or likelihood at most {nb['need']['L']:.2f}. Likelihood is the hardest to move, because it is set largely by nature. Realistic plans combine levers.",
         bam, "What would it take to leave tier 4? Bamako", f"R now {nb['R']:.3f}; target R below {nb['target']:.2f}. One lever at a time, the others fixed.",
         "Single-lever what-ifs, not a plan: combinations of levers need less of each."))
     base, d = K.tornado(bam)
-    items = [("L  likelihood", d["L"], False, "set largely by climate"), ("E  exposure", d["E"], True, "land use, settlement"), ("V  vulnerability", d["V"], True, "housing, services, poverty"), ("ρ  resilience", d["rho"], True, "warning, infrastructure, health")]
+    items = [("L  likelihood", d["L"], False, "set largely by nature"), ("E  exposure", d["E"], True, "land use, settlement"), ("V  vulnerability", d["V"], True, "housing, services, poverty"), ("ρ  resilience", d["rho"], True, "warning, infrastructure, health")]
     order = sorted(items, key=lambda x: -abs(x[1]))
     out.append(tornado_segment("fh_tor",
         f"Side by side for Bamako, each lever moved by ten points, from largest to smallest: {order[0][0].split()[1]}, {order[1][0].split()[1]}, {order[2][0].split()[1]} and {order[3][0].split()[1]}. "

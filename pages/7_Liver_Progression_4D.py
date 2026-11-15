@@ -98,7 +98,7 @@ for q, ((lo, hi), nm) in enumerate(zip(TIER_BANDS, TIER_NAMES)):          # tier
         top = min(hi, ymax)
         fig.add_shape(type="rect", xref="x domain", yref="y", x0=0, x1=1, y0=lo, y1=top, fillcolor=LP.TIER_HEX[q], opacity=0.13, line_width=0, layer="below")
         fig.add_annotation(xref="x domain", yref="y", x=1.0, y=(lo + top) / 2, text=nm, showarrow=False, xanchor="left", font=dict(size=9, color=LP.TIER_HEX[q]))
-fig.add_trace(go.Scatter(x=cyc_x, y=[r["R"] for r in rows], mode="lines+markers", line=dict(color="#0b5c63", width=3), marker=dict(size=7),
+fig.add_trace(go.Scatter(x=cyc_x, y=[r["R"] for r in rows], mode="lines+markers", line=dict(color="#1d4e89", width=3), marker=dict(size=7),
                          name="R(t)", hovertemplate="cycle %{x}: R=%{y:.3f}<extra></extra>"), row=1, col=2)
 fig.add_trace(go.Scatter(x=[fr[0]["cycle"]], y=[fr[0]["R"]], mode="markers", marker=dict(size=15, color=LP.TIER_HEX[fr[0]["tier_no"] - 1], line=dict(width=2, color="#263238")),
                          name="now", hoverinfo="skip"), row=1, col=2)
@@ -149,4 +149,4 @@ with st.expander("What the API returns for this animation (/v1/liver/progression
     st.download_button("Download this trajectory (JSON)", json.dumps(m, indent=1, default=str), "rmti_liver_progression.json", "application/json")
 
 st.warning("Research prototype. Not validated, not a medical device, not for patient-care or emergency decisions. Parameters are uncalibrated placeholders.")
-st.caption("Contact: cesar.marolla@alumni.harvard.edu")
+st.caption("Contact: cesar.marolla@alumni.harvard.edu · Build 2026-11-15 · navy, white and red")

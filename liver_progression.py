@@ -27,7 +27,7 @@ DISCLAIMER = ("Research prototype. Not validated, not a medical device, not for 
 EQUATION = "R(t) = L * E * V*(t) * (1 - rho(t))"
 BANDS = [(0.20, "F0 · smooth, healthy-appearing"), (0.40, "F1 · early change"), (0.60, "F2 · moderate change"),
          (0.80, "F3 · advanced change"), (1.01, "F4 · nodular, cirrhosis-like")]
-TIER_HEX = ["#7F8FA6", "#4A6FA5", "#C9A227", "#C2662D", "#9B2C2C"]
+TIER_HEX = ["#9fb3c8", "#4d78a8", "#e8a0a3", "#d9262c", "#8f1519"]
 R_REF = 0.60                       # R at which the glyph reaches full size (the tier 4/5 boundary)
 
 PRESETS = {
@@ -128,7 +128,7 @@ def _lerp_hex(stops, f):
     return "#%02x%02x%02x" % tuple(int(round(v)) for v in rgb)
 
 
-LIVER_COLORS = [(0.0, "#8f2d27"), (0.25, "#b8643a"), (0.50, "#b58c5e"), (0.75, "#a08a4a"), (1.0, "#7d7a3a")]
+LIVER_COLORS = [(0.0, "#e9d5d6"), (0.25, "#e29698"), (0.50, "#c85a60"), (0.75, "#a8363c"), (1.0, "#7d1c22")]
 
 
 def liver_color(f):

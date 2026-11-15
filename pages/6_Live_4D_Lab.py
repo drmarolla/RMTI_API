@@ -1,7 +1,7 @@
 """
 pages/6_Live_4D_Lab.py  --  LIVE 4D lab: move L, E, V and rho and watch R = L * E * V * (1 - rho) evolve.
 
-Pick a published case (African cities first), drag any slider, press Play or scrub the time slider under the cube.
+Pick a case study, drag any slider, press Play or scrub the time slider under the cube.
 The cube, the running-product bars, the tier and the equation with your numbers all update. The same manifest is served by the API
 at /v1/scene/{case} (see scene.py / scene_routes.py).
 Research prototype. Synthetic or published aggregate values only; no patient data.
@@ -20,21 +20,21 @@ except Exception:          # noqa: BLE001
     def banner():
         st.error("DEMO MODE · public sandbox · synthetic or published aggregate values only · do not enter patient data.")
 
-RHO_SCALE = [[0.0, "#b3261e"], [0.5, "#e8a317"], [1.0, "#1b7f5c"]]
-TIER_COL = ["#7F8FA6", "#4A6FA5", "#C9A227", "#C2662D", "#9B2C2C"]
+RHO_SCALE = [[0.0, "#d9262c"], [0.5, "#c9d4e6"], [1.0, "#0b2545"]]
+TIER_COL = ["#9fb3c8", "#4d78a8", "#e8a0a3", "#d9262c", "#8f1519"]
 TIER_EDGES = [(0, .05), (.05, .15), (.15, .35), (.35, .60), (.60, 5)]
 BAR_LABELS = ["L", "L·E", "L·E·V", "R₀ (ρ = 0)", "R (ρ now)", "R (ρ after)"]
-BAR_COL = ["#607d8b", "#607d8b", "#607d8b", "#b3261e", "#e8a317", "#1b7f5c"]
+BAR_COL = ["#6f8fb5", "#6f8fb5", "#6f8fb5", "#d9262c", "#4d78a8", "#0b2545"]
 STEP_LABELS = {"L": "L", "E": "×E", "V": "×V", "resilience_now": "×(1−ρ) now", "resilience_after": "ρ after"}
 
 st.title("Live 4D Lab: move the levers, watch the risk evolve")
-st.caption("R = L · E · V · (1 − ρ). Colour = ρ (resilience). Pick a case, drag a slider, then press ▶ Play or scrub the time slider under the cube.")
+st.caption("R = L · E · V · (1 − ρ). Colour = ρ (resilience). Pick a case study (Faria et al. HCC, sub-Saharan Africa, Pacific Palisades or Altadena), drag a slider, then press ▶ Play or scrub the time slider under the cube.")
 st.warning("Research prototype. Not validated, not a medical device, not for patient-care or emergency decisions. "
            "R is a relative rubric index, not a probability. After-values are scenarios. Illustrative or published aggregate values only; do not enter identifying data.")
 banner()
 
 cases = SC.list_cases()
-labels = {c["key"]: f'{c["label"]}  ·  {c["group"].split(":")[0]}' for c in cases}
+labels = {c["key"]: f'{c["label"]}  ·  {c["group"].split(": ", 1)[1]}' for c in cases}
 
 
 def _load():
@@ -44,9 +44,9 @@ def _load():
 
 
 if "l6_case" not in st.session_state:
-    st.session_state["l6_case"] = "lilongwe"
+    st.session_state["l6_case"] = "faria_hcc"
     _load()
-st.selectbox("Case (published rubric values or illustrative)", [c["key"] for c in cases], key="l6_case",
+st.selectbox("Case study", [c["key"] for c in cases], key="l6_case",
              format_func=lambda k: labels[k], on_change=_load)
 base = SC.case_inputs(st.session_state["l6_case"])
 st.caption(f'Source: {base["source"]}')
@@ -69,7 +69,7 @@ def traces(i):
     trail = [f["pos"] for f in fr[: i + 1]]
     xs, ys, zs = zip(*trail)
     f = fr[i]
-    return [go.Scatter3d(x=xs, y=ys, z=zs, mode="lines", line=dict(color="#607d8b", width=6), hoverinfo="skip"),
+    return [go.Scatter3d(x=xs, y=ys, z=zs, mode="lines", line=dict(color="#6f8fb5", width=6), hoverinfo="skip"),
             go.Scatter3d(x=[f["pos"][0]], y=[f["pos"][1]], z=[f["pos"][2]], mode="markers",
                          marker=dict(size=11, color=[f["rho"]], colorscale=RHO_SCALE, cmin=0, cmax=1, line=dict(width=2, color="#263238"),
                                      colorbar=dict(title="ρ", thickness=12, x=0.46, len=0.7)),
@@ -130,9 +130,9 @@ with left:
     for (lo, hi), col, nm in zip(TIER_EDGES, TIER_COL, K.TIERS):
         if lo < ymax:
             f2.add_hrect(y0=lo, y1=min(hi, ymax), fillcolor=col, opacity=0.13, line_width=0, annotation_text="T" + nm[1], annotation_position="right", annotation_font_size=10)
-    f2.add_scatter(x=xs, y=ys, mode="lines", line=dict(color="#0b5c63", width=3), name="R")
+    f2.add_scatter(x=xs, y=ys, mode="lines", line=dict(color="#1d4e89", width=3), name="R")
     f2.add_scatter(x=[rho_now, rho_after], y=[sm["R_now"], sm["R_after"]], mode="markers+text", text=["now", "after"], textposition="top center",
-                   marker=dict(size=13, color=["#e8a317", "#1b7f5c"], line=dict(width=2, color="#263238")))
+                   marker=dict(size=13, color=["#4d78a8", "#0b2545"], line=dict(width=2, color="#263238")))
     f2.update_layout(height=300, margin=dict(l=0, r=40, t=30, b=0), showlegend=False, xaxis_title="ρ resilience", yaxis=dict(title="R", range=[0, ymax]),
                      title=dict(text="R against resilience, with your L, E and V", font=dict(size=13)))
     st.plotly_chart(f2, use_container_width=True)
@@ -141,7 +141,7 @@ with right:
     names = {"L": "L likelihood", "E": "E exposure", "V": "V vulnerability", "rho": "ρ resilience"}
     order = sorted(steps, key=lambda k: -abs(steps[k]))
     f3 = go.Figure(go.Bar(y=[names[k] for k in order][::-1], x=[steps[k] for k in order][::-1], orientation="h",
-                          marker_color=["#b0bec5" if k == "L" else "#0b5c63" for k in order][::-1],
+                          marker_color=["#b0bec5" if k == "L" else "#1d4e89" for k in order][::-1],
                           text=[f"−{steps[k]:.3f}" for k in order][::-1], textposition="outside"))
     f3.update_layout(height=300, margin=dict(l=0, r=30, t=30, b=0), xaxis=dict(visible=False),
                      title=dict(text="R falls by… if each lever moves 0.10 in the risk-reducing direction", font=dict(size=13)))
@@ -155,4 +155,4 @@ with st.expander("What the API returns for this scene (/v1/scene)"):
     st.download_button("Download this scene (JSON)", json.dumps(sc, indent=1), f"rmti_scene_{st.session_state['l6_case']}.json", "application/json")
 
 st.warning("Research prototype. Not validated, not a medical device, not for patient-care or emergency decisions. After-values are scenarios, not observations.")
-st.caption("Contact: cesar.marolla@alumni.harvard.edu")
+st.caption("Contact: cesar.marolla@alumni.harvard.edu · Build 2026-11-15 · navy, white and red")
