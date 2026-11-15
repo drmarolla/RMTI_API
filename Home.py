@@ -27,19 +27,34 @@ footer{display:none}
 <a href="/RMTI_Step_by_Step" target="_self">Step by Step</a>
 <a href="/Case_Studies_and_Videos" target="_self">Case Studies</a></div>""", unsafe_allow_html=True)
 
-# Case-study videos (media/*.mp4, with a same-named .vtt or .srt caption file) shown above the portal.
-MEDIA = Path(__file__).resolve().parent / "media"
-_videos = {v.stem: v for v in sorted(MEDIA.glob("*.mp4"))} if MEDIA.is_dir() else {}
-if _videos:
+# Case-study videos: any .mp4 in media/ or in the repo root. A same-named .vtt/.srt (next to it or in media/) adds captions.
+ROOT = Path(__file__).resolve().parent
+_vids = {}
+for _d in (ROOT / "media", ROOT):
+    if _d.is_dir():
+        for _f in sorted(_d.glob("*.mp4")):
+            _vids.setdefault(_f.stem, _f)
+try:
+    _debug = "debug" in st.query_params          # open the site with ?debug=1 to list what was found
+except Exception:
+    _debug = False
+if _debug:
+    st.write({"app folder": str(ROOT), "videos found": {k: [str(v), v.stat().st_size] for k, v in _vids.items()}})
+if _vids:
     _l, _m, _r = st.columns([1, 2, 1])
     with _m:
         st.markdown("#### See RMTI in action")
         st.caption("Tumor events, data assessment, formula analytics and trajectory, with published case studies. Research prototype; mappings are illustrative.")
-        _name = st.radio("Case video", list(_videos), horizontal=True, label_visibility="collapsed",
+        _name = st.radio("Case video", list(_vids), horizontal=True, label_visibility="collapsed",
                          format_func=lambda n: n.replace("rmti_", "").replace("_", " ").title())
-        _vid = _videos[_name]
-        _subs = next((str(_vid.with_suffix(e)) for e in (".vtt", ".srt") if _vid.with_suffix(e).exists()), None)
-        st.video(str(_vid), subtitles=_subs)
+        _vid = _vids[_name]
+        if _vid.stat().st_size < 10_000:
+            st.warning("This video file is only a few KB. It is probably a Git LFS pointer, not the real video. Upload the MP4 again without LFS.")
+        _subs = next((str(c) for e in (".vtt", ".srt") for c in (_vid.with_suffix(e), ROOT / "media" / (_vid.stem + e)) if c.exists()), None)
+        try:
+            st.video(str(_vid), subtitles=_subs) if _subs else st.video(str(_vid))
+        except TypeError:
+            st.video(str(_vid))
 
 # Links such as #ep-trajectory must stay inside the embedded page, so route them through location.hash.
 FIX = """<script>document.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');
