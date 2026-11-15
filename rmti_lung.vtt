@@ -1,0 +1,117 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.243
+Hello, everyone.
+
+2
+00:00:01.293 --> 00:00:01.889
+I am Dr.
+
+3
+00:00:01.939 --> 00:00:08.435
+Cesar Marolla, Instructor at Harvard University Division of Continuing Education.
+
+4
+00:00:08.485 --> 00:00:14.495
+R M T I turns what we can measure into one score, and follows it over time.
+
+5
+00:00:14.545 --> 00:00:15.950
+Here: lung cancer.
+
+6
+00:00:16.000 --> 00:00:21.518
+Case study: Sabakhtarishvili and colleagues, J T O Clinical and Research Reports, 2025.
+
+7
+00:00:21.568 --> 00:00:31.950
+In three thousand six hundred forty-seven screened people, stage four at diagnosis was thirteen percent, versus thirty-five to forty-four percent under usual care.
+
+8
+00:00:32.000 --> 00:00:38.950
+Stage one. A small tumor, confined to the lung, with no lymph node spread.
+
+9
+00:00:39.000 --> 00:00:45.950
+Stage two. A larger tumor, or nearby lymph nodes are involved.
+
+10
+00:00:46.000 --> 00:00:52.950
+Stage three. Spread to central chest lymph nodes or neighboring structures.
+
+11
+00:00:53.000 --> 00:00:59.950
+Stage four. Distant metastasis, for example to the brain or bone.
+
+12
+00:01:00.000 --> 00:01:00.945
+Data assessing.
+
+13
+00:01:00.995 --> 00:01:03.068
+Smoking burden informs exposure.
+
+14
+00:01:03.118 --> 00:01:06.651
+The two-year cancer detection rate informs likelihood.
+
+15
+00:01:06.701 --> 00:01:12.026
+And screening delivery, which lowers late-stage presentation, informs resilience.
+
+16
+00:01:12.076 --> 00:01:13.950
+This mapping is illustrative.
+
+17
+00:01:14.000 --> 00:01:18.012
+R equals L times E times V times one minus rho.
+
+18
+00:01:18.062 --> 00:01:24.580
+Here R is zero point zero nine eight, band two of the fixed five-band scale.
+
+19
+00:01:24.630 --> 00:01:27.950
+Expected Annual Loss adds consequences.
+
+20
+00:01:28.000 --> 00:01:28.772
+Trajectory.
+
+21
+00:01:28.822 --> 00:01:32.879
+Each review cycle updates vulnerability and resilience.
+
+22
+00:01:32.929 --> 00:01:43.411
+In this synthetic example, as screening improves, R falls from zero point zero nine eight to zero point zero four four, band two to band one.
+
+23
+00:01:43.461 --> 00:01:45.950
+An illustration, not a prediction.
+
+24
+00:01:46.000 --> 00:01:47.605
+What R M T I does.
+
+25
+00:01:47.655 --> 00:01:58.180
+It quantifies risk as one score, assesses it on fixed bands, and tracks vulnerability and resilience across cycles.
+
+26
+00:01:58.230 --> 00:02:01.950
+Treatment decisions stay with clinicians.
+
+27
+00:02:02.000 --> 00:02:08.236
+R M T I is a research prototype: uncalibrated, synthetic examples, not a medical device.
+
+28
+00:02:08.286 --> 00:02:12.307
+Does trajectory add information beyond the current level?
+
+29
+00:02:12.357 --> 00:02:13.950
+Thank you for watching.
