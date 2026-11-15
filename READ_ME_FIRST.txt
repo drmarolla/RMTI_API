@@ -1,8 +1,8 @@
-NO SETTINGS CHANGE NEEDED. Do the steps in this order.
-1. On GitHub open app.py.py, click the pencil (Edit). In the file-name box at the top change  app.py.py  to  risk_calculator_app.py . Commit.
-   (This keeps your calculator. Do this BEFORE step 2 or the upload will overwrite it.)
-2. Add file > Upload files. Drag in: app.py.py, developer_portal.html, rmti_theme.py, demo_mode.py, and the pages folder. Commit.
-3. Open the .streamlit folder on GitHub, Add file > Upload files, drag config.toml. Commit.
-4. Delete pages/6_Developer_Portal.py (the home page replaces it). Commit.
-5. Reboot the app. Videos are not touched.
-UNDO: rename risk_calculator_app.py back to app.py.py.
+FIX THE STREAMLIT APP (override)
+1. Unzip. GitHub > Add file > Upload files. Drag in: Home.py, READ_ME_FIRST.txt, the pages folder and the docs folder. Commit.
+   This puts Home.py back in the repository root, replaces the misplaced pages/Home.py with a redirect stub,
+   and adds pages/7_Live_Risk_Matrix.py (it runs the 7_Live_Risk_Matrix.py already in your root).
+2. share.streamlit.io > your app > Settings > Main file path = Home.py > Save.
+3. Manage app > Reboot app. Reload https://oncoclastics.streamlit.app
+Optional tidy-up: in GitHub delete pages/6_Developer_Portal.py (the home page replaces it).
+Videos: put your .mp4 files in media/ (or leave them in the root). Open the site with ?debug=1 to see what was found.
