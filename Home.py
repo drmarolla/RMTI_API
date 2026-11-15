@@ -1,84 +1,47 @@
-"""RMTI home page: website-style landing (nav, hero, tool cards, 3D models, API docs). Set as Main file path."""
+"""RMTI home page: opens on the developer portal (developer_portal.html), with links to the tools.
+Set this file as the Main file path in Streamlit Cloud settings."""
 from pathlib import Path
 import streamlit as st
 import streamlit.components.v1 as components
 
-st.set_page_config(page_title="RMTI Oncoclastics", page_icon="🧬", layout="wide", initial_sidebar_state="collapsed")
-ROOT = Path(__file__).resolve().parent
-SRC = ROOT / "developer_portal.html"
-if not SRC.exists():
+st.set_page_config(page_title="RMTI Developer", page_icon="🧬", layout="wide", initial_sidebar_state="collapsed")
+
+HTML = Path(__file__).resolve().parent / "developer_portal.html"
+if not HTML.exists():
     st.error("developer_portal.html was not found next to Home.py. Upload it to the repository root.")
     st.stop()
 
-LOGO = ('<svg viewBox="0 0 40 32" width="34" height="28"><rect x="0" y="16" width="7" height="16" rx="1.5" fill="#6cb4f5"/>'
-        '<rect x="10" y="8" width="7" height="24" rx="1.5" fill="#1d6fd0"/><rect x="20" y="0" width="7" height="9" rx="1.5" fill="#d9262c"/>'
-        '<rect x="20" y="12" width="7" height="6" rx="1.5" fill="#d9262c"/><rect x="20" y="21" width="7" height="11" rx="1.5" fill="#d9262c"/>'
-        '<rect x="30" y="12" width="7" height="20" rx="1.5" fill="#0f2a4a"/></svg>')
-TOOLS = [("Risk Calculator", "Risk_Calculator", "Snapshot, trajectory, cohort ranking and validation in one place."),
-         ("HCC Calculator", "HCC_Calculator", "The liver cancer module, the published application."),
-         ("Cohort Sandbox", "Cohort_Sandbox", "Try cohort ranking with sample data."),
-         ("4D Risk Matrix", "4D_Risk_Matrix", "See how L, E, V and ρ combine into risk."),
-         ("Live Risk Matrix", "Live_Risk_Matrix", "New: sliders with the formula and four matrices updating live."),
-         ("RMTI Step by Step", "RMTI_Step_by_Step", "Walk through the method one step at a time."),
-         ("Case Studies and Videos", "Case_Studies_and_Videos", "Liver, flood and heat case studies.")]
-nav = "".join(f'<a href="/{s}" target="_self">{t}</a>' for t, s, _ in TOOLS[:5])
-cards = "".join(f'<a class="card" href="/{s}" target="_self"><h4>{t}</h4><p>{d}</p><span>Open →</span></a>' for t, s, d in TOOLS)
-
-st.markdown(f"""<style>
-.block-container{{padding:0 !important;max-width:100% !important}}footer{{display:none}}
-header[data-testid="stHeader"]{{background:transparent}}
-.r{{font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#0f2a4a}}
-.r a{{text-decoration:none}}
-.nav{{display:flex;align-items:center;gap:1.4rem;padding:.9rem 2rem;border-bottom:1px solid #d9e6f2;background:#fff;flex-wrap:wrap;margin-top:2.2rem}}
-.nav .lg{{display:flex;align-items:center;gap:.5rem;color:#0f2a4a}}.nav .wm{{display:flex;flex-direction:column;line-height:1}}
-.nav .wm b{{font-size:1.35rem;letter-spacing:.02em}}.nav .wm small{{font-size:.5rem;letter-spacing:.3em;font-weight:600;color:#4a6482;margin-top:.2rem}}
-.nav .links{{display:flex;gap:1.2rem;flex:1;flex-wrap:wrap}}.nav .links a{{color:#0f2a4a;font-weight:600;font-size:.95rem}}.nav .links a:hover{{color:#1d6fd0}}
-.btn{{background:#d9262c;color:#fff !important;padding:.6rem 1.2rem;border-radius:8px;font-weight:700;display:inline-block}}.btn:hover{{background:#b81e24}}
-.btn.o{{background:#fff;color:#1d6fd0 !important;border:1.5px solid #1d6fd0}}
-.hero{{background:linear-gradient(180deg,#eaf4ff 0%,#fff 100%);padding:3.5rem 2rem 2.5rem}}
-.hi{{max-width:1180px;margin:auto;display:grid;grid-template-columns:1.05fr 1fr;gap:2.5rem;align-items:center}}
-.eb{{color:#d9262c;font-weight:700;letter-spacing:.14em;font-size:.8rem}}
-.hero h1{{font-size:clamp(2rem,4vw,3.2rem);line-height:1.12;margin:.6rem 0 1rem;font-weight:800;color:#0f2a4a}}
-.hero p{{color:#3b5877;font-size:1.1rem;line-height:1.65;max-width:52ch}}.hero .row{{display:flex;gap:.8rem;margin-top:1.4rem;flex-wrap:wrap}}
-.dash{{background:#fff;border:1px solid #d9e6f2;border-radius:14px;box-shadow:0 16px 40px rgba(29,111,208,.16);padding:14px 16px}}
-.dash .t{{font-weight:700;font-size:.85rem;display:flex;gap:6px;align-items:center}}.dash .t i{{width:9px;height:9px;border-radius:50%;background:#d9262c}}.dash .t i+i{{background:#6cb4f5}}.dash .t i+i+i{{background:#1d6fd0;margin-right:6px}}
-.ln{{stroke-dasharray:1;stroke-dashoffset:1;animation:dr 4.5s ease-in-out infinite}}@keyframes dr{{0%{{stroke-dashoffset:1}}70%,100%{{stroke-dashoffset:0}}}}
-.dash table{{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:6px}}.dash td{{padding:5px 4px;border-top:1px solid #eef3f9}}
-.pill{{padding:2px 9px;border-radius:99px;font-weight:600;font-size:.74rem;background:#eaf4ff;color:#1d6fd0}}.pill.h{{background:#fde3e4;color:#a3161b}}.pill.l{{background:#f3f8fd;color:#4a6482}}
-.sec{{max-width:1180px;margin:auto;padding:2.5rem 2rem 0}}.sec h2{{font-size:1.8rem;font-weight:800;margin:0 0 .3rem}}.sec .sub{{color:#4a6482;margin:0 0 1.2rem}}
-.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}}
-.card{{display:block;background:#fff;border:1px solid #d9e6f2;border-radius:12px;padding:1.1rem 1.2rem;color:#0f2a4a;transition:all .15s}}
-.card:hover{{border-color:#1d6fd0;box-shadow:0 8px 24px rgba(29,111,208,.15);transform:translateY(-2px)}}
-.card h4{{margin:0 0 .3rem;font-size:1.08rem}}.card p{{margin:0 0 .7rem;color:#4a6482;font-size:.93rem;line-height:1.5}}.card span{{color:#d9262c;font-weight:700;font-size:.9rem}}
-.foot{{margin-top:2.5rem;background:#0f2a4a;color:#cfe0f3;padding:1.6rem 2rem;font-size:.9rem;text-align:center}}
-@media(max-width:860px){{.hi{{grid-template-columns:1fr}}}}
+st.markdown("""<style>
+.block-container{padding:2.6rem 0 0 0 !important;max-width:100% !important}
+footer{display:none}
+.tools{display:flex;flex-wrap:wrap;gap:.5rem;padding:.4rem 1.25rem .8rem;font-family:"Source Sans 3",sans-serif}
+.tools b{margin-right:.4rem;align-self:center}
+.tools a{padding:.35rem .9rem;border:1px solid #9aa5b5;border-radius:999px;text-decoration:none;color:inherit;font-size:.92rem}
+.tools a:hover{background:#3d5a8a;color:#f4f6fa;border-color:#3d5a8a}
 </style>
-<div class="r">
-<div class="nav"><a class="lg" href="/" target="_self">{LOGO}<span class="wm"><b>RMTI</b><small>ONCOCLASTICS</small></span></a>
-<div class="links">{nav}</div><a class="btn" href="https://orcid.org/0000-0001-8498-7380" target="_blank">Request API access</a></div>
-<div class="hero"><div class="hi"><div><div class="eb">RISK INTELLIGENCE</div>
-<h1>Time-indexed risk scoring for cancer care and disaster science</h1>
-<p>Score hazard, exposure, vulnerability and resilience for liver, lung and breast cancer and for floods and heat. Use the tools in your browser or call the API.</p>
-<div class="row"><a class="btn" href="/Risk_Calculator" target="_self">Open the Risk Calculator</a><a class="btn o" href="/Live_Risk_Matrix" target="_self">See the live matrix</a></div></div>
-<div class="dash"><div class="t"><i></i><i></i><i></i>Risk trajectory · synthetic data</div>
-<svg viewBox="0 0 360 140" width="100%"><g stroke="#e3edf7"><line x1="0" y1="30" x2="360" y2="30"/><line x1="0" y1="70" x2="360" y2="70"/><line x1="0" y1="110" x2="360" y2="110"/></g>
-<polyline class="ln" pathLength="1" points="0,110 60,96 120,102 180,64 240,50 300,38 360,22" fill="none" stroke="#d9262c" stroke-width="3.5" stroke-linecap="round"/>
-<polyline points="0,118 60,112 120,108 180,100 240,92 300,88 360,80" fill="none" stroke="#1d6fd0" stroke-width="3" stroke-linecap="round" opacity=".8"/></svg>
-<table><tr><td>P-01</td><td>Liver</td><td><span class="pill">moderate</span></td></tr><tr><td>P-02</td><td>Lung</td><td><span class="pill h">high</span></td></tr><tr><td>P-03</td><td>Breast</td><td><span class="pill l">low</span></td></tr></table></div></div></div>
-<div class="sec"><h2>Choose a tool to get started</h2><p class="sub">Every tool opens in its own page. Use the top menu to move between them at any time.</p><div class="grid">{cards}</div></div>
-<div class="sec"><h2>Cancer-site and disaster models</h2><p class="sub">Drag to turn a model. Liver, lung, breast and disaster science each have their own module.</p></div></div>""", unsafe_allow_html=True)
+<div class="tools"><b>Open a tool:</b>
+<a href="/Risk_Calculator" target="_self">Risk Calculator</a>
+<a href="/HCC_Calculator" target="_self">HCC Calculator</a>
+<a href="/Cohort_Sandbox" target="_self">Cohort Sandbox</a>
+<a href="/4D_Risk_Matrix" target="_self">4D Risk Matrix</a>
+<a href="/RMTI_Step_by_Step" target="_self">Step by Step</a>
+<a href="/Case_Studies_and_Videos" target="_self">Case Studies</a></div>""", unsafe_allow_html=True)
 
+# Case-study videos (media/*.mp4, with a same-named .vtt or .srt caption file) shown above the portal.
+MEDIA = Path(__file__).resolve().parent / "media"
+_videos = {v.stem: v for v in sorted(MEDIA.glob("*.mp4"))} if MEDIA.is_dir() else {}
+if _videos:
+    _l, _m, _r = st.columns([1, 2, 1])
+    with _m:
+        st.markdown("#### See RMTI in action")
+        st.caption("Tumor events, data assessment, formula analytics and trajectory, with published case studies. Research prototype; mappings are illustrative.")
+        _name = st.radio("Case video", list(_videos), horizontal=True, label_visibility="collapsed",
+                         format_func=lambda n: n.replace("rmti_", "").replace("_", " ").title())
+        _vid = _videos[_name]
+        _subs = next((str(_vid.with_suffix(e)) for e in (".vtt", ".srt") if _vid.with_suffix(e).exists()), None)
+        st.video(str(_vid), subtitles=_subs)
+
+# Links such as #ep-trajectory must stay inside the embedded page, so route them through location.hash.
 FIX = """<script>document.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');
 if(a){e.preventDefault();location.hash=a.getAttribute('href');}});</script></body>"""
-def view(css, height):
-    html = SRC.read_text(encoding="utf-8").replace("</head>", "<style>" + css + "</style></head>", 1).replace("</body>", FIX, 1)
-    components.html(html, height=height, scrolling=True)
-
-view("header.top,.docs,footer,.notice{display:none!important}body{background:#fff}.stage{padding:.5rem 2rem}", 470)
-st.markdown('<div class="r"><div class="sec"><h2>API documentation</h2><p class="sub">Eight scoring and validation endpoints plus the evidence registry. JSON in, JSON out.</p></div></div>', unsafe_allow_html=True)
-view("header.top,.stage,footer,.notice{display:none!important}aside{top:8px!important}html{scroll-padding-top:8px!important}", 1000)
-video = ROOT / "rmti_1_explained.mp4"
-if video.exists():
-    with st.expander("▶ Watch: RMTI explained"):
-        st.video(str(video))
-st.markdown('<div class="r"><div class="foot">Oncoclastics Platform on RMTI engine v2.4.0. Apache-2.0. Research use only. drmarolla_rmti@2026</div></div>', unsafe_allow_html=True)
+components.html(HTML.read_text(encoding="utf-8").replace("</body>", FIX, 1), height=1100, scrolling=True)
