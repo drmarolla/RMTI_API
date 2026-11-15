@@ -27,6 +27,17 @@ footer{display:none}
 <a href="/RMTI_Step_by_Step" target="_self">Step by Step</a>
 <a href="/Case_Studies_and_Videos" target="_self">Case Studies</a></div>""", unsafe_allow_html=True)
 
+# Peer-reviewed case-study animation (animation/index.html): liver, lung and breast studies scored with RMTI.
+ROOT = Path(__file__).resolve().parent
+_anim = ROOT / "animation" / "index.html"
+if _anim.exists():
+    _al, _am, _ar = st.columns([1, 5, 1])
+    with _am:
+        st.markdown("#### From tumor events to trajectory: three peer-reviewed case studies")
+        st.caption("Liver (Lau-Min 2025), lung (Sabakhtarishvili 2025) and breast (O\u2019Shaughnessy 2026) cohorts, followed from Stage 1 to Stage 4 and scored with RMTI. "
+                   "Use the buttons under the player to switch organ and pace. Research prototype; mappings are illustrative.")
+        components.html(_anim.read_text(encoding="utf-8"), height=780, scrolling=True)
+
 # Case-study videos: any .mp4 in media/ or in the repo root. A same-named .vtt/.srt (next to it or in media/) adds captions.
 ROOT = Path(__file__).resolve().parent
 _vids = {}
