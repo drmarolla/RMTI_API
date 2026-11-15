@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Oncoclastics: Interactive Risk Simulation Dashboard"
+abstract: "Interactive risk simulation dashboard for medical researchers and disaster scientists. Powered by the RMTI Engine, it uses Streamlit to model dynamic health data, hazard exposures, and system resilience."
+authors:
+  - family-names: "Marolla"
+    given-names: "Cesar"
+license: Apache-2.0
+version: 1.0.0
+date-released: 2026-11-15
