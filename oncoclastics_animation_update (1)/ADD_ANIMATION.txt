@@ -1,0 +1,4 @@
+PUT THE PEER-REVIEWED CASE-STUDY ANIMATION ON THE HOME PAGE
+1. Unzip. GitHub > Add file > Upload files. Drag in: Home.py and the animation folder. Commit.
+2. Manage app > Reboot app. Reload https://oncoclastics.streamlit.app
+The animation sits above the portal. Your existing MP4s still appear below it.
