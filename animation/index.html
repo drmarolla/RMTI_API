@@ -31,7 +31,7 @@ button.on{border-color:var(--amb);color:var(--amb)}
 <h1>RMTI – from tumor events to trajectory</h1>
 <div id="st"><canvas id="cv"></canvas><div id="ov"></div><div id="cap"></div><div id="bar"></div></div>
 <div class="ctl"><button data-o="liver" class="on">Liver (HCC)</button><button data-o="lung">Lung</button><button data-o="breast">Female breast</button>
-<select id="sp" aria-label="Pace"><option value="1.4">Slow</option><option value="1" selected>Medium-slow</option><option value=".7">Medium</option></select>
+<select id="sp" aria-label="Pace"><option value="1.4">Slow</option><option value="1" selected>Medium-slow</option><option value=".7">Medium</option></select><button id="snd" title="Narration in Dr. Marolla’s voice with Adagio over the Rainbow">🔊 Sound on</button>
 <span style="flex:1"></span><button id="pv">◀</button><button id="pp">Pause</button><button id="nx">▶</button><span id="sc" class="note"></span></div>
 <p class="note">Research prototype. Published figures are quoted as reported by the cited studies; the mapping of those figures onto L, E, V and ρ and every trajectory value are illustrative and uncalibrated, not validated, not a medical device, not for patient-care decisions. Stage descriptions are simplified. Independent academic work (Apache-2.0).</p>
 </div>
@@ -81,10 +81,27 @@ if(S[s].tum){const i=Math.min(3,p*4|0);tumor(W,H,i,p*4-i)}}
 const cells=Array.from({length:40},()=>({x:Math.random(),y:Math.random(),r:6+Math.random()*14,vx:(Math.random()-.5)*.0003,vy:(Math.random()-.5)*.0003}));
 const dur=()=>S[s].d*1000*spd;
 function go(i){s=(i+S.length)%S.length;t0=performance.now();P=0;ov.innerHTML=S[s].h();$('sc').textContent=(s+1)+' / '+S.length}
-document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{k=b.dataset.o;o=O[k];document.querySelectorAll('[data-o]').forEach(z=>z.classList.toggle('on',z===b));go(s)});
+function setScene(i){s=i;ov.innerHTML=S[s].h();$('sc').textContent=(s+1)+' / '+S.length}
+document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{if(snd)sndOff();k=b.dataset.o;o=O[k];document.querySelectorAll('[data-o]').forEach(z=>z.classList.toggle('on',z===b));go(s)});
 $('sp').onchange=e=>{spd=+e.target.value;t0=performance.now()-P*dur()};
-$('pv').onclick=()=>go(s-1);$('nx').onclick=()=>go(s+1);
-$('pp').onclick=()=>{pause=!pause;$('pp').textContent=pause?'Play':'Pause';if(!pause)t0=performance.now()-P*dur()};
-function loop(n){if(!pause){P=Math.min(1,(n-t0)/dur());if(P>=1)go(s+1)}const c=S[s];cap.textContent=c.c(P);if(c.u)c.u(P);bar.style.width=P*100+'%';draw(P);requestAnimationFrame(loop)}
+$('pv').onclick=()=>{if(snd&&vOK)voice.currentTime=starts[(s+7)%8];else go(s-1)};$('nx').onclick=()=>{if(snd&&vOK)voice.currentTime=starts[(s+1)%8];else go(s+1)};
+$('pp').onclick=()=>{pause=!pause;$('pp').textContent=pause?'Play':'Pause';if(!pause)t0=performance.now()-P*dur();if(snd){[voice,bed].forEach(a=>{if(a){pause?a.pause():a.play().catch(()=>{})}})}};
+function loop(n){const vp=snd&&vOK&&starts&&!voice.paused&&!voice.ended;if(bed){const tg=vp?.14:(snd?.4:0);bed.volume=Math.max(0,Math.min(1,bed.volume+(tg-bed.volume)*.06))}if(vp){const t=voice.currentTime;let i=0;for(let j=0;j<8;j++)if(t>=starts[j])i=j;if(i!==s)setScene(i);const e=i<7?starts[i+1]:voice.duration;P=Math.max(0,Math.min(1,(t-starts[i])/Math.max(.5,e-starts[i])))}else if(!pause){P=Math.min(1,(n-t0)/dur());if(P>=1)go(s+1)}const c=S[s];cap.textContent=c.c(P);if(c.u)c.u(P);bar.style.width=P*100+'%';draw(P);requestAnimationFrame(loop)}
+
+const WORDS={"liver": [35, 38, 61, 29, 31, 39, 29, 27], "lung": [35, 36, 47, 26, 31, 39, 29, 27], "breast": [35, 39, 47, 28, 31, 39, 29, 27]},SB='/app/static/';
+let voice=null,bed=null,snd=false,vOK=false,starts=null,tj=null;
+function est(dur){const w=WORDS[k],tot=w.reduce((a,b)=>a+b,0);let c=0;return w.map(x=>{const t=(dur-.3)*c/tot;c+=x;return t})}
+function sndOff(){snd=false;vOK=false;starts=null;$('snd').textContent='\uD83D\uDD0A Sound on';$('snd').classList.remove('on');if(voice){voice.pause();voice=null}if(bed){bed.pause();bed=null}}
+function sndOn(){
+ snd=true;$('snd').textContent='\uD83D\uDD07 Sound off';$('snd').classList.add('on');
+ bed=new Audio(SB+'adagio_bed_134s.mp3');bed.loop=true;bed.volume=.4;bed.play().catch(()=>{});
+ voice=new Audio(SB+'narration_'+k+'.mp3');vOK=false;starts=null;tj=null;
+ voice.onloadedmetadata=()=>{vOK=true;starts=(tj&&tj.length===8)?tj:est(voice.duration)};
+ voice.onended=()=>{if(bed){setTimeout(()=>{if(bed&&(!voice||voice.ended))bed.pause()},4000)}};
+ voice.onerror=()=>{vOK=false};
+ fetch(SB+'timing_'+k+'.json').then(r=>r.ok?r.json():null).then(j=>{tj=j;if(vOK&&j&&j.length===8)starts=j}).catch(()=>{});
+ pause=false;$('pp').textContent='Pause';go(0);voice.play().catch(()=>{});
+}
+$('snd').onclick=()=>{snd?sndOff():sndOn()};
 go(0);requestAnimationFrame(loop);
 </script></body></html>
