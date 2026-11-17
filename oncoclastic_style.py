@@ -38,7 +38,7 @@ h1{font-size:2.05rem}h2{font-size:1.5rem;margin-top:1.8rem}h3{font-size:1.2rem}
 p,li{color:%BODY%}
 a{color:#3b78b4}
 [data-testid="stCaptionContainer"],.stCaption{color:%MUTED%}
-.block-container,[data-testid="stMainBlockContainer"]{max-width:1100px;padding-top:2rem;padding-bottom:3rem}
+.block-container,[data-testid="stMainBlockContainer"]{max-width:1100px;padding-top:4.5rem;padding-bottom:3rem}
 [data-testid="stSidebar"]{background:%BLUE%;border-right:1px solid %LINE%}
 [data-testid="stSidebarNav"]{padding-top:.4rem}
 [data-testid="stSidebarNav"] ul{padding:0;margin:0;gap:0}
@@ -69,6 +69,8 @@ th,td{border:1px solid %LINE%;padding:.6rem .75rem;vertical-align:top}
 .rm-tools{display:flex;flex-wrap:wrap;gap:.45rem;margin:.3rem 0 1rem}
 .rm-tools a{padding:.3rem .85rem;border:1px solid #c5d6e6;border-radius:999px;text-decoration:none;color:%INK%;font-size:.92rem;background:#fff}
 .rm-tools a:hover{background:%BLUE_M%;border-color:#9fbbd6}
+[data-testid="stAlert"]:has([data-testid="stAlertContentSuccess"]),[data-testid="stAlertContainer"]:has([data-testid="stAlertContentSuccess"]){background:%BLUE% !important;border:1px solid %LINE%;color:%INK% !important}
+[data-testid="stAlert"]:has([data-testid="stAlertContentSuccess"]) *{color:%INK% !important}
 @media (max-width:768px){.block-container,[data-testid="stMainBlockContainer"]{padding-left:.9rem;padding-right:.9rem}}
 footer{visibility:hidden}
 """
