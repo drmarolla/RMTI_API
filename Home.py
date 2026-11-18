@@ -16,19 +16,32 @@ nav_mode = st.session_state.get("rmti_nav", False)
 FIT = ("<script>(function(){function f(){try{var h=document.documentElement.scrollHeight;var e=window.frameElement;"
        "if(e&&h>0){e.style.height=(h+8)+'px';}}catch(x){}}window.addEventListener('load',function(){f();setTimeout(f,400);setTimeout(f,1500);});})();</script></body>")
 
-if not nav_mode:    # old layout: no grouped sidebar, so keep a compact link row
-    st.markdown(f'<div style="width:230px;margin-bottom:.4rem">{ui.logo_svg()}</div>', unsafe_allow_html=True)
-    st.markdown("""<div class="rm-tools">
-<a href="/Risk_Calculator" target="_self">Risk Calculator</a><a href="/HCC_Calculator" target="_self">HCC Calculator</a>
-<a href="/Cohort_Sandbox" target="_self">Cohort Sandbox</a><a href="/4D_Risk_Matrix" target="_self">4D Risk Matrix</a>
-<a href="/RMTI_Step_by_Step" target="_self">Step by Step</a><a href="/Case_Studies_and_Videos" target="_self">Case Studies</a>
-<a href="/Johnson_Case_Study" target="_self">Johnson Case Study</a><a href="/Live_Risk_Matrix" target="_self">Live Risk Matrix</a></div>""",
-                unsafe_allow_html=True)
-else:
-    st.markdown(f'<div style="width:230px;margin-bottom:.6rem">{ui.logo_svg()}</div>', unsafe_allow_html=True)
+ui.brand()
+ui.hero(
+    "Oncology and disaster science",
+    "Quantify systemic risk.<br>Before it fragments care.",
+    "Oncoclastics applies hazard\u2013exposure\u2013vulnerability\u2013resilience assessment from disaster-risk reduction to cancer: "
+    "one equation, four levers, real case studies in liver, lung and breast oncology, floods and heat.",
+    "Explore the tools", "#pathways")
+ui.governance_bar()
+ui.stats([(4, "levers in one equation", "", ui.RED), (3, "cancer sites: liver, lung, breast", "", "#5b9bd5"),
+          (2, "domains: oncology and disaster science", "", ui.TEAL), (3, "narrated video walkthroughs", "", ui.AMBER)])
 
-st.markdown('<div class="rm-kicker">Oncology and disaster science</div>', unsafe_allow_html=True)
-st.title("Oncoclastics")
+ui.section("Platform", "Pick a pathway", "Every tool runs on synthetic or published aggregate data.", anchor="pathways")
+ui.path_cards([
+    dict(icon="calculator", title="Risk Calculator", text="Snapshot, trajectory, cohort ranking and validation in one place.", tag="Calculator", color=ui.RED, href="/Risk_Calculator"),
+    dict(icon="liver", title="HCC Calculator", text="Chronic liver injury toward hepatocellular carcinoma, including non-cirrhotic HCC.", tag="Oncology", color="#a93f48", href="/HCC_Calculator"),
+    dict(icon="users", title="Cohort Sandbox", text="Rank a synthetic cohort and watch risk redistribute.", tag="Simulation", color=ui.TEAL, href="/Cohort_Sandbox"),
+    dict(icon="cube", title="4D Risk Matrix", text="See how L, E, V and \u03c1 combine into risk.", tag="Visual", color="#5b9bd5", href="/4D_Risk_Matrix"),
+    dict(icon="pulse", title="Live Risk Matrix", text="Sliders with the formula and four matrices updating live.", tag="Interactive", color=ui.AMBER, href="/Live_Risk_Matrix"),
+    dict(icon="route", title="Step by Step", text="Walk through the RMTI method one step at a time.", tag="Learn", color=ui.CORAL, href="/RMTI_Step_by_Step"),
+    dict(icon="film", title="Case Studies and Videos", text="Liver, flood and heat case studies with narrated 3D/4D walkthroughs.", tag="Evidence", color=ui.RED, href="/Case_Studies_and_Videos"),
+    dict(icon="code", title="Developer Portal", text="Score the four levers through the API or in your browser.", tag="API", color="#2b3a9e", href="/Developer_Portal"),
+])
+ui.section("The model", "One equation, four levers")
+ui.equation_banner()
+
+ui.section("Definition", "Oncoclastics")
 st.markdown("""<div class="rm-card">
 We use the term <b>oncoclastics</b> (adjective: <i>oncoclastic</i>; from <i>onco-</i>, tumor, and <i>-clastic</i>, broken or fragmented,
 from the Greek <i>klastos</i>) for the application of hazard–exposure–vulnerability–resilience assessment, as developed in
