@@ -16,30 +16,42 @@ nav_mode = st.session_state.get("rmti_nav", False)
 FIT = ("<script>(function(){function f(){try{var h=document.documentElement.scrollHeight;var e=window.frameElement;"
        "if(e&&h>0){e.style.height=(h+8)+'px';}}catch(x){}}window.addEventListener('load',function(){f();setTimeout(f,400);setTimeout(f,1500);});})();</script></body>")
 
-ui.brand()
-ui.hero(
-    "Oncology and disaster science",
-    "Quantify systemic risk.<br>Before it fragments care.",
+ui.hero_lp(
+    "Risk intelligence \u203a Oncoclastics",
+    "Quantify systemic risk.<br><em>Before it fragments care.</em>",
     "Oncoclastics applies hazard\u2013exposure\u2013vulnerability\u2013resilience assessment from disaster-risk reduction to cancer: "
     "one equation, four levers, real case studies in liver, lung and breast oncology, floods and heat.",
-    "Explore the tools", "#pathways")
+    ("Explore the tools", "#pathways"), ("Watch the case study", "#trajectory"))
 ui.governance_bar()
-ui.stats([(4, "levers in one equation", "", ui.RED), (3, "cancer sites: liver, lung, breast", "", "#5b9bd5"),
-          (2, "domains: oncology and disaster science", "", ui.TEAL), (3, "narrated video walkthroughs", "", ui.AMBER)])
+ui.stats([(4, "levers in one equation", "", ui.RED), (3, "cancer sites: liver, lung, breast", "", ui.BLUE_A),
+          (2, "domains: oncology and disaster science", "", ui.RED_L), (3, "narrated video walkthroughs", "", ui.BLUE_L)])
 
-ui.section("Platform", "Pick a pathway", "Every tool runs on synthetic or published aggregate data.", anchor="pathways")
+ui.benefits("Key benefits of the RMTI platform", "One method, <b>clear answers</b> from risk to trajectory", [
+    dict(icon="target", title="One equation, four levers", text="Likelihood, exposure, vulnerability and resilience combine into a single score, R = L \u00b7 E \u00b7 V \u00b7 (1 \u2212 \u03c1).", color=ui.RED),
+    dict(icon="gauge", title="Fixed risk tiers", text="A fixed five-band scale (0, 0.05, 0.15, 0.35, 0.60, 1.0) so a score means the same thing every time.", color=ui.BLUE_A),
+    dict(icon="trend", title="Trajectory over time", text="Track V(t) and \u03c1(t) across review cycles: is risk drifting, or is delivery closing the gap?", color=ui.RED),
+    dict(icon="wave", title="Expected annual loss", text="EAL = L \u00b7 C \u00b7 (1 \u2212 \u03c1) adds a loss layer on top of the score for planning and comparison.", color=ui.BLUE_D),
+    dict(icon="liver", title="Liver, lung and breast", text="Published cohorts followed from Stage 1 to Stage 4 and scored with RMTI, with the sources cited.", color=ui.BLUE_A),
+    dict(icon="pulse", title="Floods and heat", text="The same four levers score disaster hazards, the field the method comes from.", color=ui.RED),
+    dict(icon="code", title="Open API", text="Eight scoring and validation endpoints plus an evidence registry. JSON in, JSON out.", color=ui.BLUE_D),
+    dict(icon="shield", title="Transparent by design", text="Research prototype on synthetic or published values. Not validated, not a medical device. Apache-2.0.", color=ui.RED),
+])
+
+ui.section("Platform", "Choose a tool to get started", "Every tool runs on synthetic or published aggregate data.", anchor="pathways")
 ui.path_cards([
     dict(icon="calculator", title="Risk Calculator", text="Snapshot, trajectory, cohort ranking and validation in one place.", tag="Calculator", color=ui.RED, href="/Risk_Calculator"),
-    dict(icon="liver", title="HCC Calculator", text="Chronic liver injury toward hepatocellular carcinoma, including non-cirrhotic HCC.", tag="Oncology", color="#a93f48", href="/HCC_Calculator"),
-    dict(icon="users", title="Cohort Sandbox", text="Rank a synthetic cohort and watch risk redistribute.", tag="Simulation", color=ui.TEAL, href="/Cohort_Sandbox"),
-    dict(icon="cube", title="4D Risk Matrix", text="See how L, E, V and \u03c1 combine into risk.", tag="Visual", color="#5b9bd5", href="/4D_Risk_Matrix"),
-    dict(icon="pulse", title="Live Risk Matrix", text="Sliders with the formula and four matrices updating live.", tag="Interactive", color=ui.AMBER, href="/Live_Risk_Matrix"),
-    dict(icon="route", title="Step by Step", text="Walk through the RMTI method one step at a time.", tag="Learn", color=ui.CORAL, href="/RMTI_Step_by_Step"),
+    dict(icon="liver", title="HCC Calculator", text="Chronic liver injury toward hepatocellular carcinoma, including non-cirrhotic HCC.", tag="Oncology", color=ui.BLUE_A, href="/HCC_Calculator"),
+    dict(icon="users", title="Cohort Sandbox", text="Rank a cohort and see how the tiers relate to outcomes.", tag="Simulation", color=ui.RED, href="/Cohort_Sandbox"),
+    dict(icon="cube", title="4D Risk Matrix", text="See how L, E, V and \u03c1 combine into risk.", tag="Visual", color=ui.BLUE_D, href="/4D_Risk_Matrix"),
+    dict(icon="pulse", title="Live Risk Matrix", text="Sliders with the formula and four matrices updating live.", tag="Interactive", color=ui.RED, href="/Live_Risk_Matrix"),
+    dict(icon="route", title="Step by Step", text="Walk through the RMTI method one step at a time.", tag="Learn", color=ui.BLUE_A, href="/RMTI_Step_by_Step"),
     dict(icon="film", title="Case Studies and Videos", text="Liver, flood and heat case studies with narrated 3D/4D walkthroughs.", tag="Evidence", color=ui.RED, href="/Case_Studies_and_Videos"),
-    dict(icon="code", title="Developer Portal", text="Score the four levers through the API or in your browser.", tag="API", color="#2b3a9e", href="/Developer_Portal"),
+    dict(icon="code", title="Developer Portal", text="Score the four levers through the API or in your browser.", tag="API", color=ui.BLUE_D, href="/Developer_Portal"),
 ])
-ui.section("The model", "One equation, four levers")
 ui.equation_banner()
+ui.industries("Fields", "Supporting <b>oncology and disaster science</b> with one method",
+              "RMTI began in disaster-risk reduction, where hazard, exposure, vulnerability and resilience are scored together. "
+              "Oncoclastics applies the same logic to cancer care, from chronic liver injury toward HCC to lung and breast cancer.")
 
 ui.section("Definition", "Oncoclastics")
 st.markdown("""<div class="rm-card">
@@ -66,13 +78,13 @@ st.markdown("""
 st.markdown(f'<div class="rm-card soft"><b>Cite:</b> Marolla C. <i>Oncoclastics: definition note, version 1.0.0.</i> Zenodo; 2026. '
             f'<a href="https://doi.org/{DOI}">doi:{DOI}</a></div>', unsafe_allow_html=True)
 
-st.header("From tumor events to trajectory")
-st.caption("Liver (Lau-Min 2025), lung (Sabakhtarishvili 2025) and breast (O\u2019Shaughnessy 2026) cohorts, followed from Stage 1 to Stage 4 "
-           "and scored with RMTI. Switch organ and pace under the player. Research prototype; mappings are illustrative.")
+st.markdown('<a id="trajectory"></a>', unsafe_allow_html=True)
 _anim = next((c for c in (ROOT / "animation" / "index.html", ROOT / "index.html")
               if c.exists() and "tumor events to trajectory" in c.read_text(encoding="utf-8", errors="ignore")), None)
 if _anim:
-    components.html(_anim.read_text(encoding="utf-8").replace("</body>", FIT, 1), height=820, scrolling=True)
+    components.html(_anim.read_text(encoding="utf-8").replace("</body>", FIT, 1), height=1100, scrolling=True)
+    st.caption("Liver (Lau-Min 2025), lung (Sabakhtarishvili 2025) and breast (O\u2019Shaughnessy 2026) cohorts, followed from Stage 1 to Stage 4 "
+               "and scored with RMTI. Music: Concerto di Santa Lucia by Dr. Cesar Marolla. Research prototype; mappings are illustrative.")
 else:
     st.info("The case-study animation file was not found. Upload animation/index.html to the repository.")
 

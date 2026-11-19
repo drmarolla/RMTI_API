@@ -8,7 +8,7 @@ import streamlit as st
 NAVY, NAVY_MID, SLATE = "#0b2545", "#1d4e89", "#34506f"
 RED, RED_DARK = "#d9262c", "#b81e24"
 ICE, LINE = "#eef3fa", "#d6e2f2"
-TIERS = ["#9fb3c8", "#4d78a8", "#e8a0a3", "#d9262c", "#8f1519"]       # tier 1 (low) to tier 5 (critical)
+TIERS = ["#6cb4f5", "#1d6fd0", "#ff6b73", "#d9262c", "#8f1519"]       # tier 1 (low) to tier 5 (critical)
 
 _CSS = """
 <style>
@@ -39,3 +39,8 @@ a:hover { color: #d9262c; }
 
 def apply():
     st.markdown(_CSS, unsafe_allow_html=True)
+    try:                                      # shared red / light-blue / white look, applied last so it wins
+        import oncoclastic_style as _ui
+        _ui.apply()
+    except Exception:
+        pass

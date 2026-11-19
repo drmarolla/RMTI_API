@@ -31,8 +31,8 @@ VIDEOS = [
     ("2 · Liver cancer (HCC)", "rmti_2_liver_case_studies", "HBV, viral, alcohol and cured-HCV cirrhosis cohorts; surveillance, treating the cause and liver reserve; Faria et al. ALBI counts."),
     ("3 · Flood and heat", "rmti_3_flood_heat_case_studies", "Lilongwe, Lagos and Bamako: resilience, exposure and vulnerability what-ifs and single-lever thresholds."),
 ]
-RHO_SCALE = [[0.0, "#b3261e"], [0.5, "#e8a317"], [1.0, "#1b7f5c"]]
-TIER_COL = ["#7F8FA6", "#4A6FA5", "#C9A227", "#C2662D", "#9B2C2C"]
+RHO_SCALE = [[0.0, "#d9262c"], [0.5, "#ff6b73"], [1.0, "#1d6fd0"]]
+TIER_COL = ["#3f5f86", "#1d6fd0", "#ff6b73", "#d9262c", "#b81e24"]
 TIER_EDGES = [(0, .05), (.05, .15), (.15, .35), (.35, .60), (.60, 5)]
 GROUPS = {
     "Liver cancer (HCC): published cohorts": [c["label"] for c in K.LIVER_CASES] + ["HBV suppressed"],
@@ -112,16 +112,16 @@ left, right = st.columns([1.1, 1])
 with left:
     fig = go.Figure()
     fig.add_trace(go.Scatter3d(x=[base["L"]], y=[base["E"]], z=[base["V"]], mode="markers+text", text=["published"], textposition="bottom center",
-                               marker=dict(size=9, color="#90a4ae", symbol="circle-open", line=dict(width=3, color="#546e7a")), hoverinfo="skip", name="published"))
-    fig.add_trace(go.Scatter3d(x=[base["L"], L], y=[base["E"], E], z=[base["V"], V], mode="lines", line=dict(color="#90a4ae", width=5, dash="dash"), hoverinfo="skip"))
+                               marker=dict(size=9, color="#6cb4f5", symbol="circle-open", line=dict(width=3, color="#3f5f86")), hoverinfo="skip", name="published"))
+    fig.add_trace(go.Scatter3d(x=[base["L"], L], y=[base["E"], E], z=[base["V"], V], mode="lines", line=dict(color="#6cb4f5", width=5, dash="dash"), hoverinfo="skip"))
     fig.add_trace(go.Scatter3d(x=[L], y=[E], z=[V], mode="markers+text", text=["your levers"], textposition="top center",
-                               marker=dict(size=12, color=[rho], colorscale=RHO_SCALE, cmin=0, cmax=1, line=dict(width=2, color="#263238"), colorbar=dict(title="ρ", thickness=12, len=0.6)),
+                               marker=dict(size=12, color=[rho], colorscale=RHO_SCALE, cmin=0, cmax=1, line=dict(width=2, color="#0b2545"), colorbar=dict(title="ρ", thickness=12, len=0.6)),
                                hovertemplate="L=%{x:.3f} E=%{y:.3f} V=%{z:.3f}<extra></extra>"))
-    ax = dict(range=[0, 1], dtick=0.25, backgroundcolor="rgba(0,0,0,0)", gridcolor="#cfd8dc")
+    ax = dict(range=[0, 1], dtick=0.25, backgroundcolor="rgba(0,0,0,0)", gridcolor="#d3e8fb")
     fig.update_layout(scene=dict(xaxis=dict(title="L", **ax), yaxis=dict(title="E", **ax), zaxis=dict(title="V", **ax), aspectmode="cube",
                                  camera=dict(eye=dict(x=1.6, y=1.5, z=1.0))), height=520, margin=dict(l=0, r=0, t=10, b=0), showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
-    st.caption("Axes are fixed to 0–1 and never rescaled. Colour = ρ (red low resilience, green high). Size of R is read from the numbers, not the picture.")
+    st.caption("Axes are fixed to 0–1 and never rescaled. Colour = ρ (red low resilience, blue high). Size of R is read from the numbers, not the picture.")
 
 with right:
     lever = st.radio("Sweep one lever", ["rho", "V", "E", "L"], horizontal=True, format_func=lambda k: {"rho": "ρ resilience", "V": "V vulnerability", "E": "E exposure", "L": "L likelihood"}[k])
@@ -132,8 +132,8 @@ with right:
     for (lo, hi), col, nm in zip(TIER_EDGES, TIER_COL, K.TIERS):
         if lo < ymax:
             f2.add_hrect(y0=lo, y1=min(hi, ymax), fillcolor=col, opacity=0.13, line_width=0, annotation_text="T" + nm[1], annotation_position="right", annotation_font_size=10)
-    f2.add_scatter(x=xs, y=ys, mode="lines", line=dict(color="#0b5c63", width=3), name="R")
-    f2.add_scatter(x=[cur_v], y=[K.r_with(cur)], mode="markers", marker=dict(size=13, color=TIER_COL[int(t1[0]) - 1], line=dict(width=2, color="#263238")), name="you")
+    f2.add_scatter(x=xs, y=ys, mode="lines", line=dict(color="#1d6fd0", width=3), name="R")
+    f2.add_scatter(x=[cur_v], y=[K.r_with(cur)], mode="markers", marker=dict(size=13, color=TIER_COL[int(t1[0]) - 1], line=dict(width=2, color="#0b2545")), name="you")
     f2.update_layout(height=300, margin=dict(l=0, r=40, t=10, b=0), showlegend=False, xaxis_title=lever, yaxis=dict(title="R", range=[0, ymax]))
     st.plotly_chart(f2, use_container_width=True)
 
@@ -141,7 +141,7 @@ with right:
     names = {"L": "L likelihood", "E": "E exposure", "V": "V vulnerability", "rho": "ρ resilience"}
     order = sorted(d, key=lambda k: -abs(d[k]))
     f3 = go.Figure(go.Bar(y=[names[k] for k in order][::-1], x=[abs(d[k]) for k in order][::-1], orientation="h",
-                          marker_color=["#b0bec5" if k == "L" else "#0b5c63" for k in order][::-1],
+                          marker_color=["#b9d9f7" if k == "L" else "#1d6fd0" for k in order][::-1],
                           text=[f"−{abs(d[k]):.3f}" for k in order][::-1], textposition="outside"))
     f3.update_layout(height=230, margin=dict(l=0, r=30, t=26, b=0), title=dict(text="R falls by… if each lever moves 0.10 in the risk-reducing direction", font=dict(size=13)), xaxis=dict(visible=False))
     st.plotly_chart(f3, use_container_width=True)

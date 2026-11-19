@@ -1,10 +1,9 @@
-# GitHub > .streamlit/config.toml > pencil > select all > paste this > Commit
 [theme]
 base = "light"
-primaryColor = "#c9505a"
+primaryColor = "#d9262c"
 backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#eef5fb"
-textColor = "#1f2d3d"
+secondaryBackgroundColor = "#eaf4ff"
+textColor = "#0b2545"
 font = "sans serif"
 
 [server]

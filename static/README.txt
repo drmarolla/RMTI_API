@@ -1,4 +1,5 @@
-Files served at /app/static/ (needed by the animation's "Sound on" button).
+Files served at /app/static/ (needed by the animation's music player).
+  concerto_santa_lucia.mp3   Concerto di Santa Lucia, Cesar Marolla (the music in the case-study animation)
   adagio_bed_134s.mp3        music bed (included)
   narration_liver.mp3        ADD: your narration, downloaded from ElevenLabs
   narration_lung.mp3         ADD

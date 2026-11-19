@@ -23,7 +23,7 @@ except Exception as _e:    # noqa: BLE001
     S = None
     _S_ERR = str(_e)
 
-RHO_SCALE = [[0.0, "#b3261e"], [0.5, "#e8a317"], [1.0, "#1b7f5c"]]   # vulnerable -> resilient
+RHO_SCALE = [[0.0, "#d9262c"], [0.5, "#ff6b73"], [1.0, "#1d6fd0"]]   # vulnerable -> resilient
 YMAX = {"hcc": 6.0, "lung": 4.0}
 
 
@@ -34,7 +34,7 @@ def rmti_formula(L, E, V, rho):
 
 
 def cube_scene():
-    ax = dict(range=[0, 1], dtick=0.25, backgroundcolor="rgba(0,0,0,0)", gridcolor="#cfd8dc")
+    ax = dict(range=[0, 1], dtick=0.25, backgroundcolor="rgba(0,0,0,0)", gridcolor="#d3e8fb")
     return dict(xaxis=dict(title="L  likelihood", **ax), yaxis=dict(title="E  exposure", **ax),
                 zaxis=dict(title="V  vulnerability", **ax), aspectmode="cube",
                 camera=dict(eye=dict(x=1.6, y=1.6, z=1.0)))
@@ -50,10 +50,10 @@ def draw_path(df, thr, interv, animate, r_label="R"):
              "<br>ρ=%{customdata[1]:.2f}<br>R=%{customdata[2]:.3f}<extra></extra>")
     cd = df[["cycle", "rho", "R"]].values
     marker = dict(size=msize(df["R"]), color=df["rho"], colorscale=RHO_SCALE, cmin=0, cmax=1,
-                  colorbar=dict(title="ρ", thickness=12), line=dict(width=1, color="#263238"))
+                  colorbar=dict(title="ρ", thickness=12), line=dict(width=1, color="#0b2545"))
     data = [
         go.Scatter3d(x=df["L"], y=df["E"], z=df["V"], mode="lines",
-                     line=dict(color="#607d8b", width=4), hoverinfo="skip", name="path"),
+                     line=dict(color="#3f5f86", width=4), hoverinfo="skip", name="path"),
         go.Scatter3d(x=df["L"], y=df["E"], z=df["V"], mode="markers+text", text=df["cycle"],
                      textposition="top center", customdata=cd, hovertemplate=hover,
                      marker=marker, name="cycles"),
@@ -84,11 +84,11 @@ def draw_path(df, thr, interv, animate, r_label="R"):
 
     # numeric truth behind the geometry
     f2 = go.Figure()
-    f2.add_scatter(x=df["cycle"], y=df["R"], mode="lines+markers", name=r_label, line=dict(color="#0b5c63", width=3))
+    f2.add_scatter(x=df["cycle"], y=df["R"], mode="lines+markers", name=r_label, line=dict(color="#1d6fd0", width=3))
     if "R_ref" in df:
         f2.add_scatter(x=df["cycle"], y=df["R_ref"], mode="lines+markers", name="memoryless reference",
-                       line=dict(color="#b3261e", dash="dot"))
-    f2.add_hline(y=thr, line_dash="dash", line_color="#e8a317", annotation_text="threshold (placeholder)")
+                       line=dict(color="#d9262c", dash="dot"))
+    f2.add_hline(y=thr, line_dash="dash", line_color="#ff6b73", annotation_text="threshold (placeholder)")
     f2.update_layout(yaxis=dict(title="R", range=[0, 1]), height=280, margin=dict(l=0, r=0, t=10, b=0))
     st.plotly_chart(f2, use_container_width=True)
 
@@ -238,7 +238,7 @@ with tab_cohort:
                           "<br>ρ=%{customdata[1]:.2f} R=%{customdata[2]:.3f}<extra></extra>",
             marker=dict(size=np.where(view["backlog"], 5, 3), color=view["rho"], colorscale=RHO_SCALE,
                         cmin=0, cmax=1, opacity=0.75, colorbar=dict(title="ρ", thickness=12),
-                        line=dict(width=0, color="#263238"))))
+                        line=dict(width=0, color="#0b2545"))))
         fig3.update_layout(scene=cube_scene(), height=600, margin=dict(l=0, r=0, t=10, b=0))
         st.plotly_chart(fig3, use_container_width=True)
         st.caption("Outlined points are in the backlog zone (high exposure, low resilience). Up to 5,000 points drawn.")

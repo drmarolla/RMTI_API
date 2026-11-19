@@ -98,9 +98,9 @@ for q, ((lo, hi), nm) in enumerate(zip(TIER_BANDS, TIER_NAMES)):          # tier
         top = min(hi, ymax)
         fig.add_shape(type="rect", xref="x domain", yref="y", x0=0, x1=1, y0=lo, y1=top, fillcolor=LP.TIER_HEX[q], opacity=0.13, line_width=0, layer="below")
         fig.add_annotation(xref="x domain", yref="y", x=1.0, y=(lo + top) / 2, text=nm, showarrow=False, xanchor="left", font=dict(size=9, color=LP.TIER_HEX[q]))
-fig.add_trace(go.Scatter(x=cyc_x, y=[r["R"] for r in rows], mode="lines+markers", line=dict(color="#1d4e89", width=3), marker=dict(size=7),
+fig.add_trace(go.Scatter(x=cyc_x, y=[r["R"] for r in rows], mode="lines+markers", line=dict(color="#0f4fa8", width=3), marker=dict(size=7),
                          name="R(t)", hovertemplate="cycle %{x}: R=%{y:.3f}<extra></extra>"), row=1, col=2)
-fig.add_trace(go.Scatter(x=[fr[0]["cycle"]], y=[fr[0]["R"]], mode="markers", marker=dict(size=15, color=LP.TIER_HEX[fr[0]["tier_no"] - 1], line=dict(width=2, color="#263238")),
+fig.add_trace(go.Scatter(x=[fr[0]["cycle"]], y=[fr[0]["R"]], mode="markers", marker=dict(size=15, color=LP.TIER_HEX[fr[0]["tier_no"] - 1], line=dict(width=2, color="#0b2545")),
                          name="now", hoverinfo="skip"), row=1, col=2)
 LIVER, GLYPH, CURVE, NOW = 0, 1, 2, 3        # trace indices in the figure
 
@@ -109,7 +109,7 @@ for f in fr:
     tr = liver_traces(f)
     frames.append(go.Frame(name=str(f["k"]), traces=[LIVER, GLYPH, NOW], data=[
         go.Mesh3d(**tr["liver"]), go.Mesh3d(**tr["glyph"]),
-        go.Scatter(x=[f["cycle"]], y=[f["R"]], marker=dict(size=15, color=LP.TIER_HEX[f["tier_no"] - 1], line=dict(width=2, color="#263238")))],
+        go.Scatter(x=[f["cycle"]], y=[f["R"]], marker=dict(size=15, color=LP.TIER_HEX[f["tier_no"] - 1], line=dict(width=2, color="#0b2545")))],
         layout=dict(title=dict(text=title_for(f), x=0.01, font=dict(size=15)), scene=dict(camera=camera(f["azimuth_deg"])))))
 fig.frames = frames
 

@@ -13,9 +13,9 @@ import streamlit as st
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-RHO_SCALE = [[0.0, "#b3261e"], [0.5, "#e8a317"], [1.0, "#1b7f5c"]]   # vulnerable -> resilient
+RHO_SCALE = [[0.0, "#d9262c"], [0.5, "#ff6b73"], [1.0, "#1d6fd0"]]   # vulnerable -> resilient
 LABELS = ["L", "L·E", "L·E·V", "R₀ (ρ = 0)", "R (ρ now)", "R (ρ after)"]
-BAR_COLORS = ["#607d8b", "#607d8b", "#607d8b", "#b3261e", "#e8a317", "#1b7f5c"]
+BAR_COLORS = ["#3f5f86", "#3f5f86", "#3f5f86", "#d9262c", "#ff6b73", "#1d6fd0"]
 
 
 # ----------------------------------------------------------------- pure logic
@@ -73,10 +73,10 @@ def make_figure(L, E, V, rho_now, rho_after, frame_ms):
         ys = [q[1] for q in w[: i + 1]] + [p[1]]
         zs = [q[2] for q in w[: i + 1]] + [p[2]]
         vals = bar_values(finals, rev)
-        path = go.Scatter3d(x=xs, y=ys, z=zs, mode="lines", line=dict(color="#607d8b", width=6), hoverinfo="skip")
+        path = go.Scatter3d(x=xs, y=ys, z=zs, mode="lines", line=dict(color="#3f5f86", width=6), hoverinfo="skip")
         dot = go.Scatter3d(x=[p[0]], y=[p[1]], z=[p[2]], mode="markers",
                            marker=dict(size=11, color=[rho], colorscale=RHO_SCALE, cmin=0, cmax=1,
-                                       line=dict(width=2, color="#263238"),
+                                       line=dict(width=2, color="#0b2545"),
                                        colorbar=dict(title="ρ", thickness=12, x=0.46, len=0.7)),
                            hovertemplate="L=%{x:.2f} E=%{y:.2f} V=%{z:.2f}<extra></extra>")
         bars = go.Bar(x=LABELS, y=vals, marker_color=BAR_COLORS,
@@ -98,7 +98,7 @@ def make_figure(L, E, V, rho_now, rho_after, frame_ms):
                                layout=dict(title=dict(text=title, x=0.01, font=dict(size=17)))))
     fig.frames = frames
 
-    ax = dict(range=[0, 1], dtick=0.25, backgroundcolor="rgba(0,0,0,0)", gridcolor="#cfd8dc")
+    ax = dict(range=[0, 1], dtick=0.25, backgroundcolor="rgba(0,0,0,0)", gridcolor="#d3e8fb")
     fig.update_layout(
         scene=dict(xaxis=dict(title="L", **ax), yaxis=dict(title="E", **ax), zaxis=dict(title="V", **ax),
                    aspectmode="cube", camera=dict(eye=dict(x=1.7, y=1.5, z=1.0))),

@@ -27,7 +27,7 @@ DISCLAIMER = ("Research prototype. Not validated, not a medical device, not for 
 EQUATION = "R(t) = L * E * V*(t) * (1 - rho(t))"
 BANDS = [(0.20, "F0 · smooth, healthy-appearing"), (0.40, "F1 · early change"), (0.60, "F2 · moderate change"),
          (0.80, "F3 · advanced change"), (1.01, "F4 · nodular, cirrhosis-like")]
-TIER_HEX = ["#9fb3c8", "#4d78a8", "#e8a0a3", "#d9262c", "#8f1519"]
+TIER_HEX = ["#6cb4f5", "#1d6fd0", "#ff6b73", "#d9262c", "#8f1519"]
 R_REF = 0.60                       # R at which the glyph reaches full size (the tier 4/5 boundary)
 
 PRESETS = {
