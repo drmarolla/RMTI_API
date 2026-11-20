@@ -24,7 +24,7 @@ rho2 = c5.slider("ρ after: improved state", 0.0, 0.95, 0.50, 0.01)
 R, R2 = L * E * V * (1 - rho), L * E * V * (1 - rho2)
 EDGES = (0.05, 0.15, 0.35, 0.60)                                   # fixed tier thresholds, the same for every case
 TIER_NAME = ["Low", "Moderate", "High", "Severe", "Critical"]
-TIER_BG = ["#eaf4ff", "#b9d9f7", "#f3c0c2", "#d9262c", "#8f1519"]
+TIER_BG = ["#dff0ff", "#9fd5ff", "#ff9ca1", "#d9262c", "#7a0f14"]
 TIER_FG = ["#0b2545", "#0b2545", "#0b2545", "#ffffff", "#ffffff"]
 
 

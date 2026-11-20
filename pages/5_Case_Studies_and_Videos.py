@@ -141,7 +141,7 @@ with right:
     names = {"L": "L likelihood", "E": "E exposure", "V": "V vulnerability", "rho": "ρ resilience"}
     order = sorted(d, key=lambda k: -abs(d[k]))
     f3 = go.Figure(go.Bar(y=[names[k] for k in order][::-1], x=[abs(d[k]) for k in order][::-1], orientation="h",
-                          marker_color=["#b9d9f7" if k == "L" else "#1d6fd0" for k in order][::-1],
+                          marker_color=["#6cb4f5" if k == "L" else "#1d6fd0" for k in order][::-1],
                           text=[f"−{abs(d[k]):.3f}" for k in order][::-1], textposition="outside"))
     f3.update_layout(height=230, margin=dict(l=0, r=30, t=26, b=0), title=dict(text="R falls by… if each lever moves 0.10 in the risk-reducing direction", font=dict(size=13)), xaxis=dict(visible=False))
     st.plotly_chart(f3, use_container_width=True)

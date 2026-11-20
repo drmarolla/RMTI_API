@@ -146,7 +146,7 @@ with right:
     names = {"L": "L likelihood", "E": "E exposure", "V": "V vulnerability", "rho": "ρ resilience"}
     order = sorted(steps, key=lambda k: -abs(steps[k]))
     f3 = go.Figure(go.Bar(y=[names[k] for k in order][::-1], x=[steps[k] for k in order][::-1], orientation="h",
-                          marker_color=["#b9d9f7" if k == "L" else "#0f4fa8" for k in order][::-1],
+                          marker_color=["#6cb4f5" if k == "L" else "#0f4fa8" for k in order][::-1],
                           text=[f"−{steps[k]:.3f}" for k in order][::-1], textposition="outside"))
     f3.update_layout(height=300, margin=dict(l=0, r=30, t=30, b=0), xaxis=dict(visible=False),
                      title=dict(text="R falls by… if each lever moves 0.10 in the risk-reducing direction", font=dict(size=13)))

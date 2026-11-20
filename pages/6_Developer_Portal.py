@@ -72,7 +72,7 @@ with tab_ref:
     else:
         FIX = """<script>document.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');
 if(a){e.preventDefault();location.hash=a.getAttribute('href');}});</script></body>"""
-        PORTAL = ":root,:root:not([data-theme=light]){--surface:#eaf4ff!important;--line:#b9d9f7!important;--muted:#1e3a5f!important;--ink:#0b2545!important;--code:#0b2545!important;--accent:#1d6fd0!important;--bg:#fff!important}.m{background:#d9262c!important}.m.get{background:#1d6fd0!important}.copy{background:#1d6fd0!important;color:#fff!important}"
+        PORTAL = ":root,:root:not([data-theme=light]){--surface:#dff0ff!important;--line:#0b2545!important;--muted:#1e3a5f!important;--ink:#0b2545!important;--code:#0b2545!important;--accent:#1d6fd0!important;--bg:#fff!important}.m{background:#d9262c!important}.m.get{background:#1d6fd0!important}.copy{background:#1d6fd0!important;color:#fff!important}"
         page = HTML.read_text(encoding="utf-8").replace("</head>", "<style>" + PORTAL + "</style></head>", 1).replace("</body>", FIX, 1)
         components.html(page, height=1100, scrolling=True)
 

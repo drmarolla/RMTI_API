@@ -120,7 +120,8 @@ def install_plot_theme() -> None:
 
 
 def run() -> None:
-    sys.path.insert(0, str(REPO)) if str(REPO) not in sys.path else None
+    if str(REPO) not in sys.path:
+        sys.path.insert(0, str(REPO))
     orig = getattr(st, "_rmti_set_page_config", None) or st.set_page_config
     st._rmti_set_page_config = orig
     orig(page_title="Oncoclastics · RMTI", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
