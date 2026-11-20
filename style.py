@@ -48,6 +48,8 @@ def hero(title, subtitle, chips=()):
 
 
 def strip(text=STRIP):
+    if st.session_state.get("rmti_nav"):      # the persistent bottom bar already says this
+        return
     st.markdown(f"<div class='rm-strip' role='note'>{html.escape(text)}</div>", unsafe_allow_html=True)
 
 

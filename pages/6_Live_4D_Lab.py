@@ -114,11 +114,16 @@ st.markdown("**The equation with your numbers**")
 e1, e2 = st.columns(2)
 e1.latex(rf"R_{{now}} = {L:.3f} \times {E:.3f} \times {V:.3f} \times (1 - {rho_now:.3f}) = \mathbf{{{sm['R_now']:.3f}}}")
 e2.latex(rf"R_{{after}} = {L:.3f} \times {E:.3f} \times {V:.3f} \times (1 - {rho_after:.3f}) = \mathbf{{{sm['R_after']:.3f}}}")
-m1, m2, m3, m4 = st.columns(4)
-m1.metric("Inherent risk R₀ = L·E·V", f"{sm['R0']:.3f}")
-m2.metric("R now", f"{sm['R_now']:.3f}", sm["tier_now"], delta_color="off")
-m3.metric("R after (scenario)", f"{sm['R_after']:.3f}", f"{sm['delta']:+.3f}", delta_color="inverse")
-m4.metric("Tier after", sm["tier_after"])
+import ui_clinical as uc
+
+uc.kpi_cards([
+    dict(title="Inherent risk R₀ = L·E·V", value=f"{sm['R0']:.3f}", sub="before resilience", tone="deep"),
+    dict(title="R now", value=f"{sm['R_now']:.3f}", sub=f"ρ = {rho_now:.2f}", tone="blue"),
+    dict(title="R after (scenario)", value=f"{sm['R_after']:.3f}", delta=f"{sm['delta']:+.3f} vs now", sub=f"ρ = {rho_after:.2f}", tone="red"),
+    dict(title="Tier now → after", value=uc.tier_pair_html(int(str(sm["tier_now"]).strip()[0]), int(str(sm["tier_after"]).strip()[0])),
+         raw_value=True, sub="fixed five-band scale", tone="light"),
+])
+uc.interpretation_box(L, E, V, rho_now, rho_after, sm.get("posture_now"), sm.get("posture_after"))
 st.info(f"**Posture for {sm['tier_now']}:** {sm['posture_now']}")
 
 left, right = st.columns(2)

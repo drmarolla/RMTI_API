@@ -88,8 +88,9 @@ def draw_path(df, thr, interv, animate, r_label="R"):
     if "R_ref" in df:
         f2.add_scatter(x=df["cycle"], y=df["R_ref"], mode="lines+markers", name="memoryless reference",
                        line=dict(color="#d9262c", dash="dot"))
-    f2.add_hline(y=thr, line_dash="dash", line_color="#ff6b73", annotation_text="threshold (placeholder)")
-    f2.update_layout(yaxis=dict(title="R", range=[0, 1]), height=280, margin=dict(l=0, r=0, t=10, b=0))
+    f2.add_scatter(x=df["cycle"], y=[thr] * len(df), mode="lines", name=f"Threshold {thr:g} (placeholder)",   # legend entry, not an on-plot label
+                   line=dict(color="#ff6b73", dash="dash", width=2))
+    f2.update_layout(yaxis=dict(title="R", range=[0, 1]), height=340, margin=dict(l=0, r=120, t=10, b=0))
     st.plotly_chart(f2, use_container_width=True)
 
     crossed = df[df["R"] >= thr]["cycle"].tolist()

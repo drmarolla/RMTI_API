@@ -36,11 +36,16 @@ st.latex(r"R = L \cdot E \cdot V \cdot (1-\rho)")
 st.latex(rf"R_{{now}} = {L:.2f} \cdot {E:.2f} \cdot {V:.2f} \cdot (1-{rho:.2f}) = {R:.4f}")
 st.latex(rf"R_{{after}} = {L:.2f} \cdot {E:.2f} \cdot {V:.2f} \cdot (1-{rho2:.2f}) = {R2:.4f}")
 
-m1, m2, m3, m4 = st.columns(4)
-m1.metric("R now", f"{R:.4f}")
-m2.metric("R after", f"{R2:.4f}", f"{R2 - R:+.4f}", delta_color="inverse")
-m3.metric("Reduction from ρ", f"{(1 - (1 - rho2) / (1 - rho)) * 100:.0f}%")
-m4.metric("Tier now → after", f"{tier_no(R)} {TIER_NAME[tier_no(R) - 1]} → {tier_no(R2)} {TIER_NAME[tier_no(R2) - 1]}")
+import ui_clinical as uc
+
+_red = (1 - (1 - rho2) / (1 - rho)) * 100 if rho < 1 else 0.0
+uc.kpi_cards([
+    dict(title="R now", value=f"{R:.4f}", sub=f"ρ = {rho:.2f}", tone="blue"),
+    dict(title="R after", value=f"{R2:.4f}", delta=f"{R2 - R:+.4f} vs now", sub=f"ρ = {rho2:.2f}", tone="red"),
+    dict(title="Reduction from ρ", value=f"{_red:.0f}%", sub="relative change in R", tone="deep"),
+    dict(title="Tier now → after", value=uc.tier_pair_html(tier_no(R), tier_no(R2)), raw_value=True, sub="fixed five-band scale", tone="light"),
+])
+uc.interpretation_box(L, E, V, rho, rho2)
 
 grid = [0, .2, .4, .6, .8, 1]
 nearest = lambda x: min(grid, key=lambda g: abs(g - x))

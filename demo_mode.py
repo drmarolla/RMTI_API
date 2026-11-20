@@ -26,4 +26,7 @@ _PRIVATE_HTML = (
 
 
 def banner():
+    """Under the router (rmti_nav) the persistent bottom bar is the only notice, so this stays quiet."""
+    if st.session_state.get("rmti_nav"):
+        return
     st.markdown(_DEMO_HTML if DEMO else _PRIVATE_HTML, unsafe_allow_html=True)

@@ -118,25 +118,33 @@ $('pp').onclick=()=>{pause=!pause;$('pp').textContent=pause?'Play':'Pause';if(!p
 function loop(n){const vp=snd&&vOK&&starts&&voice&&!voice.paused&&!voice.ended;if(music&&snd){const tg=vp?vol*.3:vol;music.volume=Math.max(0,Math.min(1,music.volume+(tg-music.volume)*.06));if(music.duration&&!seeking){tm.textContent=fmt(music.currentTime)+' / '+fmt(music.duration);sk.value=music.currentTime/music.duration*1000}}const live=snd&&!pause;beat=live?.5+.5*Math.sin(n/520):0;eq.forEach((e,i)=>{e.style.height=(live?16+84*Math.abs(Math.sin(n/260+i*.7)*Math.cos(n/410+i*1.3)):10)+'%'});if(vp){const t=voice.currentTime;let i=0;for(let j=0;j<8;j++)if(t>=starts[j])i=j;if(i!==s)setScene(i);const e=i<7?starts[i+1]:voice.duration;P=Math.max(0,Math.min(1,(t-starts[i])/Math.max(.5,e-starts[i])))}else if(!pause){P=Math.min(1,(n-t0)/dur());if(P>=1)go(s+1)}const c=S[s];cap.textContent=c.c(P);if(c.u)c.u(P);bar.style.width=P*100+'%';draw(P);requestAnimationFrame(loop)}
 
 const WORDS={"liver": [35, 38, 61, 29, 31, 39, 29, 27], "lung": [35, 36, 47, 26, 31, 39, 29, 27], "breast": [35, 39, 47, 28, 31, 39, 29, 27]},SB='/app/static/';
-let voice=null,music=null,snd=false,vOK=false,starts=null,tj=null,vol=.7,started=false,seeking=false,beat=0;
+let voice=null,music=null,viaHost=false,snd=false,vOK=false,starts=null,tj=null,vol=.7,started=false,seeking=false,beat=0;
 const mp=$('mp'),volEl=$('vol'),sk=$('sk'),tm=$('tm'),eqz=$('eqz');
 for(let i=0;i<28;i++)eqz.appendChild(document.createElement('i'));
 const eq=[...eqz.children];
 function est(dur){const w=WORDS[k],tot=w.reduce((a,b)=>a+b,0);let c=0;return w.map(x=>{const t=(dur-.3)*c/tot;c+=x;return t})}
 function fmt(t){t=Math.max(0,t|0);return (t/60|0)+':'+String(t%60).padStart(2,'0')}
-function getMusic(){if(!music){music=new Audio(SB+'concerto_santa_lucia.mp3');music.loop=true;music.preload='auto';music.volume=vol;
- music.onerror=()=>{snd=false;mp.classList.remove('on');mp.classList.add('hot');mp.textContent='Music file not found: static/concerto_santa_lucia.mp3'}}return music}
+function hostAudio(){try{const d=window.parent&&window.parent!==window?window.parent.document:null;if(!d)return null;
+ return d.querySelector('[data-testid="stAudio"] audio')||d.querySelector('audio')}catch(e){return null}}
+function note(t){const el=document.querySelector('#mus small');if(el)el.textContent=t}
+function getMusic(){if(music)return music;
+ const h=hostAudio();
+ if(h){music=h;viaHost=true}else{music=new Audio(SB+'concerto_santa_lucia.mp3');music.preload='auto'}
+ music.loop=true;music.volume=vol;
+ music.onerror=()=>{snd=false;setBtn();note('The music file could not be loaded. Use the player under the animation, or reload the page.')};
+ return music}
 function setBtn(){mp.innerHTML=snd?'&#10074;&#10074; Pause the music':'&#9654; Play the Concerto';mp.classList.toggle('hot',!snd);mp.classList.toggle('on',snd)}
 function voiceStop(){vOK=false;starts=null;if(voice){voice.pause();voice=null}}
 function voiceStart(){voice=new Audio(SB+'narration_'+k+'.mp3');vOK=false;starts=null;tj=null;
  voice.onloadedmetadata=()=>{vOK=true;starts=(tj&&tj.length===8)?tj:est(voice.duration)};voice.onerror=()=>{vOK=false};
  fetch(SB+'timing_'+k+'.json').then(r=>r.ok?r.json():null).then(j=>{tj=j;if(vOK&&j&&j.length===8)starts=j}).catch(()=>{});voice.play().catch(()=>{})}
 function sndOff(){snd=false;voiceStop();if(music)music.pause();setBtn()}
-function sndOn(){snd=true;setBtn();const m=getMusic();m.volume=vol;m.play().catch(()=>{snd=false;setBtn()});
+function sndOn(){snd=true;setBtn();const m=getMusic();m.volume=vol;const pr=m.play();if(pr&&pr.catch)pr.catch(()=>{snd=false;setBtn();note('Your browser blocked the music. Press play on the player under the animation.')});
  if(!started){started=true;pause=false;$('pp').textContent='Pause';go(0)}voiceStart()}
 mp.onclick=()=>{snd?sndOff():sndOn()};
 volEl.oninput=()=>{vol=+volEl.value;if(music&&!(voice&&vOK))music.volume=vol};
 sk.onpointerdown=()=>{seeking=true};sk.onpointerup=()=>{seeking=false};
 sk.oninput=()=>{if(music&&music.duration){music.currentTime=sk.value/1000*music.duration;tm.textContent=fmt(music.currentTime)+' / '+fmt(music.duration)}};
+{const h0=hostAudio();if(h0&&!h0.paused){music=h0;viaHost=true;snd=true;started=true}}
 setBtn();go(0);requestAnimationFrame(loop);
 </script></body></html>
