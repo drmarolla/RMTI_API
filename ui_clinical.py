@@ -15,12 +15,12 @@ import html as _h
 import re
 import urllib.parse
 
-RED, RED_D, BLUE_A, BLUE_D, BLUE_L, SKY, INK = "#d9262c", "#b81e24", "#1d6fd0", "#0f4fa8", "#6cb4f5", "#eaf4ff", "#0b2545"
+RED, RED_D, BLUE_A, BLUE_D, BLUE_L, SKY, INK = "#d9262c", "#b81e24", "#1d6fd0", "#0f4fa8", "#6cb4f5", "#dff0ff", "#0b2545"
 
 # Fixed RMTI tier bands (the same for every case): R < 0.05, 0.15, 0.35, 0.60, then 1.0.
 EDGES = (0.05, 0.15, 0.35, 0.60)
 TIER_NAME = ["Low", "Moderate", "High", "Severe", "Critical"]
-TIER_BG = ["#eaf4ff", "#b9d9f7", "#f3c0c2", "#d9262c", "#8f1519"]
+TIER_BG = ["#dff0ff", "#9fd5ff", "#ff9ca1", "#d9262c", "#7a0f14"]
 TIER_FG = [INK, INK, INK, "#ffffff", "#ffffff"]
 RHO_CEILING = 0.95
 

@@ -5,8 +5,8 @@ import streamlit as st
 
 INK, MUTED, LINE, PANEL, PRIMARY = "#0B2545", "#3F5F86", "#B9D9F7", "#EAF4FF", "#D9262C"
 # tier -> (accent for borders and bars, >= 3:1 on white; tint; text on the tint, >= 4.5:1). Same hue family as app.py.py, darkened where it failed.
-TIER = {1: ("#6CB4F5", "#EAF4FF", "#0B2545"), 2: ("#1D6FD0", "#D3E8FB", "#0B2545"), 3: ("#FF6B73", "#FFE3E4", "#5A0F14"),
-        4: ("#D9262C", "#FFD1D3", "#5A0F14"), 5: ("#8F1519", "#FFB9BC", "#3D0709")}   # light blue -> blue -> light red -> red -> deep red
+TIER = {1: ("#6CB4F5", "#DFF0FF", "#0B2545"), 2: ("#1D6FD0", "#9FD5FF", "#0B2545"), 3: ("#FF6B73", "#FF9CA1", "#0B2545"),
+        4: ("#D9262C", "#D9262C", "#FFFFFF"), 5: ("#8F1519", "#7A0F14", "#FFFFFF")}   # flat solid fills: light blue -> azure -> light red -> red -> deep red
 TIER_NAMES = ["1 Low", "2 Moderate", "3 High", "4 Severe", "5 Critical"]
 TIER_ACCENTS = [TIER[i][0] for i in range(1, 6)]
 STRIP = ("Research prototype. Not a medical device and not for patient-care decisions. "

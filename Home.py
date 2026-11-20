@@ -78,10 +78,12 @@ st.markdown(f'<div class="rm-card soft"><b>Cite:</b> Marolla C. <i>Oncoclastics:
             f'<a href="https://doi.org/{DOI}">doi:{DOI}</a></div>', unsafe_allow_html=True)
 
 st.markdown('<a id="trajectory"></a>', unsafe_allow_html=True)
+ui.section("Case studies", "From tumor events to trajectory", "Pick an organ, press play and follow one patient from Stage 1 to Stage 4. The Concerto plays with one click.")
 _anim = next((c for c in (ROOT / "animation" / "index.html", ROOT / "index.html")
               if c.exists() and "tumor events to trajectory" in c.read_text(encoding="utf-8", errors="ignore")), None)
 if _anim:
-    components.html(_anim.read_text(encoding="utf-8").replace("</body>", FIT, 1), height=1100, scrolling=True)
+    _page = _anim.read_text(encoding="utf-8").replace("</head>", "<style>.eb,h1,.sub{display:none}</style></head>", 1)   # the section heading above already says this
+    components.html(_page.replace("</body>", FIT, 1), height=1000, scrolling=True)
     # The music plays through Streamlit's own audio element (reliable on Streamlit Cloud, unlike files in static/).
     # The red Play button inside the animation controls this element; the native controls stay as a fallback.
     _mp3 = ROOT / "static" / "concerto_santa_lucia.mp3"
@@ -114,8 +116,11 @@ if _vids:
         st.warning("This video file is only a few KB. It is probably a Git LFS pointer, not the real video. Upload the MP4 again without LFS.")
     _subs = next((str(c) for e in (".vtt", ".srt") for c in (_vid.with_suffix(e), ROOT / "media" / (_vid.stem + e)) if c.exists()), None)
     try:
-        st.video(str(_vid), subtitles=_subs) if _subs else st.video(str(_vid))
-    except TypeError:
+        if _subs:
+            st.video(str(_vid), subtitles=_subs)
+        else:
+            st.video(str(_vid))
+    except TypeError:                      # older Streamlit without the subtitles option
         st.video(str(_vid))
 
 st.header("Developers")
