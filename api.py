@@ -3,7 +3,7 @@ Run: uvicorn api:app --port 8000   Portal: /   Reference: /docs   Widget: /widge
 from typing import List, Optional, Literal
 import hmac, os
 from fastapi import Request, FastAPI, HTTPException, Depends, Header, Security
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 import service as S
 import registry as R
 import portal
@@ -33,6 +33,9 @@ U = Field(..., ge=0, le=1)
 
 
 class SnapshotIn(BaseModel):
+    """Strict input: L, E and V must lie in [0, 1], rho_now and rho_after in [0, 1), C in 1..5, and unknown fields are rejected (HTTP 422)."""
+    model_config = ConfigDict(extra="forbid", json_schema_extra={"examples": [
+        {"domain": "oncoclastics", "site": "hcc", "N": 100000, "L": 0.30, "E": 0.65, "V": 0.55, "rho_now": 0.20, "rho_after": 0.50, "C": 5}]})
     domain: Domain = "hcc"
     site: Optional[Site] = Field(None, description="Cancer-site module when domain is oncoclastics (default hcc)")
     N: float = Field(100_000, gt=0, description="At-risk population / cohort size")
@@ -54,6 +57,7 @@ class TrajectoryIn(BaseModel):
 
 
 class CohortRow(SnapshotIn):
+    model_config = ConfigDict(extra="ignore")   # uploaded CSVs may carry extra columns; the five levers are still range-checked
     name: str
 
 

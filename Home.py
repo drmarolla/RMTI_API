@@ -22,7 +22,6 @@ ui.hero_lp(
     "Oncoclastics applies hazard\u2013exposure\u2013vulnerability\u2013resilience assessment from disaster-risk reduction to cancer: "
     "one equation, four levers, real case studies in liver, lung and breast oncology, floods and heat.",
     ("Explore the tools", "#pathways"), ("Watch the case study", "#trajectory"))
-ui.governance_bar()
 ui.stats([(4, "levers in one equation", "", ui.RED), (3, "cancer sites: liver, lung, breast", "", ui.BLUE_A),
           (2, "domains: oncology and disaster science", "", ui.RED_L), (3, "narrated video walkthroughs", "", ui.BLUE_L)])
 
@@ -83,6 +82,15 @@ _anim = next((c for c in (ROOT / "animation" / "index.html", ROOT / "index.html"
               if c.exists() and "tumor events to trajectory" in c.read_text(encoding="utf-8", errors="ignore")), None)
 if _anim:
     components.html(_anim.read_text(encoding="utf-8").replace("</body>", FIT, 1), height=1100, scrolling=True)
+    # The music plays through Streamlit's own audio element (reliable on Streamlit Cloud, unlike files in static/).
+    # The red Play button inside the animation controls this element; the native controls stay as a fallback.
+    _mp3 = ROOT / "static" / "concerto_santa_lucia.mp3"
+    if _mp3.exists():
+        st.caption("Music player: if the red Play button inside the animation does not start the music, press play here.")
+        try:
+            st.audio(str(_mp3), format="audio/mpeg", loop=True)
+        except TypeError:                  # older Streamlit without the loop option
+            st.audio(str(_mp3), format="audio/mpeg")
     st.caption("Liver (Lau-Min 2025), lung (Sabakhtarishvili 2025) and breast (O\u2019Shaughnessy 2026) cohorts, followed from Stage 1 to Stage 4 "
                "and scored with RMTI. Music: Concerto di Santa Lucia by Dr. Cesar Marolla. Research prototype; mappings are illustrative.")
 else:

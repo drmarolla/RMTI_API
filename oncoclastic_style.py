@@ -64,9 +64,6 @@ label,[data-testid="stWidgetLabel"] p{color:%INK%;font-weight:600}
 [data-testid="stSidebarNavLink"]:hover{background:%SKY2%;border-color:%LINE%;transform:translateX(3px)}
 [data-testid="stSidebarNavLink"][aria-current="page"]{background:linear-gradient(90deg,%RED%,%RED_L%);color:#fff;font-weight:700;box-shadow:0 8px 18px rgba(217,38,44,.30)}
 [data-testid="stSidebarNavLink"][aria-current="page"] span{color:#fff}
-/* first menu entry is the landing file (app.py.py): show a friendly label instead of "app.py" */
-[data-testid="stSidebarNav"] li:first-child [data-testid="stSidebarNavLink"] span:last-child{font-size:0}
-[data-testid="stSidebarNav"] li:first-child [data-testid="stSidebarNavLink"] span:last-child::after{content:"Start here";font-size:1rem}
 [data-testid="stSidebarNavSeparator"],[data-testid="stNavSectionHeader"]{color:%BLUE_A%;font-weight:700;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;margin-top:.8rem}
 
 /* ---------- widgets ---------- */
@@ -134,6 +131,13 @@ th,td{border:1px solid %LINE%;padding:.6rem .75rem;vertical-align:top}
 @keyframes rmbar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.68)}}
 
 /* ---------- landing hero (copy LEFT, visual RIGHT, never overlapping) ---------- */
+.rm-orb{width:min(100%,460px);margin:0 auto}
+.rm-orb svg{display:block;width:100%;height:auto;overflow:visible;shape-rendering:geometricPrecision;text-rendering:geometricPrecision}
+.rm-orb .spin{transform-origin:230px 230px;animation:rmspin 46s linear infinite}
+.rm-orb .spin.rev{animation-direction:reverse;animation-duration:30s}
+.rm-orb .cs{transform-box:fill-box;transform-origin:center;animation:rmspin 46s linear infinite reverse}
+.rm-orb .core{transform-box:fill-box;transform-origin:center;animation:rmpls 3.6s ease-in-out infinite}
+.rm-orb text{font-family:'Outfit',Inter,system-ui,sans-serif;paint-order:normal}
 .rm-lp{position:relative;overflow:hidden;border-radius:30px;border:1.5px solid %LINE%;padding:2.8rem 2.8rem;background:linear-gradient(135deg,#fff 0,%SKY% 55%,%SKY2% 100%);animation:rmrise .7s ease both}
 .rm-lp:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 52%,rgba(255,255,255,.85) 52%,rgba(255,255,255,.85) 70%,transparent 70%);pointer-events:none}
 .rm-lp:after{content:"";position:absolute;right:-90px;bottom:-110px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(217,38,44,.20),transparent 70%);pointer-events:none}
@@ -145,19 +149,6 @@ th,td{border:1px solid %LINE%;padding:.6rem .75rem;vertical-align:top}
 .rm-lp .row{display:flex;gap:.8rem;margin-top:1.5rem;flex-wrap:wrap}
 @media(max-width:900px){.rm-lp .grid{grid-template-columns:1fr}.rm-lp{padding:1.8rem 1.3rem}}
 /* orbit visual */
-.rm-orb{position:relative;width:min(100%,430px);aspect-ratio:1;margin:0 auto 3.2rem}
-.rm-orb .ring{position:absolute;inset:7%;border:2.5px dashed %BLUE_L%;border-radius:50%;animation:rmspin 46s linear infinite}
-.rm-orb .ring.b{inset:27%;border-color:%RED_L%;animation-direction:reverse;animation-duration:30s}
-.rm-orb .sat{position:absolute;inset:7%;animation:rmspin 46s linear infinite}
-.rm-orb .sat b{position:absolute;width:25%;aspect-ratio:1;margin:-12.5% 0 0 -12.5%;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 clamp(1.2rem,2.6vw,1.8rem) 'Outfit',sans-serif;box-shadow:0 12px 24px rgba(11,37,69,.22);animation:rmspin 46s linear infinite reverse}
-.rm-orb .sat b small{display:block;font:700 .46rem Inter,system-ui,sans-serif;letter-spacing:.03em;margin-top:-.15rem}
-.rm-orb .sat b:nth-child(1){left:50%;top:0;background:%BLUE_A%}
-.rm-orb .sat b:nth-child(2){left:100%;top:50%;background:%RED_L%}
-.rm-orb .sat b:nth-child(3){left:50%;top:100%;background:%BLUE_D%}
-.rm-orb .sat b:nth-child(4){left:0;top:50%;background:%BLUE_L%}
-.rm-orb .core{position:absolute;inset:36%;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 clamp(2.2rem,6vw,3.8rem) 'Outfit',sans-serif;background:radial-gradient(circle at 30% 28%,%RED_L%,%RED% 55%,%RED_D%);box-shadow:0 0 0 12px rgba(217,38,44,.14),0 0 0 28px rgba(217,38,44,.08),0 18px 40px rgba(217,38,44,.35);animation:rmpls 3.6s ease-in-out infinite}
-.rm-orb .eq{position:absolute;left:50%;bottom:-16%;transform:translateX(-50%);background:#fff;border:2px solid %RED%;color:%INK%;border-radius:999px;padding:.35rem 1.1rem;font:600 clamp(.85rem,1.6vw,1.05rem) 'Outfit',Inter,system-ui,sans-serif;white-space:nowrap;box-shadow:0 10px 24px rgba(11,37,69,.16)}
-.rm-orb .eq em{font-style:normal;color:%RED%}
 @keyframes rmspin{to{transform:rotate(360deg)}}
 @keyframes rmpls{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @keyframes rmrise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -212,6 +203,48 @@ th,td{border:1px solid %LINE%;padding:.6rem .75rem;vertical-align:top}
 .rm-eq .fm{font-family:'Outfit',Inter,system-ui,sans-serif;font-weight:300;font-size:clamp(1.9rem,4.2vw,3rem);letter-spacing:.02em;color:#fff}.rm-eq .fm em{font-style:normal;font-weight:700;color:#fff;text-shadow:0 0 18px rgba(255,255,255,.55)}
 .rm-eq .lg{display:flex;gap:1.3rem;flex-wrap:wrap;margin-top:.7rem;font-size:.92rem;color:#fff}
 .rm-foot{margin-top:2.5rem;background:linear-gradient(90deg,%RED%,%BLUE_A%);color:#fff;padding:1.3rem 2rem;border-radius:20px;font-size:.9rem;text-align:center}
+/* ---------- never truncate text in Streamlit metrics ("2 Modera..." bug) ---------- */
+[data-testid="stMetric"] *{white-space:normal !important;overflow:visible !important;text-overflow:clip !important;overflow-wrap:anywhere}
+[data-testid="stMetricValue"]{font-size:clamp(1.35rem,2.1vw,2rem);line-height:1.2}
+
+/* ---------- clinical KPI cards ---------- */
+.rm-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin:.6rem 0 1.2rem}
+.rm-kpi{background:#fff;border:1.5px solid %LINE%;border-top:6px solid var(--c,%RED%);border-radius:16px;padding:.9rem 1.1rem;display:flex;flex-direction:column;gap:.35rem;min-width:0;box-shadow:0 6px 16px rgba(11,37,69,.06)}
+.rm-kpi .t{font:700 .76rem Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:%MUTED%}
+.rm-kpi .v{font:600 clamp(1.5rem,2.4vw,2.1rem)/1.15 'Outfit',Inter,system-ui,sans-serif;color:%INK%;overflow-wrap:anywhere}
+.rm-kpi .d{font-size:.9rem;font-weight:600;color:var(--dc,%BLUE_A%)}
+.rm-kpi .s{font-size:.85rem;color:%MUTED%;line-height:1.4}
+.rm-tc{display:inline-block;padding:.22rem .7rem;border-radius:999px;font-weight:700;font-size:.92rem;line-height:1.25}
+.rm-tier-pair{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem}
+.rm-tier-pair .ar{font-weight:700;color:%INK%}
+
+/* ---------- clinical interpretation box ---------- */
+.rm-interp{background:#fff;border:1.5px solid %LINE%;border-left:8px solid %BLUE_A%;border-radius:16px;padding:1.1rem 1.4rem;margin:.6rem 0 1.2rem;box-shadow:0 8px 20px rgba(29,111,208,.08)}
+.rm-interp h4{margin:0 0 .5rem;font:600 1.15rem 'Outfit',Inter,system-ui,sans-serif;color:%INK%}
+.rm-interp p{margin:.4rem 0;font-size:.98rem;line-height:1.6;color:%BODY%}
+.rm-interp b.n{color:%RED%}
+.rm-interp .cav{font-size:.86rem;color:%MUTED%;border-top:1px dashed %LINE%;padding-top:.5rem;margin-top:.7rem}
+
+/* ---------- evidence list ---------- */
+.rm-refs{margin:.3rem 0 .8rem;padding:0;list-style:none}
+.rm-refs li{padding:.65rem .85rem;border:1.5px solid %LINE%;border-radius:12px;margin:.45rem 0;font-size:.93rem;line-height:1.5;background:#fff}
+.rm-refs .stt{display:inline-block;background:%SKY%;border:1px solid %LINE%;border-radius:999px;padding:0 .55rem;font-size:.7rem;font-weight:700;color:%BLUE_D%;margin-right:.4rem;letter-spacing:.04em;text-transform:uppercase}
+.rm-refs a{font-weight:600}
+
+/* ---------- one persistent disclaimer bar (replaces the pink strips and red boxes) ---------- */
+.rm-bar{position:fixed;left:0;right:0;bottom:0;z-index:100;background:%SKY%;border-top:3px solid %RED%;color:%INK%;font-size:.8rem;line-height:1.35;padding:.4rem 1rem;display:flex;flex-wrap:wrap;gap:.2rem .7rem;align-items:center;justify-content:center;text-align:center}
+.rm-bar .tg{background:%RED%;color:#fff;padding:.12rem .6rem;border-radius:999px;letter-spacing:.08em;font-size:.7rem;font-weight:700;white-space:nowrap}
+.stApp:has(.rm-bar) [data-testid="stMainBlockContainer"]{padding-bottom:6rem}
+.stApp:has(.rm-bar) .rm-gov,.stApp:has(.rm-bar) .rm-strip{display:none !important}
+.stApp:has([data-testid="stSidebar"][aria-expanded="true"]) .rm-bar{left:21rem}
+@media (max-width:991px){.stApp:has([data-testid="stSidebar"][aria-expanded="true"]) .rm-bar{left:0}}
+/* persistent top-right call to action (container key rm_cta) */
+.st-key-rm_cta{position:fixed;top:.55rem;right:4.6rem;z-index:1000002;width:auto !important}
+.st-key-rm_cta button{background:%RED% !important;color:#fff !important;border:0 !important;border-radius:999px !important;font-weight:700 !important;padding:.3rem 1.1rem !important;min-height:2.2rem;box-shadow:0 6px 16px rgba(217,38,44,.35)}
+.st-key-rm_cta button:hover{background:%RED_D% !important}
+.st-key-rm_cta button p{color:#fff !important;font-size:.88rem}
+@media (max-width:640px){.st-key-rm_cta{right:3.2rem}.st-key-rm_cta button{padding:.25rem .7rem !important}}
+@media (max-width:768px){.rm-bar{font-size:.72rem}}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.rm-stat .num{--n:var(--to)}}
 @media (max-width:768px){.block-container,[data-testid="stMainBlockContainer"]{padding-left:.9rem;padding-right:.9rem}}
 footer{visibility:hidden}
@@ -302,12 +335,51 @@ def topbar(links, cta_label="Request API access", cta_href="https://orcid.org/00
                 f'<a class="rm-btn r" href="{_e(cta_href)}" target="_blank">{_e(cta_label)}</a></div>', unsafe_allow_html=True)
 
 
+def _orb_svg() -> str:
+    """Crisp vector orbit: L, E, V, rho circles around R. Labels are real SVG text (sharp at any zoom) and stay upright while the ring turns."""
+    sats = [("L", "LIKELIHOOD", 230, 70, BLUE_A), ("E", "EXPOSURE", 390, 230, RED_L),
+            ("V", "VULNERABILITY", 230, 390, BLUE_D), ("ρ", "RESILIENCE", 70, 230, "#2f8fe8")]
+    g = ""
+    for sym, sub, x, y, col in sats:
+        g += (f'<g class="cs"><circle cx="{x}" cy="{y}" r="54" fill="{col}"/>'
+              f'<circle cx="{x}" cy="{y}" r="54" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>'
+              f'<text x="{x}" y="{y+4}" text-anchor="middle" fill="#fff" font-size="34" font-weight="700">{sym}</text>'
+              f'<text x="{x}" y="{y+24}" text-anchor="middle" fill="#fff" font-size="10.5" font-weight="800" '
+              f'letter-spacing=".4">{sub}</text></g>')
+    return (f'<div class="rm-orb"><svg viewBox="0 0 460 520" role="img" aria-label="R equals L times E times V times one minus rho">'
+            f'<defs><radialGradient id="rmcore" cx=".3" cy=".28" r=".85"><stop offset="0" stop-color="{RED_L}"/>'
+            f'<stop offset=".55" stop-color="{RED}"/><stop offset="1" stop-color="{RED_D}"/></radialGradient></defs>'
+            f'<circle class="spin" cx="230" cy="230" r="160" fill="none" stroke="{BLUE_L}" stroke-width="3" stroke-dasharray="9 9"/>'
+            f'<circle class="spin rev" cx="230" cy="230" r="100" fill="none" stroke="{RED_L}" stroke-width="3" stroke-dasharray="6 8"/>'
+            f'<g class="spin">{g}</g>'
+            f'<g class="core"><circle cx="230" cy="230" r="86" fill="{RED}" fill-opacity=".10"/>'
+            f'<circle cx="230" cy="230" r="70" fill="{RED}" fill-opacity=".16"/>'
+            f'<circle cx="230" cy="230" r="58" fill="url(#rmcore)"/>'
+            f'<text x="230" y="246" text-anchor="middle" fill="#fff" font-size="52" font-weight="700">R</text></g>'
+            f'<rect x="40" y="474" width="380" height="42" rx="21" fill="#fff" stroke="{RED}" stroke-width="2.5"/>'
+            f'<text x="230" y="502" text-anchor="middle" fill="{INK}" font-size="21" font-weight="600">R = L · E · V · (1 − '
+            f'<tspan fill="{RED}">ρ</tspan>)</text></svg></div>')
+
+
+def disclaimer_bar() -> None:
+    """The one persistent notice, fixed at the bottom of every page. Same wording in demo and private mode (the mode is named, not alarmed)."""
+    private = False
+    try:
+        import demo_mode
+        private = not demo_mode.DEMO
+    except Exception:  # noqa: BLE001
+        pass
+    mode = "PRIVATE INSTANCE" if private else "PUBLIC DEMO"
+    tail = "Approved, pseudonymous data only." if private else "Synthetic or published aggregate values only. Do not enter patient data."
+    st.markdown(f'<div class="rm-bar" role="note"><span class="tg">{mode}</span>'
+                f'<span><b>Research prototype.</b> {tail} Not validated, not a medical device, not for patient-care or emergency decisions.</span></div>',
+                unsafe_allow_html=True)
+
+
 def hero_lp(eyebrow, title_html, lead, primary, secondary=None) -> None:
     """primary / secondary = (label, href). Copy on the left, animated orbit of L, E, V, rho on the right: nothing overlaps."""
     b2 = f'<a class="rm-btn o" href="{_e(secondary[1])}" target="_self">{_e(secondary[0])}</a>' if secondary else ""
-    orb = ('<div class="rm-orb"><div class="ring"></div><div class="ring b"></div>'
-           '<div class="sat"><b>L<small>LIKELIHOOD</small></b><b>E<small>EXPOSURE</small></b><b>V<small>VULNERABLE</small></b><b>ρ<small>RESILIENCE</small></b></div>'
-           '<div class="core">R</div><div class="eq">R = L · E · V · (1 − <em>ρ</em>)</div></div>')
+    orb = _orb_svg()
     st.markdown(f'<div class="rm-lp"><div class="grid"><div><div class="rm-kicker">{_e(eyebrow)}</div><h1>{title_html}</h1>'
                 f'<p class="lead">{_e(lead)}</p><div class="row"><a class="rm-btn r" href="{_e(primary[1])}" target="_self">{_e(primary[0])}</a>{b2}</div></div>'
                 f'<div>{orb}</div></div></div>', unsafe_allow_html=True)
