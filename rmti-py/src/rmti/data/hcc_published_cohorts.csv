@@ -1,0 +1,7 @@
+name,N,L,E_sel,V,rho_now,rho_after,C
+Untreated HBV,100000,0.9,0.7,0.55,0.1,0.45,5
+Active viral cirrhosis,100000,0.55,0.7,0.53,0.5,0.65,5
+Alcohol cirrhosis,100000,0.3,0.65,0.6,0.2,0.5,5
+Cured-HCV cirrhosis,100000,0.25,0.6,0.48,0.2,0.55,5
+Suppressed-HBV,100000,0.2,0.55,0.45,0.2,0.55,5
+NAFLD cirrhosis,100000,0.15,0.6,0.53,0.2,0.5,5

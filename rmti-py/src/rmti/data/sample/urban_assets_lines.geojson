@@ -1,0 +1,25 @@
+{
+"type": "FeatureCollection",
+"name": "urban_assets_lines",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Transit line 1", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.464 ], [ 3.395, 6.464 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 2", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.474 ], [ 3.395, 6.477 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 3", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.484 ], [ 3.395, 6.481 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 4", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.494 ], [ 3.395, 6.494 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 5", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.504 ], [ 3.395, 6.507 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 6", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.514 ], [ 3.395, 6.511 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 7", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.524 ], [ 3.395, 6.524 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 8", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.534 ], [ 3.395, 6.537 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 9", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.305, 6.544 ], [ 3.395, 6.541 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 10", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.31, 6.455 ], [ 3.314, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 11", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.32, 6.455 ], [ 3.324, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 12", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.33, 6.455 ], [ 3.334, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 13", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.34, 6.455 ], [ 3.344, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 14", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.35, 6.455 ], [ 3.354, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 15", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.36, 6.455 ], [ 3.364, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 16", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.37, 6.455 ], [ 3.374, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 17", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.38, 6.455 ], [ 3.384, 6.545 ] ] } },
+{ "type": "Feature", "properties": { "name": "Transit line 18", "asset": "transit" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.39, 6.455 ], [ 3.394, 6.545 ] ] } }
+]
+}

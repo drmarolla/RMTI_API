@@ -1,0 +1,3 @@
+# Used by Streamlit Community Cloud (reads this file at the repo root).
+# Installs the library from this repo with the app extras (geo + maps + streamlit).
+.[app]
