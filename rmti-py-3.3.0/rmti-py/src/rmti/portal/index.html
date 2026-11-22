@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RMTI API Documentation</title>
+<meta name="description" content="Developer documentation for the Risk Mechanism Theory Index API.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="notice" role="note">Research prototype. Not validated against outcomes. Not a medical device. Do not send protected health information.</div>
+<header class="top">
+  <div class="brand"><span class="mark" aria-hidden="true"></span><a href="#/overview">RMTI API</a><span class="tag">v1</span></div>
+  <nav class="toplinks" aria-label="Resources">
+    <a href="#/reference">API reference</a>
+    <a href="#/methodology">Methodology</a>
+    <a href="/redoc" rel="noopener">ReDoc</a>
+    <a href="/openapi.json">OpenAPI 3.1 (JSON)</a>
+  </nav>
+  <div class="status" id="status" role="status" aria-live="polite">checking service…</div>
+</header>
+<div class="layout">
+  <aside class="side" aria-label="Documentation navigation">
+    <details class="conn" id="conn" open>
+      <summary>Connection</summary>
+      <label for="base">Base URL</label>
+      <input id="base" type="url" autocomplete="off" spellcheck="false">
+      <label for="key">API key <span class="hint">(kept in memory only)</span></label>
+      <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="rmti_…">
+    </details>
+    <nav id="nav"></nav>
+  </aside>
+  <main id="main" tabindex="-1"><p class="muted">Loading documentation…</p></main>
+</div>
+<script src="portal.js" defer></script>
+</body>
+</html>

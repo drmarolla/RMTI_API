@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "hcc_centers",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Hepatology centre A" }, "geometry": { "type": "Point", "coordinates": [ 36.8, -1.35 ] } },
+{ "type": "Feature", "properties": { "name": "Regional clinic B" }, "geometry": { "type": "Point", "coordinates": [ 37.15, -1.15 ] } },
+{ "type": "Feature", "properties": { "name": "District hospital C" }, "geometry": { "type": "Point", "coordinates": [ 36.9, -1.05 ] } }
+]
+}
