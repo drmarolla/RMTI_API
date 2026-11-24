@@ -1,0 +1,189 @@
+{
+ "video": "liver",
+ "seconds": 151.6,
+ "sections": [
+  {
+   "name": "open",
+   "start": 0.0,
+   "sentences": [
+    {
+     "text": "Hello, everyone.",
+     "start": 0.0,
+     "end": 2.4
+    },
+    {
+     "text": "I am Dr. Cesar Marolla, Instructor at Harvard University Division of Continuing Education.",
+     "start": 2.4,
+     "end": 8.4
+    },
+    {
+     "text": "I developed the Risk Mechanism Theory Index, RMTI, to turn what we can measure into one score that I can follow over time.",
+     "start": 8.4,
+     "end": 18.4
+    },
+    {
+     "text": "Here I apply it to liver cancer.",
+     "start": 18.4,
+     "end": 22.0
+    }
+   ]
+  },
+  {
+   "name": "study",
+   "start": 22.5,
+   "sentences": [
+    {
+     "text": "I start with a published case study: Lau-Min and colleagues, JAMA Network Open, 2025.",
+     "start": 22.5,
+     "end": 28.9
+    },
+    {
+     "text": "Among 4,198 patients on systemic therapy, median survival was 8.1 months, and only 20.7 percent reached second-line treatment.",
+     "start": 28.9,
+     "end": 36.9
+    }
+   ]
+  },
+  {
+   "name": "stages",
+   "start": 37.4,
+   "sentences": [
+    {
+     "text": "I follow the tumor through four stages.",
+     "start": 37.4,
+     "end": 41.0
+    },
+    {
+     "text": "Stage one: one small tumor, inside the liver, no vessel invasion. Surgery, ablation or transplant can work.",
+     "start": 41.0,
+     "end": 48.6
+    },
+    {
+     "text": "Stage two: the tumor reaches blood vessels, or several small tumors form, still within the liver.",
+     "start": 48.6,
+     "end": 55.8
+    },
+    {
+     "text": "Stage three: larger or multiple tumors, major vein invasion, and possibly regional lymph nodes.",
+     "start": 55.8,
+     "end": 62.2
+    },
+    {
+     "text": "Stage four: cells reach distant sites, such as the lungs and bones. Treatment turns systemic.",
+     "start": 62.2,
+     "end": 69.0
+    }
+   ]
+  },
+  {
+   "name": "assess",
+   "start": 69.5,
+   "sentences": [
+    {
+     "text": "Now I assess the data.",
+     "start": 69.5,
+     "end": 72.3
+    },
+    {
+     "text": "I use liver function, by ALBI grade, for vulnerability; concomitant liver disease for exposure; and second-line delivery, only 20.7 percent, for resilience.",
+     "start": 72.3,
+     "end": 81.9
+    },
+    {
+     "text": "This mapping is illustrative.",
+     "start": 81.9,
+     "end": 84.3
+    }
+   ]
+  },
+  {
+   "name": "formula",
+   "start": 84.8,
+   "sentences": [
+    {
+     "text": "Then I calculate.",
+     "start": 84.8,
+     "end": 87.2
+    },
+    {
+     "text": "R equals L times E times V times one minus rho.",
+     "start": 87.2,
+     "end": 92.4
+    },
+    {
+     "text": "With these illustrative inputs, R is 0.081, band two of the fixed five-band scale.",
+     "start": 92.4,
+     "end": 98.8
+    },
+    {
+     "text": "Expected Annual Loss adds consequences.",
+     "start": 98.8,
+     "end": 101.6
+    }
+   ]
+  },
+  {
+   "name": "traj",
+   "start": 102.1,
+   "sentences": [
+    {
+     "text": "I follow the trajectory.",
+     "start": 102.1,
+     "end": 104.5
+    },
+    {
+     "text": "At each review cycle I update vulnerability and resilience.",
+     "start": 104.5,
+     "end": 108.9
+    },
+    {
+     "text": "In this synthetic example, as delivery improves, R falls from 0.081 to 0.025, band two to band one.",
+     "start": 108.9,
+     "end": 116.9
+    },
+    {
+     "text": "It is an illustration, not a prediction.",
+     "start": 116.9,
+     "end": 120.5
+    }
+   ]
+  },
+  {
+   "name": "what",
+   "start": 121.0,
+   "sentences": [
+    {
+     "text": "With RMTI, I quantify risk as one score, assess it on fixed bands, and track vulnerability and resilience across cycles.",
+     "start": 121.0,
+     "end": 129.8
+    },
+    {
+     "text": "Treatment decisions stay with clinicians.",
+     "start": 129.8,
+     "end": 132.6
+    }
+   ]
+  },
+  {
+   "name": "close",
+   "start": 133.1,
+   "sentences": [
+    {
+     "text": "RMTI is a research prototype: uncalibrated, with synthetic examples, and not a medical device.",
+     "start": 133.1,
+     "end": 139.5
+    },
+    {
+     "text": "I am testing whether trajectory adds information beyond the current level.",
+     "start": 139.5,
+     "end": 144.7
+    },
+    {
+     "text": "Thank you for watching.",
+     "start": 144.7,
+     "end": 147.1
+    }
+   ]
+  }
+ ]
+}

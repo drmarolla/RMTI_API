@@ -1,0 +1,189 @@
+{
+ "video": "breast",
+ "seconds": 152.0,
+ "sections": [
+  {
+   "name": "open",
+   "start": 0.0,
+   "sentences": [
+    {
+     "text": "Hello, everyone.",
+     "start": 0.0,
+     "end": 2.4
+    },
+    {
+     "text": "I am Dr. Cesar Marolla, Instructor at Harvard University Division of Continuing Education.",
+     "start": 2.4,
+     "end": 8.4
+    },
+    {
+     "text": "I developed the Risk Mechanism Theory Index, RMTI, to turn what we can measure into one score that I can follow over time.",
+     "start": 8.4,
+     "end": 18.4
+    },
+    {
+     "text": "Here I apply it to breast cancer.",
+     "start": 18.4,
+     "end": 22.0
+    }
+   ]
+  },
+  {
+   "name": "study",
+   "start": 22.5,
+   "sentences": [
+    {
+     "text": "I start with a published case study: O'Shaughnessy and colleagues, Breast Cancer Research and Treatment, 2026.",
+     "start": 22.5,
+     "end": 29.7
+    },
+    {
+     "text": "Among 5,041 women with metastatic hormone-receptor-positive breast cancer, survival after first post-endocrine chemotherapy was 13.5 months, and 30 percent died before a second-line regimen.",
+     "start": 29.7,
+     "end": 40.1
+    }
+   ]
+  },
+  {
+   "name": "stages",
+   "start": 40.6,
+   "sentences": [
+    {
+     "text": "I follow the tumor through four stages.",
+     "start": 40.6,
+     "end": 44.2
+    },
+    {
+     "text": "Stage one: a small invasive tumor, with lymph nodes clear or minimally involved.",
+     "start": 44.2,
+     "end": 50.2
+    },
+    {
+     "text": "Stage two: a larger tumor, or involvement of axillary lymph nodes.",
+     "start": 50.2,
+     "end": 55.4
+    },
+    {
+     "text": "Stage three: extensive nodal disease, or spread to the chest wall or skin.",
+     "start": 55.4,
+     "end": 61.4
+    },
+    {
+     "text": "Stage four: distant metastasis, for example to bone or liver.",
+     "start": 61.4,
+     "end": 66.2
+    }
+   ]
+  },
+  {
+   "name": "assess",
+   "start": 66.7,
+   "sentences": [
+    {
+     "text": "Now I assess the data.",
+     "start": 66.7,
+     "end": 69.5
+    },
+    {
+     "text": "I use prior CDK 4/6 inhibitor use for likelihood; performance status and metastatic burden for vulnerability; and the 30 percent who die before second line for resilience.",
+     "start": 69.5,
+     "end": 81.1
+    },
+    {
+     "text": "This mapping is illustrative.",
+     "start": 81.1,
+     "end": 83.5
+    }
+   ]
+  },
+  {
+   "name": "formula",
+   "start": 84.0,
+   "sentences": [
+    {
+     "text": "Then I calculate.",
+     "start": 84.0,
+     "end": 86.4
+    },
+    {
+     "text": "R equals L times E times V times one minus rho.",
+     "start": 86.4,
+     "end": 91.6
+    },
+    {
+     "text": "With these illustrative inputs, R is 0.054, band two of the fixed five-band scale.",
+     "start": 91.6,
+     "end": 98.0
+    },
+    {
+     "text": "Expected Annual Loss adds consequences.",
+     "start": 98.0,
+     "end": 100.8
+    }
+   ]
+  },
+  {
+   "name": "traj",
+   "start": 101.3,
+   "sentences": [
+    {
+     "text": "I follow the trajectory.",
+     "start": 101.3,
+     "end": 103.7
+    },
+    {
+     "text": "At each review cycle I update vulnerability and resilience.",
+     "start": 103.7,
+     "end": 108.1
+    },
+    {
+     "text": "In this synthetic example, as I close the delivery gap, R falls from 0.054 to 0.023, band two to band one.",
+     "start": 108.1,
+     "end": 117.3
+    },
+    {
+     "text": "It is an illustration, not a prediction.",
+     "start": 117.3,
+     "end": 120.9
+    }
+   ]
+  },
+  {
+   "name": "what",
+   "start": 121.4,
+   "sentences": [
+    {
+     "text": "With RMTI, I quantify risk as one score, assess it on fixed bands, and track vulnerability and resilience across cycles.",
+     "start": 121.4,
+     "end": 130.2
+    },
+    {
+     "text": "Treatment decisions stay with clinicians.",
+     "start": 130.2,
+     "end": 133.0
+    }
+   ]
+  },
+  {
+   "name": "close",
+   "start": 133.5,
+   "sentences": [
+    {
+     "text": "RMTI is a research prototype: uncalibrated, with synthetic examples, and not a medical device.",
+     "start": 133.5,
+     "end": 139.9
+    },
+    {
+     "text": "I am testing whether trajectory adds information beyond the current level.",
+     "start": 139.9,
+     "end": 145.1
+    },
+    {
+     "text": "Thank you for watching.",
+     "start": 145.1,
+     "end": 147.5
+    }
+   ]
+  }
+ ]
+}

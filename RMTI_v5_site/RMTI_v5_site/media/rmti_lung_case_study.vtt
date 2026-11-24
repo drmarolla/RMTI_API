@@ -1,0 +1,109 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:02.250
+Hello, everyone.
+
+2
+00:00:02.450 --> 00:00:08.250
+I am Dr. Cesar Marolla, Instructor at Harvard University Division of Continuing Education.
+
+3
+00:00:08.450 --> 00:00:18.250
+I developed the Risk Mechanism Theory Index, RMTI, to turn what we can measure into one score that I can follow over time.
+
+4
+00:00:18.450 --> 00:00:21.850
+Here I apply it to lung cancer.
+
+5
+00:00:22.550 --> 00:00:29.550
+I start with a published case study: Sabakhtarishvili and colleagues, JTO Clinical and Research Reports, 2025.
+
+6
+00:00:29.750 --> 00:00:37.950
+Among 3,647 screened people, stage four at diagnosis was 13 percent, versus 35 to 44 percent under usual care.
+
+7
+00:00:38.650 --> 00:00:42.050
+I follow the tumor through four stages.
+
+8
+00:00:42.250 --> 00:00:48.450
+Stage one: a small tumor, confined to the lung, with no lymph node spread.
+
+9
+00:00:48.650 --> 00:00:53.650
+Stage two: a larger tumor, or nearby lymph nodes are involved.
+
+10
+00:00:53.850 --> 00:00:58.850
+Stage three: spread to central chest lymph nodes or neighboring structures.
+
+11
+00:00:59.050 --> 00:01:04.050
+Stage four: distant metastasis, for example to the brain or bone.
+
+12
+00:01:04.750 --> 00:01:07.350
+Now I assess the data.
+
+13
+00:01:07.550 --> 00:01:16.950
+I use smoking burden for exposure; the two-year cancer detection rate for likelihood; and screening delivery, which lowers late-stage presentation, for resilience.
+
+14
+00:01:17.150 --> 00:01:19.350
+This mapping is illustrative.
+
+15
+00:01:20.050 --> 00:01:22.250
+Then I calculate.
+
+16
+00:01:22.450 --> 00:01:27.450
+R equals L times E times V times one minus rho.
+
+17
+00:01:27.650 --> 00:01:33.850
+With these illustrative inputs, R is 0.098, band two of the fixed five-band scale.
+
+18
+00:01:34.050 --> 00:01:36.650
+Expected Annual Loss adds consequences.
+
+19
+00:01:37.350 --> 00:01:39.550
+I follow the trajectory.
+
+20
+00:01:39.750 --> 00:01:43.950
+At each review cycle I update vulnerability and resilience.
+
+21
+00:01:44.150 --> 00:01:51.950
+In this synthetic example, as screening improves, R falls from 0.098 to 0.044, band two to band one.
+
+22
+00:01:52.150 --> 00:01:55.550
+It is an illustration, not a prediction.
+
+23
+00:01:56.250 --> 00:02:04.850
+With RMTI, I quantify risk as one score, assess it on fixed bands, and track vulnerability and resilience across cycles.
+
+24
+00:02:05.050 --> 00:02:07.650
+Treatment decisions stay with clinicians.
+
+25
+00:02:08.350 --> 00:02:14.550
+RMTI is a research prototype: uncalibrated, with synthetic examples, and not a medical device.
+
+26
+00:02:14.750 --> 00:02:19.750
+I am testing whether trajectory adds information beyond the current level.
+
+27
+00:02:19.950 --> 00:02:22.150
+Thank you for watching.

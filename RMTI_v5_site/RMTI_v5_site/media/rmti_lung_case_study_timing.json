@@ -1,0 +1,189 @@
+{
+ "video": "lung",
+ "seconds": 146.8,
+ "sections": [
+  {
+   "name": "open",
+   "start": 0.0,
+   "sentences": [
+    {
+     "text": "Hello, everyone.",
+     "start": 0.0,
+     "end": 2.4
+    },
+    {
+     "text": "I am Dr. Cesar Marolla, Instructor at Harvard University Division of Continuing Education.",
+     "start": 2.4,
+     "end": 8.4
+    },
+    {
+     "text": "I developed the Risk Mechanism Theory Index, RMTI, to turn what we can measure into one score that I can follow over time.",
+     "start": 8.4,
+     "end": 18.4
+    },
+    {
+     "text": "Here I apply it to lung cancer.",
+     "start": 18.4,
+     "end": 22.0
+    }
+   ]
+  },
+  {
+   "name": "study",
+   "start": 22.5,
+   "sentences": [
+    {
+     "text": "I start with a published case study: Sabakhtarishvili and colleagues, JTO Clinical and Research Reports, 2025.",
+     "start": 22.5,
+     "end": 29.7
+    },
+    {
+     "text": "Among 3,647 screened people, stage four at diagnosis was 13 percent, versus 35 to 44 percent under usual care.",
+     "start": 29.7,
+     "end": 38.1
+    }
+   ]
+  },
+  {
+   "name": "stages",
+   "start": 38.6,
+   "sentences": [
+    {
+     "text": "I follow the tumor through four stages.",
+     "start": 38.6,
+     "end": 42.2
+    },
+    {
+     "text": "Stage one: a small tumor, confined to the lung, with no lymph node spread.",
+     "start": 42.2,
+     "end": 48.6
+    },
+    {
+     "text": "Stage two: a larger tumor, or nearby lymph nodes are involved.",
+     "start": 48.6,
+     "end": 53.8
+    },
+    {
+     "text": "Stage three: spread to central chest lymph nodes or neighboring structures.",
+     "start": 53.8,
+     "end": 59.0
+    },
+    {
+     "text": "Stage four: distant metastasis, for example to the brain or bone.",
+     "start": 59.0,
+     "end": 64.2
+    }
+   ]
+  },
+  {
+   "name": "assess",
+   "start": 64.7,
+   "sentences": [
+    {
+     "text": "Now I assess the data.",
+     "start": 64.7,
+     "end": 67.5
+    },
+    {
+     "text": "I use smoking burden for exposure; the two-year cancer detection rate for likelihood; and screening delivery, which lowers late-stage presentation, for resilience.",
+     "start": 67.5,
+     "end": 77.1
+    },
+    {
+     "text": "This mapping is illustrative.",
+     "start": 77.1,
+     "end": 79.5
+    }
+   ]
+  },
+  {
+   "name": "formula",
+   "start": 80.0,
+   "sentences": [
+    {
+     "text": "Then I calculate.",
+     "start": 80.0,
+     "end": 82.4
+    },
+    {
+     "text": "R equals L times E times V times one minus rho.",
+     "start": 82.4,
+     "end": 87.6
+    },
+    {
+     "text": "With these illustrative inputs, R is 0.098, band two of the fixed five-band scale.",
+     "start": 87.6,
+     "end": 94.0
+    },
+    {
+     "text": "Expected Annual Loss adds consequences.",
+     "start": 94.0,
+     "end": 96.8
+    }
+   ]
+  },
+  {
+   "name": "traj",
+   "start": 97.3,
+   "sentences": [
+    {
+     "text": "I follow the trajectory.",
+     "start": 97.3,
+     "end": 99.7
+    },
+    {
+     "text": "At each review cycle I update vulnerability and resilience.",
+     "start": 99.7,
+     "end": 104.1
+    },
+    {
+     "text": "In this synthetic example, as screening improves, R falls from 0.098 to 0.044, band two to band one.",
+     "start": 104.1,
+     "end": 112.1
+    },
+    {
+     "text": "It is an illustration, not a prediction.",
+     "start": 112.1,
+     "end": 115.7
+    }
+   ]
+  },
+  {
+   "name": "what",
+   "start": 116.2,
+   "sentences": [
+    {
+     "text": "With RMTI, I quantify risk as one score, assess it on fixed bands, and track vulnerability and resilience across cycles.",
+     "start": 116.2,
+     "end": 125.0
+    },
+    {
+     "text": "Treatment decisions stay with clinicians.",
+     "start": 125.0,
+     "end": 127.8
+    }
+   ]
+  },
+  {
+   "name": "close",
+   "start": 128.3,
+   "sentences": [
+    {
+     "text": "RMTI is a research prototype: uncalibrated, with synthetic examples, and not a medical device.",
+     "start": 128.3,
+     "end": 134.7
+    },
+    {
+     "text": "I am testing whether trajectory adds information beyond the current level.",
+     "start": 134.7,
+     "end": 139.9
+    },
+    {
+     "text": "Thank you for watching.",
+     "start": 139.9,
+     "end": 142.3
+    }
+   ]
+  }
+ ]
+}

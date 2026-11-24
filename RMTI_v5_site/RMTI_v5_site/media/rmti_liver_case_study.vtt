@@ -1,0 +1,109 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:02.250
+Hello, everyone.
+
+2
+00:00:02.450 --> 00:00:08.250
+I am Dr. Cesar Marolla, Instructor at Harvard University Division of Continuing Education.
+
+3
+00:00:08.450 --> 00:00:18.250
+I developed the Risk Mechanism Theory Index, RMTI, to turn what we can measure into one score that I can follow over time.
+
+4
+00:00:18.450 --> 00:00:21.850
+Here I apply it to liver cancer.
+
+5
+00:00:22.550 --> 00:00:28.750
+I start with a published case study: Lau-Min and colleagues, JAMA Network Open, 2025.
+
+6
+00:00:28.950 --> 00:00:36.750
+Among 4,198 patients on systemic therapy, median survival was 8.1 months, and only 20.7 percent reached second-line treatment.
+
+7
+00:00:37.450 --> 00:00:40.850
+I follow the tumor through four stages.
+
+8
+00:00:41.050 --> 00:00:48.450
+Stage one: one small tumor, inside the liver, no vessel invasion. Surgery, ablation or transplant can work.
+
+9
+00:00:48.650 --> 00:00:55.650
+Stage two: the tumor reaches blood vessels, or several small tumors form, still within the liver.
+
+10
+00:00:55.850 --> 00:01:02.050
+Stage three: larger or multiple tumors, major vein invasion, and possibly regional lymph nodes.
+
+11
+00:01:02.250 --> 00:01:08.850
+Stage four: cells reach distant sites, such as the lungs and bones. Treatment turns systemic.
+
+12
+00:01:09.550 --> 00:01:12.150
+Now I assess the data.
+
+13
+00:01:12.350 --> 00:01:21.750
+I use liver function, by ALBI grade, for vulnerability; concomitant liver disease for exposure; and second-line delivery, only 20.7 percent, for resilience.
+
+14
+00:01:21.950 --> 00:01:24.150
+This mapping is illustrative.
+
+15
+00:01:24.850 --> 00:01:27.050
+Then I calculate.
+
+16
+00:01:27.250 --> 00:01:32.250
+R equals L times E times V times one minus rho.
+
+17
+00:01:32.450 --> 00:01:38.650
+With these illustrative inputs, R is 0.081, band two of the fixed five-band scale.
+
+18
+00:01:38.850 --> 00:01:41.450
+Expected Annual Loss adds consequences.
+
+19
+00:01:42.150 --> 00:01:44.350
+I follow the trajectory.
+
+20
+00:01:44.550 --> 00:01:48.750
+At each review cycle I update vulnerability and resilience.
+
+21
+00:01:48.950 --> 00:01:56.750
+In this synthetic example, as delivery improves, R falls from 0.081 to 0.025, band two to band one.
+
+22
+00:01:56.950 --> 00:02:00.350
+It is an illustration, not a prediction.
+
+23
+00:02:01.050 --> 00:02:09.650
+With RMTI, I quantify risk as one score, assess it on fixed bands, and track vulnerability and resilience across cycles.
+
+24
+00:02:09.850 --> 00:02:12.450
+Treatment decisions stay with clinicians.
+
+25
+00:02:13.150 --> 00:02:19.350
+RMTI is a research prototype: uncalibrated, with synthetic examples, and not a medical device.
+
+26
+00:02:19.550 --> 00:02:24.550
+I am testing whether trajectory adds information beyond the current level.
+
+27
+00:02:24.750 --> 00:02:26.950
+Thank you for watching.
