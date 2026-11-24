@@ -1,4 +1,6 @@
 """Risk Mechanism Theory Index (RMTI) - entry point.   streamlit run app.py"""
+import os
+
 import streamlit as st
 
 from engine import APP_TITLE
@@ -7,7 +9,6 @@ from views import calculator, cases, developer_api, docs, hcc_surveillance, hcc_
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
 inject_css()
-import os
 logo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "rmti_logo.svg")
 if os.path.exists(logo):
     st.logo(logo, size="large")
@@ -15,6 +16,35 @@ if os.path.exists(logo):
 
 def P(fn, title, icon, slug, default=False):
     return st.Page(fn, title=title, icon=f":material/{icon}:", url_path=slug, default=default)
+
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+CASE_VIDEO = os.path.join("assets", "videos", "rmti_hcc_case_study.mp4")
+
+
+def _case_video():
+    """Repo root first (CI commits the render to assets/videos/), then next to app.py. Skips Git-LFS pointer files."""
+    bases, d = [], ROOT
+    for _ in range(4):                      # app folder, then up to the repo root (the upload may be nested)
+        bases.append(d)
+        d = os.path.dirname(d)
+    for base in bases:
+        p = os.path.join(base, CASE_VIDEO)
+        if os.path.exists(p) and os.path.getsize(p) > 2048:
+            return p
+    return None
+
+
+@st.dialog("RMTI Clinical Case Study", width="large")
+def case_study_dialog():
+    f = _case_video()
+    if f:
+        st.video(f)
+        st.caption("Hepatocellular carcinoma: tumor events on the left, the RMTI calculation on the right. "
+                   "Narrated. Synthetic and published aggregate values only; research prototype, not a medical device.")
+    else:
+        st.info("The case-study video has not been rendered yet. It is built by the Render RMTI animations workflow "
+                "and saved as assets/videos/rmti_hcc_case_study.mp4.")
 
 
 PG = {
@@ -48,7 +78,9 @@ pg = st.navigation({
     "Documentation": [PG["method"], PG["steps"], PG["refs"]],
     "Platform": [PG["api"]],
 })
-_, b1, b2 = st.columns([5, 1.5, 2])
+_, b0, b1, b2 = st.columns([3, 2, 1.5, 2])
+if b0.button("Watch the case study", width="stretch", key="top_case"):
+    case_study_dialog()
 if b1.button("Developer API", width="stretch", key="top_dev"):
     st.switch_page(PG["api"])
 if b2.button("Request API access", type="primary", width="stretch", key="top_req"):
