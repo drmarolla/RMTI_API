@@ -1,0 +1,95 @@
+name: Render RMTI animations
+
+on:
+  workflow_dispatch:
+    inputs:
+      fit:
+        description: "Left panel framing: cover (crop to fill) or blur (whole frame on a blurred fill)"
+        default: cover
+        type: choice
+        options: [cover, blur]
+  push:
+    branches: [main]
+    paths:
+      - "animations/**"
+      - "assets/raw/**"
+      - "RMTI_v5_site/rmti_python/**"
+      - ".github/workflows/render-animations.yml"
+
+concurrency:
+  group: render-animations
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    # the bot's own commit carries [skip ci]; this guard is a second belt
+    if: github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, '[skip ci]')
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    env:
+      OUT: assets/videos/rmti_hcc_case_study.mp4
+      MAX_BYTES: 20000000          # hard limit: 20 MB, so the file commits as a normal blob (no Git LFS)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true                # in case the raw clips were committed through LFS
+
+      - name: Install system packages (FFmpeg, LaTeX, Cairo/Pango, Inter font)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ffmpeg build-essential python3-dev pkg-config libcairo2-dev libpango1.0-dev \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-science \
+            fonts-inter
+          for t in ffmpeg ffprobe latex dvisvgm; do command -v "$t" >/dev/null || { echo "::error::$t missing"; exit 1; }; done
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Manim and helpers
+        run: pip install "manim>=0.18,<0.20" mutagen numpy
+
+      - name: Probe narration and clips (runtime ffprobe)
+        run: |
+          python animations/rmti_master_trajectory.py --plan-only --fit "${{ inputs.fit || 'cover' }}" | tee plan.txt
+          { echo '### Timeline'; echo '```'; cat plan.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Render, composite with the narration, compress
+        run: |
+          python animations/rmti_master_trajectory.py --fit "${{ inputs.fit || 'cover' }}" --out "$OUT" --max-mb 19
+
+      - name: Verify size, codec, duration, resolution
+        run: |
+          size=$(stat -c %s "$OUT")
+          echo "size: $size bytes"
+          [ "$size" -lt "$MAX_BYTES" ] || { echo "::error::$OUT is $size bytes, over the 20 MB limit"; exit 1; }
+          v=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height -of csv=p=0 "$OUT")
+          [ "$v" = "h264,1920,1080" ] || { echo "::error::unexpected video stream: $v"; exit 1; }
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$OUT" | grep -qx aac || { echo "::error::no AAC audio track"; exit 1; }
+          vd=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$OUT")
+          ad=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "assets/raw/rmti_liver cancer _brit voice 2.mp3")
+          python - "$vd" "$ad" <<'PY'
+          import sys
+          v, a = float(sys.argv[1]), float(sys.argv[2])
+          print(f"video {v:.2f} s, narration {a:.2f} s")
+          sys.exit(0 if abs(v - a) < 0.25 else "video and narration lengths differ by more than 0.25 s")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rmti_hcc_case_study
+          path: ${{ env.OUT }}
+
+      - name: Commit the video
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f "$OUT"
+          if git diff --cached --quiet; then echo "video unchanged"; exit 0; fi
+          git commit -m "chore: render RMTI HCC case study video [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
