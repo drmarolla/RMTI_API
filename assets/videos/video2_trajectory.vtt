@@ -1,0 +1,21 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:14.000
+[From Snapshot to Trajectory | Marolla 2026, RMTI-Py v2.5]
+A single risk score captures today—but cirrhosis and surveillance evolve every 6 months: R(t) = L(t) · E · V*(t) · [1 − ρ(t)].
+
+00:00:14.000 --> 00:00:29.000
+[Unrounded Precision Engine | core/rmti_core.py]
+Preserving unrounded IR_raw, R_raw, and EAL_raw resolves subtle per-cycle risk shifts (ΔR ≈ 0.001–0.01) across biannual visits.
+
+00:00:29.000 --> 00:00:44.000
+[Local-Linear-Trend Filter: α = 0.41, β = 0.09 | Patient A vs. Patient B]
+Filtered vulnerability V*(t) separates escalating Patient B (R: 0.072 -> 0.178, Tier 3 High) from improving Patient A (R: 0.072 -> 0.022, Tier 1 Low).
+
+00:00:44.000 --> 00:00:58.000
+[RHO_ANCHORS_HCC (0.15–0.65) & Investment Efficiency Index]
+RMTI computes IEI = (R_now − R_after) / R_after—proving when surveillance upgrades remove more risk than remains (IEI > 1.0).
+
+00:00:58.000 --> 00:01:15.000
+[Synthetic Landmark Validation: N = 2,000, 2-Yr Horizon]
+Serial trajectory filtering improves AUROC (+0.015 to +0.022 over static baseline R(0) ≈ 0.55). Open-source under Apache 2.0.
