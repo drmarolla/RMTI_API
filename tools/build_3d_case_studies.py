@@ -1,4 +1,5 @@
 import glob
+import itertools
 import shutil
 import subprocess
 from pathlib import Path
@@ -26,7 +27,7 @@ def find_file(pattern: str) -> Path:
     matches = sorted(glob.glob(str(RAW_DIR / pattern)))
     if not matches:
         raise FileNotFoundError(f"Missing file matching: {RAW_DIR / pattern}")
-    return Path(matches[0])
+    return Path(next(iter(matches)))
 
 
 def render_animated_hud_frames(stage_idx: int, mode: str, n_frames: int, frame_dir: Path):
@@ -91,8 +92,8 @@ def render_animated_hud_frames(stage_idx: int, mode: str, n_frames: int, frame_d
         ),
     ]
 
-    meta = v1_meta[stage_idx] if mode == "v1" else v2_meta[stage_idx]
-    badge_txt, title_txt, eq_txt, outcome_txt, cite_txt = meta
+    stages_list = v1_meta if mode == "v1" else v2_meta
+    badge_txt, title_txt, eq_txt, outcome_txt, cite_txt = next(itertools.islice(stages_list, stage_idx, stage_idx + 1))
 
     for f in range(n_frames):
         prog = f / max(1, n_frames - 1)
@@ -167,7 +168,7 @@ def render_animated_hud_frames(stage_idx: int, mode: str, n_frames: int, frame_d
             ax.axhline(0.05, color="#0F766E", linestyle="--", alpha=0.5, linewidth=1.1)
             ax.set_xlim(0, 3.1)
             ax.set_ylim(0, 0.21)
-            ax.set_xticks([0, 1, 2, 3])
+            ax.set_xticks(list(range(4)))
             ax.set_xticklabels(["t=0", "t=1 (6m)", "t=2 (12m)", "t=3 (18m)"], fontsize=8.0)
             ax.set_ylabel("Time-Indexed R(t)", fontsize=9.0, color="#475569")
             ax.legend(loc="upper left", fontsize=7.5, frameon=True)
@@ -238,4 +239,3 @@ def build_video(clips: list[Path], mode: str, audio: Path | None, output_mp4: Pa
     print(f"Built {output_mp4} ({total_sec:.1f}s)")
 
 
-if __name__ == "__main__":
