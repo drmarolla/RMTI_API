@@ -26,7 +26,7 @@ jobs:
       - name: Commit finished MP4s to assets/videos/
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@://github.com"
+          git config user.email "github-actions@github.com"
           git add assets/videos/*.mp4
           if ! git diff --staged --quiet; then
             git commit -m "chore(videos): build 3D case study MP4s [skip ci]"
