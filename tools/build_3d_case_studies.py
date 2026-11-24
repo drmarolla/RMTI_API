@@ -35,8 +35,8 @@ def assemble_video(clips: list[Path], audio: Path, output_mp4: Path):
             "ffmpeg", "-y",
             "-stream_loop", "-1", "-i", str(clip),
             "-t", f"{seg_sec:.3f}",
-            "-vf", "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=30,format=yuv420p",
-            "-c:v", "libx264", "-crf", "23", "-preset", "fast",
+            "-vf", "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,fps=24,format=yuv420p",
+            "-c:v", "libx264", "-crf", "28", "-preset", "medium",
             "-an", str(seg_out),
         ], check=True)
         temp_segments.append(seg_out)
