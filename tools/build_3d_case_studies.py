@@ -1,26 +1,15 @@
 import glob
+import shutil
 import subprocess
 from pathlib import Path
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
 
 RAW_DIR = Path("assets/raw")
 OUT_DIR = Path("assets/videos")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
-
-
-def find_font() -> str:
-    """Locate an installed TrueType font on Linux/macOS/Windows for FFmpeg drawtext."""
-    candidates = [
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-    ]
-    for path in candidates:
-        if Path(path).exists():
-            return f":fontfile={path}"
-    return ""
-
-
-FONT_ARG = find_font()
 
 
 def get_duration(media_path: Path) -> float:
@@ -40,62 +29,138 @@ def find_file(pattern: str) -> Path:
     return Path(matches[0])
 
 
-def esc(txt: str) -> str:
-    """Escape text safely for FFmpeg drawtext filter with expansion=none."""
-    clean = txt.replace("'", "\u2019")
-    return clean.replace("\\", "\\\\").replace(":", "\\:")
+def render_animated_hud_frames(stage_idx: int, mode: str, n_frames: int, frame_dir: Path):
+    """Render 3Blue1Brown-style animated axes, moving curves, and clean citation pill (512x720)."""
+    frame_dir.mkdir(parents=True, exist_ok=True)
+    plt.rcParams["font.sans-serif"] = "DejaVu Sans"
+    plt.rcParams["axes.edgecolor"] = "#CBD5E1"
+    plt.rcParams["axes.linewidth"] = 1.0
+
+    # Stage metadata for Video 1 (5 stages) and Video 2 (2 stages)
+    v1_meta = [
+        ("STAGE 1 / FIBROSIS (F1–F3)", "Baseline Hepatic Reserve", "R = L · E · V · (1 − ρ) = 0.025", "Tier 1: Low Urgency (ALBI Grade 1)", "Marolla (2026) SSRN: 7427450 • Johnson et al. ALBI"),
+        ("STAGE 2 / CIRRHOSIS (F4)", "10× Surge in HCC Likelihood", "R = 0.90 · 0.70 · 0.55 · (1 − 0.10) = 0.312", "Tier 3: High Urgency (Untreated HBV)", "Fan et al. aMAP • Sharma et al. THRI • Table 1"),
+        ("STAGE 3 / EARLY HCC (BCLC 0/A)", "Resilience Interception Window", "ρ: 0.10 → 0.65 cuts R by 30%–56%", "Intercepted at BCLC 0/A (>70% 5-Yr Survival)", "Singal et al. (2022) • RHO_ANCHORS_HCC (0.15–0.65)"),
+        ("STAGE 4 / PORTAL INVASION (BCLC B/C)", "ALBI Reserve Decompensation", "R = 0.90 · 0.75 · 0.85 · (1 − 0.15) = 0.488", "Tier 4: Severe Escalation (V = 0.522 vs 0.480)", "Faria et al. Harvard Dataverse (n=54, p=0.025)"),
+        ("STAGE 5 / METASTASIS (BCLC D)", "Expected Annual Loss Tie-Breaker", "EAL = L · C · (1 − ρ) = 0.200", "Within-Tier Reversal: Patient B Escalates First", "Marolla (2026) Governance • HL7 FHIR R4"),
+    ]
+    v2_meta = [
+        ("TIME-INDEXED TRAJECTORY • t = 0 → 3", "From Snapshot to R(t)", "R(t) = L(t) · E · V*(t) · [1 − ρ(t)]", "Unrounded IR_raw, R_raw, EAL_raw (ΔR ≈ 0.001)", "Marolla (2026) Snapshot to Trajectory • RMTI-Py v2.5"),
+        ("STEADY-STATE FILTER (α=0.41, β=0.09)", "Diverging Patient Trajectories", "V*(t) separates Patient B vs. Patient A", "+0.015 to +0.022 AUROC Gain (N = 2,000)", "Synthetic Landmark Validation (2-Yr HCC Horizon)"),
+    ]
+
+    for f in range(n_frames):
+        prog = f / max(1, n_frames - 1)  # 0.0 -> 1.0 smooth animation progress
+        fig = plt.figure(figsize=(5.12, 7.20), dpi=100, facecolor="#F8FAFC")
+
+        # Top Title & Equation Header
+        meta = v1_meta[stage_idx] if mode == "v1" else v2_meta[stage_idx]
+        fig.text(0.06, 0.94, meta[0], fontsize=9.5, fontweight="bold", color="#1D4ED8",
+                 bbox=dict(boxstyle="round,pad=0.35", facecolor="#EFF6FF", edgecolor="none"))
+        fig.text(0.06, 0.885, meta[1], fontsize=15, fontweight="bold", color="#0F172A")
+        fig.text(0.06, 0.825, meta[2], fontsize=11.5, fontweight="bold", color="#B91C1C",
+                 bbox=dict(boxstyle="round,pad=0.45", facecolor="#FFFFFF", edgecolor="#CBD5E1"))
+
+        # --- ANIMATED AXES & CURVES (Middle 48% of Right Panel) ---
+        ax = fig.add_axes([0.13, 0.34, 0.80, 0.42], facecolor="#FFFFFF")
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(True, linestyle="--", alpha=0.35, color="#CBD5E1")
+
+        if mode == "v1" and stage_idx in (0, 1, 2):
+            # Animated R vs Resilience (rho) Curve + Moving Marker Dot
+            rho_x = np.linspace(0.0, 0.80, 100)
+            L_curr = 0.15 + 0.75 * min(1.0, prog * 1.4) if stage_idx == 1 else (0.15 if stage_idx == 0 else 0.90)
+            E_curr = 0.60 if stage_idx == 0 else 0.70
+            V_curr = 0.35 if stage_idx == 0 else 0.55
+            r_curve = L_curr * E_curr * V_curr * (1.0 - rho_x)
+
+            ax.plot(rho_x, r_curve, color="#1D4ED8", linewidth=2.6, label="R = L·E·V·(1−ρ)")
+            # Moving marker along curve
+            rho_pt = 0.20 if stage_idx < 2 else (0.10 + 0.55 * prog)
+            r_pt = L_curr * E_curr * V_curr * (1.0 - rho_pt)
+            ax.scatter([rho_pt], [r_pt], color="#B91C1C", s=85, zorder=5)
+            ax.annotate(f"R = {r_pt:.3f}", (rho_pt, r_pt), xytext=(8, 8), textcoords="offset points",
+                        fontsize=10, fontweight="bold", color="#B91C1C")
+            ax.axhline(0.15, color="#D97706", linestyle=":", linewidth=1.3, label="High Tier (0.15)")
+            ax.set_xlim(0, 0.80)
+            ax.set_ylim(0, 0.40)
+            ax.set_xlabel("System Resilience (ρ)", fontsize=9.5, color="#475569")
+            ax.set_ylabel("Residual Risk (R)", fontsize=9.5, color="#475569")
+            ax.legend(loc="upper right", fontsize=8, frameon=True)
+
+        elif mode == "v1" and stage_idx in (3, 4):
+            # Animated Columns Comparing R vs EAL Priority Reversal
+            labels = ["Fibrosis\n(G1)", "HBV\n(ρ=0.65)", "Invasion\n(ALBI 3)", "Pt A\n(EAL)", "Pt B\n(EAL)"]
+            targets = [0.025, 0.191, 0.488, 0.072, 0.200]
+            colors = ["#94A3B8", "#1D4ED8", "#B91C1C", "#64748B", "#0F766E"]
+            curr_vals = [v * min(1.0, prog * 1.25) for v in targets]
+            bars = ax.bar(labels, curr_vals, color=colors, width=0.52)
+            for bar, val in zip(bars, curr_vals):
+                ax.text(bar.get_x() + bar.get_width() / 2, val + 0.015, f"{val:.3f}",
+                        ha="center", fontsize=8.5, fontweight="bold", color="#0F172A")
+            ax.set_ylim(0, 0.58)
+            ax.set_ylabel("Risk / EAL Index", fontsize=9.5, color="#475569")
+            ax.tick_params(axis="x", labelsize=8)
+
+        else:
+            # Video 2: Animated Time-Indexed R(t) Diverging Trajectories (Cycles t = 0..3)
+            t_full = np.array([0.0, 1.0, 2.0, 3.0])
+            r_b = np.array([0.072, 0.115, 0.152, 0.178])  # Patient B escalating
+            r_a = np.array([0.072, 0.048, 0.031, 0.022])  # Patient A improving
+            max_t = 3.0 * prog
+            t_vis = np.linspace(0, max(0.05, max_t), 60)
+            ax.plot(t_vis, np.interp(t_vis, t_full, r_b), color="#B91C1C", linewidth=2.8, label="Patient B (V↑, ρ flat)")
+            ax.plot(t_vis, np.interp(t_vis, t_full, r_a), color="#1D4ED8", linewidth=2.8, label="Patient A (V↓, ρ↑)")
+            ax.axhline(0.15, color="#B91C1C", linestyle="--", alpha=0.5, linewidth=1.1)
+            ax.axhline(0.05, color="#0F766E", linestyle="--", alpha=0.5, linewidth=1.1)
+            ax.set_xlim(0, 3.1)
+            ax.set_ylim(0, 0.21)
+            ax.set_xticks([0, 1, 2, 3])
+            ax.set_xticklabels(["t=0", "t=1 (6m)", "t=2 (12m)", "t=3 (18m)"], fontsize=8.5)
+            ax.set_ylabel("Time-Indexed R(t)", fontsize=9.5, color="#475569")
+            ax.legend(loc="upper left", fontsize=8, frameon=True)
+
+        # Outcome Callout Box
+        fig.text(0.06, 0.21, meta[3], fontsize=10.5, fontweight="bold", color="#0F172A",
+                 bbox=dict(boxstyle="round,pad=0.45", facecolor="#FFFFFF", edgecolor="#94A3B8"))
+
+        # Clean, Unobtrusive Citation Pill at Bottom
+        fig.text(0.06, 0.08, f"Ref: {meta[4]}\nMarolla 2026 • RMTI-Py v2.5 (Apache-2.0)",
+                 fontsize=8.5, color="#475569",
+                 bbox=dict(boxstyle="round,pad=0.4", facecolor="#F1F5F9", edgecolor="none"))
+
+        fig.savefig(frame_dir / f"hud_{f:04d}.png", dpi=100)
+        plt.close(fig)
 
 
-def build_split_screen_video(stages: list[dict], audio: Path | None, output_mp4: Path):
-    total_sec = get_duration(audio) if audio else 60.0
-    seg_sec = total_sec / len(stages)
+def build_video(clips: list[Path], mode: str, audio: Path | None, output_mp4: Path):
+    total_sec = get_duration(audio) if audio else 70.0
+    seg_sec = total_sec / len(clips)
+    fps_hud = 8  # Smooth 8fps mathematical curve animation (renders fast in ~15s)
+    n_frames = max(16, int(seg_sec * fps_hud))
     temp_segments = []
 
-    for idx, stg in enumerate(stages):
+    for idx, clip in enumerate(clips):
+        frame_dir = OUT_DIR / f"_frames_{output_mp4.stem}_{idx}"
+        render_animated_hud_frames(idx, mode, n_frames, frame_dir)
         seg_out = OUT_DIR / f"_tmp_{output_mp4.stem}_{idx}.mp4"
 
-        # Left 660x720 = 3D Google Flow Organ Video; Right 620x720 = Clean Clinical Math HUD (#F8FAFC)
-        vf = (
-            "[0:v]scale=660:720:force_original_aspect_ratio=increase,crop=660:720,fps=24[left];"
-            "color=c=#F8FAFC:s=620x720:r=24[right];"
-            "[left][right]hstack=inputs=2,"
-            # Top Header Banner
-            "drawbox=x=680:y=28:w=572:h=44:color=#EFF6FF:t=fill,"
-            f"drawtext=text='{esc(stg['badge'])}'{FONT_ARG}:expansion=none:x=696:y=42:fontsize=15:fontcolor=#1D4ED8,"
-            # Stage Title
-            f"drawtext=text='{esc(stg['title'])}'{FONT_ARG}:expansion=none:x=680:y=92:fontsize=23:fontcolor=#0F172A,"
-            # Progression Flow Arrows Bar
-            "drawbox=x=680:y=138:w=572:h=42:color=#0F172A:t=fill,"
-            f"drawtext=text='{esc(stg['flow'])}'{FONT_ARG}:expansion=none:x=694:y=151:fontsize=13:fontcolor=#38BDF8,"
-            # Core Equation Card with Centered Multiplication Dots (·)
-            "drawbox=x=680:y=200:w=572:h=88:color=#FFFFFF:t=fill,"
-            "drawbox=x=680:y=200:w=572:h=88:color=#CBD5E1:t=2,"
-            f"drawtext=text='{esc(stg['eq_sym'])}'{FONT_ARG}:expansion=none:x=700:y=216:fontsize=22:fontcolor=#0F172A,"
-            f"drawtext=text='{esc(stg['eq_num'])}'{FONT_ARG}:expansion=none:x=700:y=252:fontsize=19:fontcolor=#B91C1C,"
-            # Moving Metrics & Trajectory Column Box
-            "drawbox=x=680:y=308:w=572:h=245:color=#FFFFFF:t=fill,"
-            "drawbox=x=680:y=308:w=572:h=245:color=#CBD5E1:t=2,"
-            f"drawtext=text='{esc(stg['line1'])}'{FONT_ARG}:expansion=none:x=700:y=328:fontsize=16:fontcolor=#0F172A,"
-            f"drawtext=text='{esc(stg['line2'])}'{FONT_ARG}:expansion=none:x=700:y=368:fontsize=16:fontcolor=#1D4ED8,"
-            f"drawtext=text='{esc(stg['line3'])}'{FONT_ARG}:expansion=none:x=700:y=408:fontsize=16:fontcolor=#0F766E,"
-            f"drawtext=text='{esc(stg['line4'])}'{FONT_ARG}:expansion=none:x=700:y=448:fontsize=16:fontcolor=#B91C1C,"
-            f"drawtext=text='{esc(stg['outcome'])}'{FONT_ARG}:expansion=none:x=700:y=498:fontsize=18:fontcolor=#0F172A,"
-            # Citation Footer
-            "drawbox=x=680:y=575:w=572:h=110:color=#F1F5F9:t=fill,"
-            f"drawtext=text='{esc(stg['cite1'])}'{FONT_ARG}:expansion=none:x=696:y=592:fontsize=14:fontcolor=#475569,"
-            f"drawtext=text='{esc(stg['cite2'])}'{FONT_ARG}:expansion=none:x=696:y=620:fontsize=14:fontcolor=#475569,"
-            f"drawtext=text='Marolla 2026 | RMTI-Py v2.5 | Apache-2.0'{FONT_ARG}:expansion=none:x=696:y=652:fontsize=13:fontcolor=#1D4ED8,"
-            "format=yuv420p"
-        )
-
+        # Left 768x720 (60%) = 3D Google Flow Video; Right 512x720 (40%) = Animated Math Axes
         subprocess.run([
             "ffmpeg", "-y",
-            "-stream_loop", "-1", "-i", str(stg["clip"]),
+            "-stream_loop", "-1", "-i", str(clip),
+            "-framerate", str(fps_hud), "-i", str(frame_dir / "hud_%04d.png"),
             "-t", f"{seg_sec:.3f}",
-            "-filter_complex", vf,
+            "-filter_complex",
+            "[0:v]scale=768:720:force_original_aspect_ratio=increase,crop=768:720,fps=24[left];"
+            "[1:v]fps=24[right];"
+            "[left][right]hstack=inputs=2,format=yuv420p",
             "-c:v", "libx264", "-crf", "26", "-preset", "medium",
             "-an", str(seg_out),
         ], check=True)
+
+        shutil.rmtree(frame_dir, ignore_errors=True)
         temp_segments.append(seg_out)
 
     concat_txt = OUT_DIR / f"_concat_{output_mp4.stem}.txt"
@@ -123,125 +188,3 @@ def build_split_screen_video(stages: list[dict], audio: Path | None, output_mp4:
 
 
 if __name__ == "__main__":
-    # --- VIDEO 1: 4-Stage Liver Progression & Cohort Triage ---
-    v1_audio = find_file("*brit voice*.mp3")
-    v1_stages = [
-        {
-            "clip": find_file("1.*glowing_liver*.mp4"),
-            "badge": "STAGE 1 / FIBROSIS (F1-F3)  •  BASELINE SNAPSHOT",
-            "title": "Preserved Hepatic Reserve",
-            "flow": "[1. Fibrosis] -> 2. Cirrhosis -> 3. Early HCC -> 4. Invasion -> 5. Metastasis",
-            "eq_sym": "R  =  L  ·  E  ·  V  ·  (1 - ρ)",
-            "eq_num": "R  =  0.15  ·  0.60  ·  0.35  ·  (1 - 0.20)  =  0.025",
-            "line1": "Likelihood (L): 0.15   (Low annual hazard)",
-            "line2": "Exposure (E):   0.60   (Active clinic footprint)",
-            "line3": "Vulnerability (V): 0.35 (ALBI Grade 1 preserved)",
-            "line4": "Resilience (ρ): 0.20   (Usual care surveillance)",
-            "outcome": "Result: R = 0.025  ->  TIER 1: LOW URGENCY",
-            "cite1": "Source: Marolla (2026) SSRN: 7427450 | RMTI-Py v2.2.1",
-            "cite2": "ALBI Liver Reserve Scale: Grade 1 = 0.35 (Johnson et al.)",
-        },
-        {
-            "clip": find_file("3.*Cells_proliferating*.mp4"),
-            "badge": "STAGE 2 / CIRRHOSIS (F4)  •  INCIDENCE SURGE",
-            "title": "Up to 10x Jump in HCC Likelihood",
-            "flow": "1. Fibrosis -> [2. Cirrhosis] -> 3. Early HCC -> 4. Invasion -> 5. Metastasis",
-            "eq_sym": "R  =  L  ·  E  ·  V  ·  (1 - ρ)",
-            "eq_num": "R  =  0.90  ·  0.70  ·  0.55  ·  (1 - 0.10)  =  0.312",
-            "line1": "Untreated HBV Cohort (~12.8%/yr): L jumps 0.15 -> 0.90",
-            "line2": "Pearl MASLD Cohort (~5.0%/yr):   L = 0.65, R = 0.156",
-            "line3": "Population Exposure (E): 0.60 -> 0.70",
-            "line4": "Ad-Hoc Resilience (ρ = 0.10): 90% hazard unbuffered",
-            "outcome": "Result: R = 0.312  ->  TIER 3: HIGH URGENCY",
-            "cite1": "Upstream Scores: Fan et al. aMAP; Sharma et al. THRI",
-            "cite2": "Table 1 & Table 2 Cohorts (Marolla 2026, SSRN: 7427450)",
-        },
-        {
-            "clip": find_file("2.*liver_tumor*.mp4"),
-            "badge": "STAGE 3 / EARLY HCC (BCLC 0/A)  •  INTERCEPTION WINDOW",
-            "title": "Resilience Upgrade Cuts Risk 30%-56%",
-            "flow": "1. Fibrosis -> 2. Cirrhosis -> [3. Early HCC] -> 4. Invasion -> 5. Metastasis",
-            "eq_sym": "R  =  L  ·  E  ·  V  ·  (1 - ρ)",
-            "eq_num": "R  =  0.90  ·  0.70  ·  0.55  ·  (1 - 0.65)  =  0.121",
-            "line1": "Resilience Ladder (ρ): 0.10 (Ad-hoc)  ->  0.65 (US + AFP)",
-            "line2": "Untreated HBV: R drops 0.312 -> 0.191  (-39% Risk)",
-            "line3": "Pearl MASLD:   R drops 0.156 -> 0.068  (-56% Risk)",
-            "line4": "Investment Efficiency Index (IEI): > 1.00 (High Yield)",
-            "outcome": "Result: Intercepted at BCLC 0/A (>70% 5-Yr Survival)",
-            "cite1": "Singal et al. (2022) Surveillance Uptake (<20% baseline)",
-            "cite2": "RHO_ANCHORS_HCC: 0.15 to 0.65 (core/rmti_core.py)",
-        },
-        {
-            "clip": find_file("5.*portal_vein*.mp4"),
-            "badge": "STAGE 4 / PORTAL VEIN INVASION (BCLC B/C)",
-            "title": "Capsule Breach & ALBI Decompensation",
-            "flow": "1. Fibrosis -> 2. Cirrhosis -> 3. Early HCC -> [4. Invasion] -> 5. Metastasis",
-            "eq_sym": "R  =  L  ·  E  ·  V  ·  (1 - ρ)",
-            "eq_num": "R  =  0.90  ·  0.75  ·  0.85  ·  (1 - 0.15)  =  0.488",
-            "line1": "Faria et al. Cohort (n=54): HCC V=0.522 vs Cirrhosis 0.480",
-            "line2": "Mortality Gap: 34.5% (HCC) vs 8.0% (Cirrhosis), p = 0.025",
-            "line3": "ALBI Grade 3 Progression: Vulnerability V -> 0.85",
-            "line4": "Curative Resection & Ablation Window Foreclosed",
-            "outcome": "Result: R = 0.488  ->  TIER 4: SEVERE ESCALATION",
-            "cite1": "Faria et al. Harvard Dataverse Cohort (doi:10.7910/DVN)",
-            "cite2": "Lau-Min et al., JAMA Network Open (2025) Systemic Cohort",
-        },
-        {
-            "clip": find_file("4.*Tumor_cells_traveling*.mp4"),
-            "badge": "STAGE 5 / METASTASIS (BCLC D)  •  EXPECTED ANNUAL LOSS",
-            "title": "Consequence Tie-Breaker: EAL Index",
-            "flow": "1. Fibrosis -> 2. Cirrhosis -> 3. Early HCC -> 4. Invasion -> [5. Metastasis]",
-            "eq_sym": "EAL  =  L  ·  C  ·  (1 - ρ)",
-            "eq_num": "EAL  =  0.25  ·  1.00  ·  (1 - 0.20)  =  0.200",
-            "line1": "Patient A (BCLC A, C=0.30): R = 0.072 | EAL = 0.072",
-                        "line2": "Patient B (BCLC D, C=1.00): R = 0.066 | EAL = 0.200",
-            "line3": "Within-Tier Priority Reversal: 1 : 2.8 EAL Ratio",
-            "line4": "Patient B Escalates Ahead of Patient A Automatically",
-            "outcome": "Result: EAL = 0.200  ->  MAXIMUM CONSEQUENCE ALERT",
-            "cite1": "Marolla (2018, 2025, 2026) Disaster-Oncology Governance",
-            "cite2": "Open-Source Apache-2.0 | HL7 FHIR R4 RiskAssessment",
-        },
-    ]
-    build_split_screen_video(v1_stages, v1_audio, OUT_DIR / "video1_4stages_3d.mp4")
-
-    # --- VIDEO 2: Time-Indexed Trajectory R(t) & Kalman Filtering ---
-    v2_audios = sorted(RAW_DIR.glob("video2_trajectory_voice*.mp3"))
-    v2_audio = v2_audios[0] if v2_audios else None
-    t_clips = sorted(RAW_DIR.glob("traj_clip_*.mp4"))
-    c1 = t_clips[0] if len(t_clips) >= 1 else find_file("1.*glowing_liver*.mp4")
-    c2 = t_clips[1] if len(t_clips) >= 2 else find_file("2.*liver_tumor*.mp4")
-
-    v2_stages = [
-        {
-            "clip": c1,
-            "badge": "TIME-INDEXED TRAJECTORY  •  CYCLE t = 0 -> t = 3",
-            "title": "From Static Snapshot to R(t)",
-            "flow": "Cycle t=0 (0 mo)  ->  t=1 (6 mo)  ->  t=2 (12 mo)  ->  t=3 (18 mo)",
-            "eq_sym": "R(t)  =  L(t)  ·  E  ·  V*(t)  ·  [1 - ρ(t)]",
-            "eq_num": "Baseline t=0:  0.30  ·  0.60  ·  0.50  ·  (1 - 0.20)  =  0.072",
-            "line1": "Unrounded Precision: IR_raw, R_raw, EAL_raw preserved",
-            "line2": "Resolves subtle per-cycle shifts: ΔR ≈ 0.001 - 0.010",
-            "line3": "Tracks longitudinal ALBI reserve & adherence ρ(t)",
-            "line4": "Stateless core/rmti_core.py v2.2.1 (No formula fork)",
-            "outcome": "Baseline t=0: Both Patients Start at R(0) = 0.072 (Tier 2)",
-            "cite1": "Marolla (2026) From Snapshot to Trajectory (RMTI-Py v2.5)",
-            "cite2": "dynamic/rmti_dynamic.py | 6-Monthly Surveillance Grid",
-        },
-        {
-            "clip": c2,
-            "badge": "STEADY-STATE FILTER (α = 0.41, β = 0.09)  •  N = 2,000",
-            "title": "Diverging Trajectories & AUROC Gain",
-            "flow": "Patient B: R(0)=0.072 -> 0.115 -> 0.152 -> 0.178 (TIER 3 HIGH)",
-            "eq_sym": "V*(t)  =  clip(v_lo + (v_hi - v_lo) · (l_t + κ·H·s_t))",
-            "eq_num": "Patient A: R(0)=0.072 -> 0.048 -> 0.031 -> 0.022 (TIER 1 LOW)",
-            "line1": "Patient B (V↑, ρ=0.20 flat): Crosses Tier 3 (>0.15) at t=2",
-            "line2": "Patient A (V↓, ρ: 0.20->0.65): Drops into Tier 1 (<0.05)",
-            "line3": "Filter (α=0.41, β=0.09) suppresses lab noise false alerts",
-            "line4": "Synthetic Validation (N=2,000): +0.015 to +0.022 AUROC",
-            "outcome": "Result: Trajectory Slope Separates Identical Baselines",
-            "cite1": "Synthetic Landmark Design (N=2,000, 2-Yr HCC Horizon)",
-            "cite2": "Pre-registered Hypothesis | Apache-2.0 | ORCID 0000-0001-8498-7380",
-        },
-    ]
-    build_split_screen_video(v2_stages, v2_audio, OUT_DIR / "video2_trajectory_3d.mp4")
-
