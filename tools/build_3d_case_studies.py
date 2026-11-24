@@ -239,22 +239,3 @@ def build_video(clips: list[Path], mode: str, audio: Path | None, output_mp4: Pa
 
 
 if __name__ == "__main__":
-        # Video 1: 5-Stage Pathological & Mathematical Progression
-    v1_audio = find_file("*brit voice*.mp3")
-    v1_clips = [
-        find_file("1.*glowing_liver*.mp4"),
-        find_file("3.*Cells_proliferating*.mp4"),
-        find_file("2.*liver_tumor*.mp4"),
-        find_file("5.*portal_vein*.mp4"),
-        find_file("4.*Tumor_cells_traveling*.mp4"),
-    ]
-    build_video(v1_clips, "v1", v1_audio, OUT_DIR / "video1_4stages_3d.mp4")
-
-    # Video 2: Time-Indexed Trajectory R(t) & Kalman Filtering
-    v2_audios = sorted(RAW_DIR.glob("video2_trajectory_voice*.mp3"))
-    v2_audio = v2_audios if v2_audios else None
-    t_clips = sorted(RAW_DIR.glob("traj_clip_*.mp4"))
-    c1 = t_clips if len(t_clips) >= 1 else find_file("1.*glowing_liver*.mp4")
-    c2 = t_clips if len(t_clips) >= 2 else find_file("2.*liver_tumor*.mp4")
-    build_video([c1, c2], "v2", v2_audio, OUT_DIR / "video2_trajectory_3d.mp4")
-
