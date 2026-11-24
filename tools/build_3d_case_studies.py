@@ -194,3 +194,54 @@ if __name__ == "__main__":
             "eq_sym": "EAL  =  L  ·  C  ·  (1 - ρ)",
             "eq_num": "EAL  =  0.25  ·  1.00  ·  (1 - 0.20)  =  0.200",
             "line1": "Patient A (BCLC A, C=0.30): R = 0.072 | EAL = 0.072",
+                        "line2": "Patient B (BCLC D, C=1.00): R = 0.066 | EAL = 0.200",
+            "line3": "Within-Tier Priority Reversal: 1 : 2.8 EAL Ratio",
+            "line4": "Patient B Escalates Ahead of Patient A Automatically",
+            "outcome": "Result: EAL = 0.200  ->  MAXIMUM CONSEQUENCE ALERT",
+            "cite1": "Marolla (2018, 2025, 2026) Disaster-Oncology Governance",
+            "cite2": "Open-Source Apache-2.0 | HL7 FHIR R4 RiskAssessment",
+        },
+    ]
+    build_split_screen_video(v1_stages, v1_audio, OUT_DIR / "video1_4stages_3d.mp4")
+
+    # --- VIDEO 2: Time-Indexed Trajectory R(t) & Kalman Filtering ---
+    v2_audios = sorted(RAW_DIR.glob("video2_trajectory_voice*.mp3"))
+    v2_audio = v2_audios[0] if v2_audios else None
+    t_clips = sorted(RAW_DIR.glob("traj_clip_*.mp4"))
+    c1 = t_clips[0] if len(t_clips) >= 1 else find_file("1.*glowing_liver*.mp4")
+    c2 = t_clips[1] if len(t_clips) >= 2 else find_file("2.*liver_tumor*.mp4")
+
+    v2_stages = [
+        {
+            "clip": c1,
+            "badge": "TIME-INDEXED TRAJECTORY  •  CYCLE t = 0 -> t = 3",
+            "title": "From Static Snapshot to R(t)",
+            "flow": "Cycle t=0 (0 mo)  ->  t=1 (6 mo)  ->  t=2 (12 mo)  ->  t=3 (18 mo)",
+            "eq_sym": "R(t)  =  L(t)  ·  E  ·  V*(t)  ·  [1 - ρ(t)]",
+            "eq_num": "Baseline t=0:  0.30  ·  0.60  ·  0.50  ·  (1 - 0.20)  =  0.072",
+            "line1": "Unrounded Precision: IR_raw, R_raw, EAL_raw preserved",
+            "line2": "Resolves subtle per-cycle shifts: ΔR ≈ 0.001 - 0.010",
+            "line3": "Tracks longitudinal ALBI reserve & adherence ρ(t)",
+            "line4": "Stateless core/rmti_core.py v2.2.1 (No formula fork)",
+            "outcome": "Baseline t=0: Both Patients Start at R(0) = 0.072 (Tier 2)",
+            "cite1": "Marolla (2026) From Snapshot to Trajectory (RMTI-Py v2.5)",
+            "cite2": "dynamic/rmti_dynamic.py | 6-Monthly Surveillance Grid",
+        },
+        {
+            "clip": c2,
+            "badge": "STEADY-STATE FILTER (α = 0.41, β = 0.09)  •  N = 2,000",
+            "title": "Diverging Trajectories & AUROC Gain",
+            "flow": "Patient B: R(0)=0.072 -> 0.115 -> 0.152 -> 0.178 (TIER 3 HIGH)",
+            "eq_sym": "V*(t)  =  clip(v_lo + (v_hi - v_lo) · (l_t + κ·H·s_t))",
+            "eq_num": "Patient A: R(0)=0.072 -> 0.048 -> 0.031 -> 0.022 (TIER 1 LOW)",
+            "line1": "Patient B (V↑, ρ=0.20 flat): Crosses Tier 3 (>0.15) at t=2",
+            "line2": "Patient A (V↓, ρ: 0.20->0.65): Drops into Tier 1 (<0.05)",
+            "line3": "Filter (α=0.41, β=0.09) suppresses lab noise false alerts",
+            "line4": "Synthetic Validation (N=2,000): +0.015 to +0.022 AUROC",
+            "outcome": "Result: Trajectory Slope Separates Identical Baselines",
+            "cite1": "Synthetic Landmark Design (N=2,000, 2-Yr HCC Horizon)",
+            "cite2": "Pre-registered Hypothesis | Apache-2.0 | ORCID 0000-0001-8498-7380",
+        },
+    ]
+    build_split_screen_video(v2_stages, v2_audio, OUT_DIR / "video2_trajectory_3d.mp4")
+
