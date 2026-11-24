@@ -19,32 +19,45 @@ def P(fn, title, icon, slug, default=False):
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-CASE_VIDEO = os.path.join("assets", "videos", "rmti_hcc_case_study.mp4")
+GITHUB_VIDEO_BASE = "https://githubusercontent.com"
 
 
-def _case_video():
-    """Repo root first (CI commits the render to assets/videos/), then next to app.py. Skips Git-LFS pointer files."""
-    bases, d = [], ROOT
-    for _ in range(4):                      # app folder, then up to the repo root (the upload may be nested)
-        bases.append(d)
+def _find_asset(rel_path: str, min_bytes: int = 2048):
+    """Walk up from app.py to repo root to find local asset; returns None if missing or LFS pointer."""
+    d = ROOT
+    for _ in range(4):
+        candidate = os.path.join(d, rel_path)
+        if os.path.exists(candidate) and os.path.getsize(candidate) >= min_bytes:
+            return candidate
         d = os.path.dirname(d)
-    for base in bases:
-        p = os.path.join(base, CASE_VIDEO)
-        if os.path.exists(p) and os.path.getsize(p) > 2048:
-            return p
     return None
 
 
-@st.dialog("RMTI Clinical Case Study", width="large")
+@st.dialog("RMTI Clinical Case Studies & 3D Trajectory Models", width="large")
 def case_study_dialog():
-    f = _case_video()
-    if f:
-        st.video(f)
-        st.caption("Hepatocellular carcinoma: tumor events on the left, the RMTI calculation on the right. "
-                   "Narrated. Synthetic and published aggregate values only; research prototype, not a medical device.")
-    else:
-        st.info("The case-study video has not been rendered yet. It is built by the Render RMTI animations workflow "
-                "and saved as assets/videos/rmti_hcc_case_study.mp4.")
+    v1_mp4 = _find_asset(os.path.join("assets", "videos", "video1_4stages_3d.mp4")) or f"{GITHUB_VIDEO_BASE}/video1_4stages_3d.mp4"
+    v1_vtt = _find_asset(os.path.join("assets", "videos", "video1_4stages.vtt"), min_bytes=20)
+    v2_mp4 = _find_asset(os.path.join("assets", "videos", "video2_trajectory_3d.mp4")) or f"{GITHUB_VIDEO_BASE}/video2_trajectory_3d.mp4"
+    v2_vtt = _find_asset(os.path.join("assets", "videos", "video2_trajectory.vtt"), min_bytes=20)
+
+    tab1, tab2 = st.tabs([
+        "Case Study 1: 4-Stage Liver Progression & Cohort Triage",
+        "Case Study 2: Time-Indexed Trajectory R(t) & Kalman Filtering",
+    ])
+
+    with tab1:
+        st.video(v1_mp4, subtitles=v1_vtt)
+        st.caption(
+            "Hepatocellular carcinoma 4-stage pathological progression & cohort triage (SSRN: 7427450). "
+            "Narrated. Click CC in the player bar to toggle closed captions. Research prototype, not a medical device."
+        )
+
+    with tab2:
+        st.video(v2_mp4, subtitles=v2_vtt)
+        st.caption(
+            "Longitudinal time-indexed trajectory R(t) with unrounded IR_raw, R_raw, EAL_raw, and steady-state filtered V*(t) "
+            "(N = 2,000 synthetic landmark design). Narrated. Click CC in the player bar to toggle closed captions."
+        )
 
 
 PG = {
