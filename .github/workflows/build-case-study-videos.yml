@@ -6,6 +6,7 @@ on:
     paths:
       - "assets/raw/**"
       - "tools/build_3d_case_studies.py"
+      - ".github/workflows/build-case-study-videos.yml"
   workflow_dispatch:
 
 permissions:
@@ -19,8 +20,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install FFmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install FFmpeg and Python Plotting Libraries
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install matplotlib numpy
       - name: Assemble 3D Case Study MP4s
         run: python tools/build_3d_case_studies.py
       - name: Commit finished MP4s to assets/videos/
