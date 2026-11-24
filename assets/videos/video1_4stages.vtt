@@ -1,0 +1,21 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:15.000
+[Stage 1: Fibrosis F1–F3 | Marolla 2026, SSRN: 7427450]
+Hepatocellular carcinoma follows a measurable biological trajectory—beginning with chronic liver inflammation (L = 0.15, ALBI Grade 1 V = 0.35 -> R = 0.025, Low Tier).
+
+00:00:15.000 --> 00:00:30.000
+[Stage 2: Compensated Cirrhosis F4 | Fan et al. aMAP; Sharma et al. THRI]
+As fibrosis advances into cirrhosis, regenerative nodules form and annual HCC likelihood L surges up to tenfold (L = 0.30–0.90, E = 0.60–0.70).
+
+00:00:30.000 --> 00:00:46.000
+[Stage 3: Early HCC BCLC 0/A | Surveillance Ladder ρ: 0.15 -> 0.65]
+At early HCC, R = L · E · V · (1 − ρ) evaluates the interception window: upgrading ultrasound + AFP cuts residual risk by 30% to 56% (>70% 5-yr survival).
+
+00:00:46.000 --> 00:01:01.000
+[Stage 4: Portal Vein Invasion BCLC B/C | Faria et al. ALBI Cohort, n = 54]
+Without adequate resilience (ρ = 0.15), malignant cells invade the portal vein—escalating ALBI liver vulnerability (V = 0.522 vs 0.480, p = 0.025) into Severe/Critical tiers.
+
+00:01:01.000 --> 00:06:06.000
+[Stage 5: Distant Metastasis BCLC D | EAL = L · C · (1 − ρ)]
+Left unchecked, tumor cells intravasate toward distant organs—where Expected Annual Loss (C = 1.00 -> EAL = 0.200) captures full clinical consequence.
