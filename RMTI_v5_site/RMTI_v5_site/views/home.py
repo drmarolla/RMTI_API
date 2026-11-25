@@ -128,7 +128,6 @@ def render():
             st.switch_page(PAGES["pubs"])
 
     st.write("")
-    # 4 High-Contrast Clickable Domain Pillar Cards (replaces faded metric badges)
     pillars = [
         ("Unified framework", "R = L·E·V·(1−ρ)", "Disaster & Oncology", "method"),
         ("Cancer cohorts", "Liver, Lung, Breast", "BCLC & ALBI calibrated", "liver"),
