@@ -71,7 +71,7 @@ Filtered trajectory slope adds +0.015 to +0.022 AUROC over static baseline R(0) 
 
 @st.dialog("RMTI Clinical Case Studies & 3D Trajectory Models", width="large")
 def case_study_dialog():
-        v1_mp4 = f"{RAW_BASE}/videos/video1_4stages_3d.mp4?v=7"
+    v1_mp4 = f"{RAW_BASE}/videos/video1_4stages_3d.mp4?v=7"
     v2_mp4 = f"{RAW_BASE}/videos/video2_trajectory_3d.mp4?v=7"
     v2_mp3 = f"{RAW_BASE}/video2_trajectory_voice.mp3.mp3"
 
