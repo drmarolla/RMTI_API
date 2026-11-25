@@ -40,7 +40,6 @@ BOOKS = [
     ("Information and Communication Technology for Sustainable Development", "2018", "CRC Press / Taylor & Francis", "Systems & Digital Resilience", "https://taylorfrancis.com", "Sustainability assessments, digital infrastructure governance, and operational resilience frameworks."),
     ("Climate Resilient Investment in Sub-Saharan Africa Compendium Volume", "2023", "World Bank Group (Lead Author & Consultant)", "Infrastructure Resilience", "https://worldbank.org", "Technical compendium operationalizing climate-resilient infrastructure project design across Sub-Saharan Africa."),
 ]
-
 PAPERS = [
     ("From Narrative to Algorithm: A Risk Mechanism Theory Index for Urban Infrastructure Investment in Sub-Saharan Africa", "2026", "IJMADA 6(1): 354–388", "Disaster Science & RMTI", "https://ijmada.com", "Formalizes the deterministic RMTI scoring algorithm and EAL tie-breaker across six Sub-Saharan African cities."),
     ("California Wildfires: A Holistic Systemic Management Approach to Urban Resilience", "2025", "Cambridge University Press", "Disaster Science", "https://cambridge.org", "Systemic wildfire degradation, psychological health threats, and integrated risk-governance strategies."),
