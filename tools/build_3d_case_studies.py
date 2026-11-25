@@ -1,4 +1,3 @@
-import glob
 import itertools
 import shutil
 import subprocess
@@ -8,7 +7,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-RAW_DIR = Path("assets/raw")
+ASSETS_DIR = Path("assets")
 OUT_DIR = Path("assets/videos")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -24,9 +23,9 @@ def get_duration(media_path: Path) -> float:
 
 
 def find_file(pattern: str) -> Path:
-    matches = sorted(glob.glob(str(RAW_DIR / pattern)))
+    matches = sorted(ASSETS_DIR.rglob(pattern))
     if not matches:
-        raise FileNotFoundError(f"Missing file matching: {RAW_DIR / pattern}")
+        raise FileNotFoundError(f"Missing file matching: {ASSETS_DIR}/{pattern}")
     return Path(next(iter(matches)))
 
 
