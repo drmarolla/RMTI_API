@@ -1,11 +1,9 @@
 """Risk Mechanism Theory Index (RMTI) - entry point.   streamlit run app.py"""
 import os
-
 import streamlit as st
-
 from engine import APP_TITLE
 from rmti_ui import inject_css
-from views import calculator, cases, developer_api, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox
+from views import author, calculator, cases, developer_api, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
 inject_css()
@@ -18,13 +16,7 @@ def P(fn, title, icon, slug, default=False):
     return st.Page(fn, title=title, icon=f":material/{icon}:", url_path=slug, default=default)
 
 
-RAW_BASE = (
-    "https://raw."
-    "githubusercontent"
-    ".com/"
-    "drmarolla/RMTI_API/main/assets"
-)
-
+RAW_BASE = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets"])
 
 V1_VTT = """WEBVTT
 
@@ -83,7 +75,7 @@ def case_study_dialog():
     with tab1:
         st.video(v1_mp4, subtitles=V1_VTT)
         st.markdown(
-            "**Case & Data Sources:** [Marolla (2026) HCC Preprint (SSRN: 7427450)](https://ssrn.com) · "
+            "**Case & Data Sources:** [Marolla (2026) HCC Preprint (SSRN: 7427450)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7427450) · "
             "Faria et al. ALBI Cohort (Harvard Dataverse, *n* = 54) · Singal et al. (2022) · Lau-Min et al. (*JAMA Netw Open* 2025). "
             "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
         )
@@ -114,6 +106,8 @@ PG = {
     "johnson": P(cases.johnson_page, "HCC pathway (Johnson)", "timeline", "case-hcc-pathway"),
     "urban": P(cases.urban_page, "Six African cities", "location_city", "case-urban"),
     "videos": P(cases.videos_page, "Video library", "movie", "video-library"),
+    "pubs": P(author.publications_page, "Books & Peer-Reviewed Work", "auto_stories", "publications"),
+    "bio": P(author.bio_page, "Author Biography & CV", "person", "author-biography"),
     "method": P(docs.method, "Method and tiers", "functions", "method"),
     "steps": P(docs.steps, "Step by step", "checklist", "step-by-step"),
     "refs": P(docs.references, "References and disclaimer", "menu_book", "references"),
@@ -128,6 +122,7 @@ pg = st.navigation({
     "Case studies": [PG["library"], PG["videos"]],
     "Oncology case studies": [PG["liver"], PG["lung"], PG["breast"], PG["johnson"]],
     "Disaster science case studies": [PG["urban"]],
+    "Publications & Author": [PG["pubs"], PG["bio"]],
     "Documentation": [PG["method"], PG["steps"], PG["refs"]],
     "Platform": [PG["api"]],
 })
