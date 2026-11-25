@@ -118,3 +118,29 @@ def bio_page():
                 st.markdown(f"**{ttl}**")
                 st.write(desc)
     disclaimer()
+    with st.container(border=True):
+        st.subheader("Research & Interdisciplinary Overview")
+        st.write(PROFILE["summary"])
+        st.caption(f"Correspondence: {PROFILE['email']}")
+    st.subheader("Academic & Institutional Leadership")
+    acols = st.columns(3, gap="medium")
+    for col, (org, role, det) in zip(acols, PROFILE["appointments"]):
+        with col.container(border=True):
+            st.markdown(f"**{org}**")
+            st.caption(role)
+            st.write(det)
+    st.write("")
+    cl, cr = st.columns(2, gap="large")
+    with cl:
+        st.subheader("Education & Executive Credentials")
+        for deg, inst in PROFILE["education"]:
+            with st.container(border=True):
+                st.markdown(f"**{deg}**")
+                st.caption(inst)
+    with cr:
+        st.subheader("Honors & Commendations")
+        for ttl, desc in PROFILE["honors"]:
+            with st.container(border=True):
+                st.markdown(f"**{ttl}**")
+                st.write(desc)
+    disclaimer()
