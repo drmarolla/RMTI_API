@@ -117,8 +117,9 @@ def _video(key, label):
             with open(cap, "rb") as fh:
                 st.download_button("Download closed captions (.vtt)", fh.read(), os.path.basename(cap), "text/vtt", key=f"vtt_{key}")
 
+
 def _refs(key):
-    rows = []    
+    rows = []
     for cite, url, kind in content.CASES[key]["refs"]:
         link = f' <a href="{url}" target="_blank">open</a>' if url else ""
         rows.append(f'<div class="card" style="margin-bottom:.6rem"><p><b>{kind}</b> · {cite}{link}</p></div>')
@@ -173,115 +174,3 @@ def case_page(key):
         a, b = st.columns(2)
         a.metric("R at first review", f"{c['r_before']:.3f}")
         a.markdown(badge(core.tier(c["r_before"])), unsafe_allow_html=True)
-        b.metric("R after improvement", f"{c['r_after']:.3f}", f"{(c['r_after'] / c['r_before'] - 1) * 100:.0f}%", delta_color="inverse")
-        b.markdown(badge(core.tier(c["r_after"])), unsafe_allow_html=True)
-    with next(it):
-        g1, g2 = st.columns([1, 2.2], gap="large")
-        with g1:
-            L = st.slider("L", 0.0, 1.0, 0.5, 0.01, key=f"{key}L")
-            E = st.slider("E", 0.0, 1.0, 0.5, 0.01, key=f"{key}E")
-        pts = []
-        with g2:
-            cols = st.columns(4)
-            for i, col in enumerate(cols):
-                v = col.slider(f"V cycle {i + 1}", 0.0, 1.0, round(0.60 - 0.04 * i, 2), 0.01, key=f"{key}V{i}")
-                r = col.slider(f"ρ cycle {i + 1}", 0.0, 0.95, round(0.20 + 0.12 * i, 2), 0.01, key=f"{key}R{i}")
-                pts.append(core.score(L, E, v, r)["R_raw"])
-        fig = go.Figure()
-        add_tier_bands(fig)
-        cycles = list(range(1, 5))
-        fig.add_trace(go.Scatter(x=cycles, y=pts, mode="lines+markers", line=dict(color="#0F172A", width=4), marker=dict(size=13)))
-        fig.update_layout(xaxis=dict(title="Review cycle", dtick=1), yaxis_title="Residual risk R", yaxis_range=[0, max(0.4, max(pts) * 1.2)], showlegend=False)
-        st.plotly_chart(style_fig(fig, 360), width="stretch")
-    if key == "liver":
-        with next(it):
-            _hcc_guidance_tab()
-    if key == "breast":
-        with next(it):
-            _gbd_tab()
-    with next(it):
-        _refs(key)
-    disclaimer()
-
-
-def johnson_page():
-    J = content.JOHNSON
-    page_header("HCC progression: the pathway matters for surveillance",
-                "Johnson and colleagues (BJC Reports, 2024) followed 2,592 patients with chronic liver disease and no prior cirrhosis at Ogaki Municipal Hospital, Japan (median follow-up 13.2 years).",
-                "Oncology case studies")
-    k0, k1, k2, k3 = st.columns(4, gap="medium")
-    k0.metric("HCC developed", f"{J['hcc']}", f"{J['hcc'] / J['n']:.0%} of cohort", delta_color="off")
-    k1.metric("Never passed through cirrhosis", f"{J['no_cirrhosis']}", "28% of HCC", delta_color="off")
-    k2.metric("HBV that skipped cirrhosis", f"{J['hbv_direct']} of {J['hbv_total']}", "69%", delta_color="off")
-    k3.metric("HCC per 1,000 patient-years", f"{J['rate_noncirr']} vs {J['rate_cirr']}", "non-cirrhotic vs cirrhotic", delta_color="off")
-    c1, c2 = st.columns(2, gap="large")
-    with c1:
-        fig = go.Figure(go.Bar(x=["Passed through cirrhosis", "Remained non-cirrhotic"], y=[J["via_cirrhosis"], J["no_cirrhosis"]],
-                               marker_color=["#0284C7", "#EF4444"], text=[J["via_cirrhosis"], J["no_cirrhosis"]], textposition="outside"))
-        fig.update_layout(title="Pathway to HCC (n = 172)", yaxis_title="Patients")
-        st.plotly_chart(style_fig(fig, 400), width="stretch")
-    with c2:
-        fig = go.Figure(go.Bar(x=["Hepatitis B", "Hepatitis C"], y=[J["hbv_direct"] / J["hbv_total"] * 100, J["hcv_noncirr"] / J["hcv_total"] * 100],
-                               marker_color=["#EF4444", "#38BDF8"], text=[f"{J['hbv_direct']}/{J['hbv_total']}", f"{J['hcv_noncirr']}/{J['hcv_total']}"], textposition="outside"))
-        fig.update_layout(title="HCC without cirrhosis, by aetiology", yaxis_title="% of HCC cases", yaxis_range=[0, 100])
-        st.plotly_chart(style_fig(fig, 400), width="stretch")
-    with st.container(border=True):
-        st.markdown("**RMTI Process & Clinical Outcome**")
-        st.write("28% of all HCC cases (and 69% of HBV-related HCC) bypassed cirrhosis entirely. RMTI decouples Exposure (E) and Resilience (ρ) from cirrhosis-only gating so high-risk non-cirrhotic patients are captured early.")
-    disclaimer()
-
-
-def urban_page():
-    page_header("Urban infrastructure: six Sub-Saharan African cities",
-                "Live recomputation of Tables 4 to 6 of Marolla (2026), checked against the published values.", "Disaster science case studies")
-    _dual_layer_panel("urban", 0.442, 0.231)
-    st.write("")
-    ranked = core.rank_cohort({k: {x: v[x] for x in ("N", "L", "E_sel", "V", "rho_now", "C", *(["rho_after"] if "rho_after" in v else []))}
-                               for k, v in content.SIX_CITIES.items()})
-    rows, ok_all = [], True
-    for r in ranked:
-        pub_now, pub_after = content.SIX_CITIES_PUBLISHED[r["name"]]
-        ok = abs(r["R_now"] - pub_now) < 0.0015 and (pub_after is None or abs(r["R_after"] - pub_after) < 0.0015)
-        ok_all &= ok
-        rows.append({"Priority in tier": r["priority_in_tier"], "City": r["name"], "Asset": content.SIX_CITIES[r["name"]]["asset"],
-                     "R now": r["R_now"], "Tier now": short(r["tier_now"]), "R after": r.get("R_after"), "Tier after": short(r["tier_after"]) if "tier_after" in r else "",
-                     "Reduction %": r.get("risk_reduction_pct"), "EAL now": r["EAL_now"], "Equity /1M": r["equity_now_per_1M"], "Matches paper": "Yes" if ok else "No"})
-    df = pd.DataFrame(rows)
-    (st.success if ok_all else st.warning)("All published R values reproduced." if ok_all else "Some values differ from the paper.")
-    st.dataframe(df, hide_index=True, width="stretch")
-    c1, c2 = st.columns(2, gap="large")
-    with c1:
-        fig = go.Figure()
-        add_tier_bands(fig)
-        fig.add_bar(x=df["City"], y=df["R now"], name="R now", marker_color="#EF4444")
-        fig.add_bar(x=df["City"], y=df["R after"], name="R after ($50M package)", marker_color="#10B981")
-        fig.update_layout(barmode="group", yaxis_title="Residual risk R", yaxis_range=[0, 0.65], title="R against the five fixed tiers")
-        st.plotly_chart(style_fig(fig, 460), width="stretch")
-    with c2:
-        d2 = df.sort_values("Equity /1M")
-        fig = go.Figure(go.Bar(y=d2["City"], x=d2["Equity /1M"], orientation="h", marker_color="#0284C7"))
-        fig.update_layout(title="Per-capita equity rate (EAL per million residents)", xaxis_title="Equity rate")
-        st.plotly_chart(style_fig(fig, 460), width="stretch")
-    disclaimer()
-
-
-def videos_page():
-    page_header("Video library", "Narrated walkthroughs of the framework and the case studies.", "Case studies")
-    known = {"rmti_1": "RMTI explained", "rmti_2": "Liver case studies", "rmti_3": "Flood and heat case studies"}
-    vids = content.all_videos()
-    if not vids:
-        st.markdown('<div class="note">No videos found yet.</div>', unsafe_allow_html=True)
-    for f in vids:
-        name = os.path.basename(f)
-        stem = name.rsplit(".", 1)[0]
-        title = next((v for k, v in known.items() if name.lower().startswith(k)), stem.replace("_", " ").title())
-        st.subheader(title)
-        st.video(f)
-    disclaimer()
-
-
-def liver():
-    case_page("liver")
-
-
-
