@@ -7,9 +7,30 @@ from views import author, calculator, cases, developer_api, docs, hcc_surveillan
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
 inject_css()
-logo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "rmti_logo.svg")
-if os.path.exists(logo):
-    st.logo(logo, size="large")
+st.sidebar.markdown("""
+<style>
+@keyframes rmtiSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rmtiPulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.65); } }
+.rmti-brand { display:flex; align-items:center; gap:12px; padding:4px 2px 12px 2px; }
+.rmti-orb { position:relative; width:44px; height:44px; display:flex; align-items:flex-end; justify-content:center; gap:3px; padding-bottom:11px; }
+.rmti-ring { position:absolute; inset:0; border:2px dashed #38BDF8; border-radius:50%; animation:rmtiSpin 14s linear infinite; }
+.rmti-b { width:4.5px; border-radius:2px; transform-origin:bottom; animation:rmtiPulse 2.4s ease-in-out infinite; }
+</style>
+<div class="rmti-brand">
+  <div class="rmti-orb">
+    <div class="rmti-ring"></div>
+    <div class="rmti-b" style="height:14px;background:#38BDF8;"></div>
+    <div class="rmti-b" style="height:22px;background:#EF4444;animation-delay:0.4s;"></div>
+    <div class="rmti-b" style="height:18px;background:#F59E0B;animation-delay:0.8s;"></div>
+    <div class="rmti-b" style="height:12px;background:#10B981;animation-delay:1.2s;"></div>
+  </div>
+  <div>
+    <div style="font-size:21px;font-weight:900;letter-spacing:1px;color:#FFFFFF;line-height:1.1;">RMTI</div>
+    <div style="font-size:8.5px;font-weight:700;letter-spacing:0.8px;color:#38BDF8;">RISK MECHANISM THEORY INDEX</div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
 
 
 def P(fn, title, icon, slug, default=False):
