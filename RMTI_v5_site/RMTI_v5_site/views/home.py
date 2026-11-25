@@ -1,21 +1,20 @@
 """Home view — Full-page dark 3D video background, ambient audio toggle, and clickable RMTI cards."""
 import streamlit as st
 import streamlit.components.v1 as components
-
 PAGES = {}
 RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
 RAW_ROOT = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main"])
-
-
 def render():
     onc_mp4 = f"{RAW_VIDEOS}/home_oncology.mp4"
     dis_mp4 = f"{RAW_VIDEOS}/home_disaster.mp4"
     fb_onc = f"{RAW_VIDEOS}/video1_4stages_3d.mp4"
     fb_dis = f"{RAW_ROOT}/rmti_3_flood_heat_case_studies.mp4"
-
     st.markdown("""
     <style>
-    html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] { background: transparent !important; }
+    html, body, .stApp, [data-testid="stAppViewContainer"] { background: transparent !important; }
+    [data-testid="stHeader"] { background: linear-gradient(180deg, rgba(11,17,32,0.88) 0%, transparent 100%) !important; }
+    [data-testid="stHeader"] button, [data-testid="stHeader"] a, [data-testid="stHeader"] svg { color: #F1F5F9 !important; fill: #F1F5F9 !important; opacity: 0.95 !important; }
+    [data-testid="stHeader"] button:hover, [data-testid="stHeader"] a:hover { color: #38BDF8 !important; }
     [data-testid="stMain"], [data-testid="stAppViewContainer"] > .main { position: relative !important; z-index: 5 !important; background: transparent !important; }
     [data-testid="stSidebar"] { background: rgba(11,17,32,0.92) !important; backdrop-filter: blur(14px); z-index: 6 !important; }
     [data-testid="stSidebar"] * { color: #F1F5F9 !important; }
@@ -41,7 +40,6 @@ def render():
     [data-testid="stMain"] .stButton > button[kind="primary"] * { color: #FFFFFF !important; }
     </style>
     """, unsafe_allow_html=True)
-
     components.html(f"""
     <script>
     (function() {{
@@ -68,7 +66,6 @@ def render():
     }})();
     </script>
     """, height=0)
-
     st.markdown("""
     <div class="hero-wrap">
       <div class="hero-pills">
@@ -81,12 +78,12 @@ def render():
       <div class="hero-title">Quantify systemic risk.<br>Before it fragments care.</div>
     </div>
     """, unsafe_allow_html=True)
-
     components.html("""
     <style>
       body{margin:0;background:transparent;font-family:sans-serif}
       .bar{display:inline-flex;align-items:center;gap:14px;background:rgba(15,23,42,0.88);border:1px solid rgba(148,163,184,0.38);padding:10px 18px;border-radius:10px;color:#FFF;font-size:14px;font-weight:700}
-      .btn{background:#1E293B;color:#F8FAFC;border:1px solid #64748B;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer}
+      .btn{background:#1E293B;color:#F8FAFC;border:1px solid #64748B;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all 0.2s ease}
+      .btn:hover{border-color:#38BDF8;color:#FFFFFF;box-shadow:0 0 14px rgba(56,189,248,0.55)}
       .btn.on{background:#0284C7;border-color:#38BDF8;color:#FFFFFF}
     </style>
     <div class="bar">
@@ -112,21 +109,15 @@ def render():
       }
     </script>
     """, height=58)
-
     c1, c2, c3, c4, _ = st.columns([1.5, 1.7, 1.8, 1.8, 2.2])
     if c1.button("Explore the tools", type="primary", use_container_width=True, key="hero_explore"):
-        if "calc" in PAGES:
-            st.switch_page(PAGES["calc"])
+        if "calc" in PAGES: st.switch_page(PAGES["calc"])
     if c2.button("Disaster case studies", use_container_width=True, key="hero_disaster"):
-        if "urban" in PAGES:
-            st.switch_page(PAGES["urban"])
+        if "urban" in PAGES: st.switch_page(PAGES["urban"])
     if c3.button("Oncology case studies", use_container_width=True, key="hero_oncology"):
-        if "liver" in PAGES:
-            st.switch_page(PAGES["liver"])
+        if "liver" in PAGES: st.switch_page(PAGES["liver"])
     if c4.button("Books & Publications", use_container_width=True, key="hero_pubs"):
-        if "pubs" in PAGES:
-            st.switch_page(PAGES["pubs"])
-
+        if "pubs" in PAGES: st.switch_page(PAGES["pubs"])
     st.write("")
     pillars = [
         ("Unified framework", "R = L·E·V·(1−ρ)", "Disaster & Oncology", "method"),
@@ -141,31 +132,3 @@ def render():
             st.markdown(f"### {val}")
             st.markdown(f'<span class="pillar-tag">{tag}</span>', unsafe_allow_html=True)
             if st.button("Open", key=f"pil_{pk}", use_container_width=True):
-                if pk in PAGES:
-                    st.switch_page(PAGES[pk])
-
-    st.write("")
-    st.subheader("Everything in one place")
-    cards = [
-        ("RMTI Calculator", "Score any asset or cohort, model an investment, rank a portfolio.", "calc"),
-        ("HCC Surveillance Calculator", "Triage surveillance for a patient or the six published cohorts.", "hccs"),
-                ("HCC Treatment Calculator", "Evidence-gated regimen matching for stage 0 to D.", "hcct"),
-        ("Cohort Sandbox", "Rank a synthetic or uploaded cohort and test scenarios.", "sandbox"),
-        ("Interactive Tumor Models", "Rotate liver, lung, and breast models through stages 1 to 4.", "models"),
-        ("Live Risk Matrix", "Tier maps that redraw as you move the levers.", "live"),
-        ("4D Risk Matrix", "Tier surfaces in 3D, animated across Exposure.", "m4d"),
-        ("Books, Papers & Author Bio", "Monographs, World Bank compendium, peer-reviewed papers, and Dr. Marolla's CV.", "pubs"),
-        ("Developer API", "Deterministic scoring for EHR and dashboard integration.", "api"),
-    ]
-    for r in range(0, len(cards), 3):
-        cols = st.columns(3)
-        for col, (title, desc, pk) in zip(cols, cards[r:r + 3]):
-            with col.container(border=True):
-                st.markdown(f"**{title}**")
-                st.caption(desc)
-                if st.button("Open", key=f"card_{pk}", use_container_width=True):
-                    if pk in PAGES:
-                        st.switch_page(PAGES[pk])
-
-    st.caption("Research prototype: Not validated against outcomes, not a medical device, and not for patient care or emergency decisions.")
-
