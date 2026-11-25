@@ -1,4 +1,4 @@
-"""Home view — Full-page dark cinematic video background + high-contrast clickable RMTI cards."""
+"""Home view — Full-page dark cinematic video background + psychoacoustic ambient audio toggle + high-contrast RMTI cards."""
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -35,7 +35,6 @@ def render():
             z-index: 5 !important;
             background: transparent !important;
         }
-        /* Dark frosted sidebar */
         [data-testid="stSidebar"] {
             background: rgba(11, 17, 32, 0.92) !important;
             backdrop-filter: blur(14px);
@@ -45,7 +44,6 @@ def render():
         [data-testid="stSidebar"] * {
             color: #F1F5F9 !important;
         }
-        /* Force crisp white/light-slate text across all headings, metrics, and cards */
         [data-testid="stMain"] h1,
         [data-testid="stMain"] h2,
         [data-testid="stMain"] h3,
@@ -60,10 +58,9 @@ def render():
             color: #CBD5E1 !important;
             opacity: 1 !important;
         }
-        /* Hero typography */
         .hero-wrap {
-            padding: 28px 4px 20px 4px;
-            max-width: 660px;
+            padding: 28px 4px 12px 4px;
+            max-width: 680px;
         }
         .hero-pills {
             display: flex;
@@ -101,22 +98,8 @@ def render():
             font-weight: 800;
             line-height: 1.06;
             letter-spacing: -0.03em;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
-        .hero-eq {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            backdrop-filter: blur(10px);
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #FFFFFF !important;
-        }
-        /* Metric cards */
         [data-testid="stMetric"] {
             background: rgba(11, 17, 32, 0.84) !important;
             backdrop-filter: blur(12px);
@@ -131,7 +114,6 @@ def render():
         [data-testid="stMetricValue"] * {
             color: #FFFFFF !important;
         }
-        /* 9 Tool Cards ("Everything in one place") */
         [data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
             background: rgba(15, 23, 42, 0.86) !important;
             backdrop-filter: blur(14px);
@@ -143,7 +125,6 @@ def render():
         [data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"]:hover {
             border-color: #38BDF8 !important;
         }
-        /* High-contrast clickable buttons across the dark page */
         [data-testid="stMain"] .stButton > button[kind="secondary"] {
             background: #F8FAFC !important;
             color: #0F172A !important;
@@ -178,7 +159,7 @@ def render():
         unsafe_allow_html=True,
     )
 
-    # Full-viewport fixed rotating video background at z-index: -1 (never blocks clicks)
+    # Full-viewport fixed rotating video background at z-index: -1
     components.html(
         f"""
         <script>
@@ -221,7 +202,7 @@ def render():
         height=0,
     )
 
-    # Visual Science Style Left-Aligned Hero Copy
+    # Left-Aligned Hero Copy
     st.markdown(
         """
         <div class="hero-wrap">
@@ -237,18 +218,46 @@ def render():
             breast cancer, and urban climate resilience.
           </p>
           <div class="hero-title">Quantify systemic risk.<br>Before it fragments care.</div>
-          <div class="hero-eq">
-            <span>R = <span style="color:#38BDF8;">L</span> · <span style="color:#F87171;">E</span> · <span style="color:#FBBF24;">V</span> · (1 − <span style="color:#34D399;">ρ</span>)</span>
-            <span style="color:#64748B;">|</span>
-            <span style="color:#CBD5E1;font-weight:500;">Live Rotating 3D Oncology &amp; Disaster Models</span>
-          </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    # Primary Hero Action Buttons
-    c1, c2, c3, _ = st.columns([1.6, 1.8, 1.8, 3.8])
-    if c1.button("Explore the tools", type="primary", use_container_width=True, key="hero_explore"):
-        if "calc" in PAGES:
-            st.switch_page(PAGES["calc"])
+    # Equation Bar + Discreet Muted-By-Default Psychoacoustic Ambient Soundscape (64 BPM Major-9th Synth)
+    components.html(
+        """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+          body { background: transparent; overflow: hidden; }
+          .bar {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            background: rgba(15, 23, 42, 0.86);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            backdrop-filter: blur(10px);
+            padding: 10px 18px;
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 700;
+          }
+          .sound-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(30, 41, 59, 0.95);
+            color: #CBD5E1;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 999px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+          .sound-btn:hover { border-color: #38BDF8; color: #FFFFFF; }
