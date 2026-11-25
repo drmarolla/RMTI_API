@@ -18,22 +18,10 @@ def P(fn, title, icon, slug, default=False):
     return st.Page(fn, title=title, icon=f":material/{icon}:", url_path=slug, default=default)
 
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
 GITHUB_VIDEO_BASE = (
     "https://githubusercontent.com"
     "drmarolla/RMTI_API/main/assets/videos"
 )
-
-
-def _find_asset(rel_path: str, min_bytes: int = 2048):
-    """Walk up from app.py to repo root to find local asset; returns None if missing or LFS pointer."""
-    d = ROOT
-    for _ in range(4):
-        candidate = os.path.join(d, rel_path)
-        if os.path.exists(candidate) and os.path.getsize(candidate) >= min_bytes:
-            return candidate
-        d = os.path.dirname(d)
-    return None
 
 
 V1_VTT = """WEBVTT
@@ -61,19 +49,19 @@ Within-tier tie-breaker: Patient B (C = 1.00 -> EAL = 0.200) escalates ahead of 
 
 V2_VTT = """WEBVTT
 
-00:00:00.000 --> 00:00:14.000
+00:00:00.000 --> 00:00:18.000
 [From Snapshot to Trajectory | Marolla 2026, RMTI-Py v2.5]
 Time-indexed equation: R(t) = L(t) · E · V*(t) · [1 - ρ(t)] across 6-monthly cycles.
 
-00:00:14.000 --> 00:00:29.000
+00:00:18.000 --> 00:00:38.000
 [Unrounded Precision Engine | core/rmti_core.py]
 IR_raw, R_raw, and EAL_raw resolve subtle per-cycle shifts (ΔR ≈ 0.001–0.010).
 
-00:00:29.000 --> 00:00:44.000
+00:00:38.000 --> 00:01:02.000
 [Steady-State Filter: α = 0.41, β = 0.09 | Patient A vs. B]
 Patient B escalates R(0)=0.072 -> 0.178 (Tier 3 High); Patient A drops -> 0.022 (Tier 1 Low).
 
-00:00:44.000 --> 00:01:15.000
+00:01:02.000 --> 00:01:25.000
 [Synthetic Landmark Validation: N = 2,000, 2-Yr Horizon]
 Filtered trajectory slope adds +0.015 to +0.022 AUROC over static baseline R(0) ≈ 0.55.
 """
@@ -81,8 +69,8 @@ Filtered trajectory slope adds +0.015 to +0.022 AUROC over static baseline R(0) 
 
 @st.dialog("RMTI Clinical Case Studies & 3D Trajectory Models", width="large")
 def case_study_dialog():
-    v1_mp4 = _find_asset(os.path.join("assets", "videos", "video1_4stages_3d.mp4")) or f"{GITHUB_VIDEO_BASE}/video1_4stages_3d.mp4"
-    v2_mp4 = _find_asset(os.path.join("assets", "videos", "video2_trajectory_3d.mp4")) or f"{GITHUB_VIDEO_BASE}/video2_trajectory_3d.mp4"
+    v1_mp4 = f"{GITHUB_VIDEO_BASE}/video1_4stages_3d.mp4?v=2"
+    v2_mp4 = f"{GITHUB_VIDEO_BASE}/video2_trajectory_3d.mp4?v=2"
 
     tab1, tab2 = st.tabs([
         "Case Study 1: 4-Stage Liver Progression & Cohort Triage",
@@ -94,7 +82,7 @@ def case_study_dialog():
         st.markdown(
             "**Case & Data Sources:** [Marolla (2026) HCC Preprint (SSRN: 7427450)](https://ssrn.com) · "
             "Faria et al. ALBI Cohort (Harvard Dataverse, *n* = 54) · Singal et al. (2022) · Lau-Min et al. (*JAMA Netw Open* 2025). "
-            "*Click **CC** in the player bar to toggle closed captions.*"
+            "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
         )
 
     with tab2:
@@ -102,7 +90,7 @@ def case_study_dialog():
         st.markdown(
             "**Case & Data Sources:** Marolla (2026) *From Snapshot to Trajectory* (`RMTI-Py v2.5`, Apache-2.0) · "
             "Synthetic 2-Year Landmark Surveillance Cohort (*N* = 2,000, α = 0.41, β = 0.09). "
-            "*Click **CC** in the player bar to toggle closed captions.*"
+            "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
         )
 
 
