@@ -73,8 +73,7 @@ Filtered trajectory slope adds +0.015 to +0.022 AUROC over static baseline R(0) 
 def case_study_dialog():
     v1_mp4 = f"{RAW_BASE}/videos/video1_4stages_3d.mp4?v=7"
     v2_mp4 = f"{RAW_BASE}/videos/video2_trajectory_3d.mp4?v=7"
-    v2_mp3 = f"{RAW_BASE}/video2_trajectory_voice.mp3.mp3"
-
+    v2_mp3 = f"{RAW_BASE}/raw/video2_trajectory_voice.mp3.mp3"
 
     tab1, tab2 = st.tabs([
         "Case Study 1: 4-Stage Liver Progression & Cohort Triage",
@@ -90,14 +89,28 @@ def case_study_dialog():
         )
 
     with tab2:
-        st.caption("1. Press Play on the Narration Audio (1:23) + Video Animation:")
         st.audio(v2_mp3)
-        st.video(v2_mp4, subtitles=V2_VTT)
+        st.components.v1.html(
+            f"""
+            <video id="v2" width="100%" controls playsinline style="border-radius:8px;">
+              <source src="{v2_mp4}" type="video/mp4">
+            </video>
+            <audio id="a2" src="{v2_mp3}" preload="auto"></audio>
+            <script>
+              const v = document.getElementById('v2');
+              const a = document.getElementById('a2');
+              v.addEventListener('play', () => {{ a.currentTime = v.currentTime; a.play(); }});
+              v.addEventListener('pause', () => a.pause());
+              v.addEventListener('seeking', () => {{ a.currentTime = v.currentTime; }});
+            </script>
+            """,
+            height=430,
+        )
         st.markdown(
             "**Case & Data Sources:** Marolla (2026) *From Snapshot to Trajectory* (`RMTI-Py v2.5`, Apache-2.0) · "
-            "Synthetic 2-Year Landmark Surveillance Cohort (*N* = 2,000, α = 0.41, β = 0.09). "
-            "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
+            "Synthetic 2-Year Landmark Surveillance Cohort (*N* = 2,000, α = 0.41, β = 0.09)."
         )
+
 
 
 PG = {
