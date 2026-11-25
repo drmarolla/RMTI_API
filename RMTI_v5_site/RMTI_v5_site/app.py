@@ -18,9 +18,9 @@ def P(fn, title, icon, slug, default=False):
     return st.Page(fn, title=title, icon=f":material/{icon}:", url_path=slug, default=default)
 
 
-GITHUB_VIDEO_BASE = (
-    "https://githubusercontent.com"
-    "drmarolla/RMTI_API/main/assets/videos"
+RAW_VIDEO_BASE = (
+    "https://" + "raw." + "://githubusercontent.com"
+    + "drmarolla/RMTI_API/main/assets/videos"
 )
 
 
@@ -69,8 +69,8 @@ Filtered trajectory slope adds +0.015 to +0.022 AUROC over static baseline R(0) 
 
 @st.dialog("RMTI Clinical Case Studies & 3D Trajectory Models", width="large")
 def case_study_dialog():
-    v1_mp4 = f"{GITHUB_VIDEO_BASE}/video1_4stages_3d.mp4?v=2"
-    v2_mp4 = f"{GITHUB_VIDEO_BASE}/video2_trajectory_3d.mp4?v=2"
+    v1_mp4 = f"{RAW_VIDEO_BASE}/video1_4stages_3d.mp4?v=3"
+    v2_mp4 = f"{RAW_VIDEO_BASE}/video2_trajectory_3d.mp4?v=3"
 
     tab1, tab2 = st.tabs([
         "Case Study 1: 4-Stage Liver Progression & Cohort Triage",
