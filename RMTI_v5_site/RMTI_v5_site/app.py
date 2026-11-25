@@ -93,8 +93,8 @@ def case_study_dialog():
     with tab2:
         st.components.v1.html(
             f"""
-            <style>body {{ margin: 0; padding: 0; overflow: hidden; }}</style>
-            <video id="v2" controls playsinline style="width:100%; aspect-ratio:16/9; border-radius:8px; display:block;">
+            <style>body {{ margin: 0; padding: 0; overflow: hidden; background: #0F172A; }}</style>
+            <video id="v2" controls playsinline style="width:100%; height:640px; object-fit:contain; border-radius:8px; display:block;">
               <source src="{v2_mp4}" type="video/mp4">
               <track kind="captions" src="data:text/vtt;base64,{v2_vtt_b64}" srclang="en" label="English" default>
             </video>
@@ -108,7 +108,7 @@ def case_study_dialog():
               v.addEventListener('volumechange', () => {{ a.volume = v.volume; a.muted = v.muted; }});
             </script>
             """,
-            height=535,
+            height=640,
         )
         st.markdown(
             "**Case & Data Sources:** Marolla (2026) *From Snapshot to Trajectory* (`RMTI-Py v2.5`, Apache-2.0) · "
