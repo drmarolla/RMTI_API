@@ -12,30 +12,54 @@ from rmti_ui import add_tier_bands, badge, card, disclaimer, page_header, style_
 RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
 
 STUDIO_CLIPS = {
-    "liver": ("case_liver.mp4", "Clinical Oncology · Hepatocellular Carcinoma (HCC)", "Main 3D + 2D: BCLC & ALBI Trajectory",
-              [("L · Likelihood", "Cirrhosis & etiology incidence rate", "#0284C7"),
-               ("E · Exposure", "At-risk cohort reach & staging", "#EF4444"),
-               ("V · Vulnerability", "ALBI hepatic reserve & portal invasion", "#F59E0B"),
-               ("1 − ρ · Resilience", "Second-line systemic & surveillance delivery", "#10B981")],
-              "Upgrading surveillance and second-line systemic delivery (ρ) intercepts progression before hepatic reserve (V) collapses, cutting residual risk R from 0.258 (Tier 3 High) to 0.107 (Tier 2 Moderate)."),
-    "lung": ("case_lung.mp4", "Clinical Oncology · Non-Small Cell Lung Cancer", "Main 3D + 2D: LDCT Screening Interception",
-             [("L · Likelihood", "Smoking & occupational carcinogenesis", "#0284C7"),
-              ("E · Exposure", "Target screening population coverage", "#EF4444"),
-              ("V · Vulnerability", "Late-stage nodal/metastatic burden", "#F59E0B"),
-              ("1 − ρ · Resilience", "Low-dose CT screening & rapid resection", "#10B981")],
-             "Structured LDCT screening shifts Stage IV diagnosis from 35–44% down to 13% (Sabakhtarishvili et al., 2025), compressing residual risk R from 0.281 to 0.112."),
-    "breast": ("case_breast.mp4", "Clinical Oncology · HR-Positive Breast Cancer", "Main 3D + 2D: Endocrine & Targeted Trajectory",
-               [("L · Likelihood", "HR+/HER2− metastatic progression hazard", "#0284C7"),
-                ("E · Exposure", "Post-endocrine treatment cohort", "#EF4444"),
-                ("V · Vulnerability", "Visceral crisis & genomic resistance", "#F59E0B"),
-                ("1 − ρ · Resilience", "Timely second-line targeted therapy access", "#10B981")],
-               "Closing the 30% pre-second-line attrition gap (O'Shaughnessy et al., 2026) raises system resilience ρ and lowers residual risk R from 0.234 to 0.098."),
-    "urban": ("case_african_cities.mp4", "Disaster Science · Six Sub-Saharan African Cities", "Main 3D + 2D: Urban Flood & Heat Governance",
-              [("L · Likelihood", "Extreme rainfall, flood & heatwave frequency", "#0284C7"),
-               ("E · Exposure", "Transit corridors, clinics & dense settlements", "#EF4444"),
-               ("V · Vulnerability", "Drainage deficit & baseline health fragility", "#F59E0B"),
-               ("1 − ρ · Resilience", "$50M green-grey infrastructure & health continuity", "#10B981")],
-              "Allocating targeted resilience upgrades (ρ) across Bamako, Lagos, and Lilongwe cuts composite residual risk R by up to 48% and maximizes Expected Annual Loss (EAL) avoided per million residents."),
+    "liver": (
+        "case_liver.mp4",
+        "Clinical Oncology · Hepatocellular Carcinoma (HCC)",
+        "Main 3D + 2D: BCLC & ALBI Trajectory",
+        (
+            ("L · Likelihood", "Cirrhosis & etiology incidence rate", "#0284C7"),
+            ("E · Exposure", "At-risk cohort reach & staging", "#EF4444"),
+            ("V · Vulnerability", "ALBI hepatic reserve & portal invasion", "#F59E0B"),
+            ("1 − ρ · Resilience", "Second-line systemic & surveillance delivery", "#10B981"),
+        ),
+        "Upgrading surveillance and second-line systemic delivery (ρ) intercepts progression before hepatic reserve (V) collapses, cutting residual risk R from 0.258 (Tier 3 High) to 0.107 (Tier 2 Moderate).",
+    ),
+    "lung": (
+        "case_lung.mp4",
+        "Clinical Oncology · Non-Small Cell Lung Cancer",
+        "Main 3D + 2D: LDCT Screening Interception",
+        (
+            ("L · Likelihood", "Smoking & occupational carcinogenesis", "#0284C7"),
+            ("E · Exposure", "Target screening population coverage", "#EF4444"),
+            ("V · Vulnerability", "Late-stage nodal/metastatic burden", "#F59E0B"),
+            ("1 − ρ · Resilience", "Low-dose CT screening & rapid resection", "#10B981"),
+        ),
+        "Structured LDCT screening shifts Stage IV diagnosis from 35–44% down to 13% (Sabakhtarishvili et al., 2025), compressing residual risk R from 0.281 to 0.112.",
+    ),
+    "breast": (
+        "case_breast.mp4",
+        "Clinical Oncology · HR-Positive Breast Cancer",
+        "Main 3D + 2D: Endocrine & Targeted Trajectory",
+        (
+            ("L · Likelihood", "HR+/HER2− metastatic progression hazard", "#0284C7"),
+            ("E · Exposure", "Post-endocrine treatment cohort", "#EF4444"),
+            ("V · Vulnerability", "Visceral crisis & genomic resistance", "#F59E0B"),
+            ("1 − ρ · Resilience", "Timely second-line targeted therapy access", "#10B981"),
+        ),
+        "Closing the 30% pre-second-line attrition gap (O'Shaughnessy et al., 2026) raises system resilience ρ and lowers residual risk R from 0.234 to 0.098.",
+    ),
+    "urban": (
+        "case_african_cities.mp4",
+        "Disaster Science · Six Sub-Saharan African Cities",
+        "Main 3D + 2D: Urban Flood & Heat Governance",
+        (
+            ("L · Likelihood", "Extreme rainfall, flood & heatwave frequency", "#0284C7"),
+            ("E · Exposure", "Transit corridors, clinics & dense settlements", "#EF4444"),
+            ("V · Vulnerability", "Drainage deficit & baseline health fragility", "#F59E0B"),
+            ("1 − ρ · Resilience", "$50M green-grey infrastructure & health continuity", "#10B981"),
+        ),
+        "Allocating targeted resilience upgrades (ρ) across Bamako, Lagos, and Lilongwe cuts composite residual risk R by up to 48% and maximizes Expected Annual Loss (EAL) avoided per million residents.",
+    ),
 }
 
 
@@ -45,7 +69,7 @@ def _dual_layer_panel(key, r_before=None, r_after=None):
     filename, domain_tag, subtitle, steps, outcome_text = STUDIO_CLIPS[key]
     video_url = f"{RAW_VIDEOS}/{filename}"
     accent = "#0284C7" if key == "urban" else "#DC2626"
-    col_3d, col_2d = st.columns([1.55, 1.0], gap="medium")
+    col_3d, col_2d = st.columns((1.55, 1.0), gap="medium")
     with col_3d:
         components.html(f"""
         <style>
@@ -67,8 +91,8 @@ def _dual_layer_panel(key, r_before=None, r_after=None):
             for title, desc, clr in steps:
                 st.markdown(f'<div style="border-left:4px solid {clr};padding:6px 10px;margin-bottom:8px;background:#F8FAFC;border-radius:0 8px 8px 0;"><div style="font-size:12.5px;font-weight:800;color:#0F172A;">{title}</div><div style="font-size:12px;color:#475569;">{desc}</div></div>', unsafe_allow_html=True)
             if r_before is not None and r_after is not None:
-                fig = go.Figure(go.Bar(x=["Baseline R", "Post-Resilience R"], y=[r_before, r_after], marker_color=["#EF4444", "#10B981"], text=[f"{r_before:.3f}", f"{r_after:.3f}"], textposition="outside"))
-                fig.update_layout(height=150, margin=dict(l=10, r=10, t=10, b=20), yaxis=dict(range=[0, max(r_before, r_after) * 1.35], visible=False), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+                fig = go.Figure(go.Bar(x=("Baseline R", "Post-Resilience R"), y=(r_before, r_after), marker_color=("#EF4444", "#10B981"), text=(f"{r_before:.3f}", f"{r_after:.3f}"), textposition="outside"))
+                fig.update_layout(height=150, margin=dict(l=10, r=10, t=10, b=20), yaxis=dict(range=(0, max(r_before, r_after) * 1.35), visible=False), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
                 st.plotly_chart(fig, use_container_width=True)
     with st.container(border=True):
         st.markdown("**RMTI Process & Quantified Outcome**")
@@ -113,13 +137,18 @@ def _hcc_guidance_tab():
     cols = st.columns(3, gap="medium")
     for i, (t, b) in enumerate(G["facts"]):
         cols[i % 3].markdown(card(t, b), unsafe_allow_html=True)
-    st.dataframe(pd.DataFrame(G["tests"], columns=["Test", "Sensitivity", "Specificity"]), hide_index=True, width="stretch")
+    st.dataframe(pd.DataFrame(G["tests"], columns=("Test", "Sensitivity", "Specificity")), hide_index=True, width="stretch")
 
 
 def case_page(key):
     c = content.CASES[key]
     page_header(f"{c['title']}: from tumor events to trajectory", f"Published case study: {c['study']}. {c['finding']}", "Oncology case studies")
-    names = ["3D + 2D Mechanism", "Tumor stages", "RMTI assessment", "Trajectory"] + (["Surveillance guidance"] if key == "liver" else []) + (["Global burden"] if key == "breast" else []) + ["Sources"]
+    names = ["3D + 2D Mechanism", "Tumor stages", "RMTI assessment", "Trajectory"]
+    if key == "liver":
+        names.append("Surveillance guidance")
+    if key == "breast":
+        names.append("Global burden")
+    names.append("Sources")
     tabs = st.tabs(names)
     it = iter(tabs)
     with next(it):
@@ -129,14 +158,14 @@ def case_page(key):
         for col, (name, text) in zip(cols, c["stages"]):
             col.markdown(card(name, text), unsafe_allow_html=True)
     with next(it):
-        st.dataframe(pd.DataFrame(c["mapping"], columns=["Lever", "Published data used"]), hide_index=True, width="stretch")
+        st.dataframe(pd.DataFrame(c["mapping"], columns=("Lever", "Published data used")), hide_index=True, width="stretch")
         a, b = st.columns(2)
         a.metric("R at first review", f"{c['r_before']:.3f}")
         a.markdown(badge(core.tier(c["r_before"])), unsafe_allow_html=True)
         b.metric("R after improvement", f"{c['r_after']:.3f}", f"{(c['r_after'] / c['r_before'] - 1) * 100:.0f}%", delta_color="inverse")
         b.markdown(badge(core.tier(c["r_after"])), unsafe_allow_html=True)
     with next(it):
-        g1, g2 = st.columns([1, 2.2], gap="large")
+        g1, g2 = st.columns((1, 2.2), gap="large")
         with g1:
             L = st.slider("L", 0.0, 1.0, 0.5, 0.01, key=f"{key}L")
             E = st.slider("E", 0.0, 1.0, 0.5, 0.01, key=f"{key}E")
@@ -149,14 +178,6 @@ def case_page(key):
                 pts.append(core.score(L, E, v, r)["R_raw"])
         fig = go.Figure()
         add_tier_bands(fig)
-        fig.add_trace(go.Scatter(x=[1, 2, 3, 4], y=pts, mode="lines+markers", line=dict(color="#0F172A", width=4), marker=dict(size=13)))
-        fig.update_layout(xaxis=dict(title="Review cycle", dtick=1), yaxis_title="Residual risk R", yaxis_range=[0, max(0.4, max(pts) * 1.2)], showlegend=False)
+        fig.add_trace(go.Scatter(x=list(range(1, 5)), y=pts, mode="lines+markers", line=dict(color="#0F172A", width=4), marker=dict(size=13)))
+        fig.update_layout(xaxis=dict(title="Review cycle", dtick=1), yaxis_title="Residual risk R", yaxis_range=(0, max(0.4, max(pts) * 1.2)), showlegend=False)
         st.plotly_chart(style_fig(fig, 360), width="stretch")
-    if key == "liver":
-        with next(it):
-            _hcc_guidance_tab()
-    if key == "breast":
-        with next(it):
-            _gbd_tab()
-    with next(it):
-        _refs(key)
