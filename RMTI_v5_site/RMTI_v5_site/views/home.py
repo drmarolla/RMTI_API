@@ -2,9 +2,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-PAGES = {}
-RAW_VIDEOS = "https://githubusercontent.com"
-RAW_ROOT = "https://githubusercontent.com"
+RAW_VIDEOS = "https://raw." + "://githubusercontent.com"
+RAW_ROOT = "https://raw." + "://githubusercontent.com"
+
 
 
 def render():
@@ -145,3 +145,17 @@ def render():
         ("Live Risk Matrix", "Tier maps that redraw as you move the levers.", "live"),
         ("4D Risk Matrix", "Tier surfaces in 3D, animated across Exposure.", "m4d"),
         ("Books, Papers & Author Bio", "Monographs, World Bank compendium, peer-reviewed papers, and Dr. Marolla's CV.", "pubs"),
+                ("Developer API", "Deterministic scoring for EHR and dashboard integration.", "api"),
+    ]
+    for r in range(0, len(cards), 3):
+        cols = st.columns(3)
+        for col, (title, desc, pk) in zip(cols, cards[r:r + 3]):
+            with col.container(border=True):
+                st.markdown(f"**{title}**")
+                st.caption(desc)
+                if st.button("Open", key=f"card_{pk}", use_container_width=True):
+                    if pk in PAGES:
+                        st.switch_page(PAGES[pk])
+
+    st.caption("Research prototype: Not validated against outcomes, not a medical device, and not for patient care or emergency decisions.")
+
