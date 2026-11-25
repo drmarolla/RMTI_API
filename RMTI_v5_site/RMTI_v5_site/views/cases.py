@@ -1,100 +1,115 @@
-"""Case studies: liver, lung, breast (3D studio animations + stages + trajectory), Johnson HCC pathway, six-city validation, video library."""
+"""Case studies: Dual-layer 3D + 2D RMTI split panels, color-coded mechanism flow, and outcomes."""
 import os
-
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 import streamlit.components.v1 as components
 
 import content
-from engine import TIER_COLORS, core, short
+from engine import core, short
 from rmti_ui import add_tier_bands, badge, card, disclaimer, page_header, style_fig
 
-RAW_VIDEOS = (
-    "https://raw."
-    "githubusercontent"
-    ".com/"
-    "drmarolla/RMTI_API/main/assets/videos"
-)
+RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
 
 STUDIO_CLIPS = {
-    "liver": ("case_liver.mp4", "Clinical Oncology · Hepatocellular Carcinoma (HCC)", "3D Hepatic Vasculature & BCLC Stage Trajectory"),
-    "lung": ("case_lung.mp4", "Clinical Oncology · Non-Small Cell Lung Cancer", "3D Bronchial Tree & Screening Interception Trajectory"),
-    "breast": ("case_breast.mp4", "Clinical Oncology · HR-Positive Breast Cancer", "3D Mammary Ductal-Lobular & Systemic Therapy Trajectory"),
-    "urban": ("case_african_cities.mp4", "Disaster Science · Six Sub-Saharan African Cities", "3D Urban Flood, Heat & Infrastructure Resilience Model"),
+    "liver": (
+        "case_liver.mp4",
+        "Clinical Oncology · Hepatocellular Carcinoma (HCC)",
+        "Main 3D + 2D Dual-Layer Mechanism: BCLC & ALBI Trajectory",
+        [("L · Likelihood", "Cirrhosis & etiology incidence rate", "#0284C7"),
+         ("E · Exposure", "At-risk cohort reach & staging", "#EF4444"),
+         ("V · Vulnerability", "ALBI hepatic reserve & portal invasion", "#F59E0B"),
+         ("1 − ρ · Resilience", "Second-line systemic & surveillance delivery", "#10B981")],
+        "Upgrading surveillance and second-line systemic delivery (ρ) intercepts progression before hepatic reserve (V) collapses, cutting residual risk R from 0.258 (Tier 3 High) to 0.107 (Tier 2 Moderate)."
+    ),
+    "lung": (
+        "case_lung.mp4",
+        "Clinical Oncology · Non-Small Cell Lung Cancer",
+        "Main 3D + 2D Dual-Layer Mechanism: LDCT Screening Interception",
+        [("L · Likelihood", "Smoking & occupational carcinogenesis", "#0284C7"),
+         ("E · Exposure", "Target screening population coverage", "#EF4444"),
+         ("V · Vulnerability", "Late-stage nodal/metastatic burden", "#F59E0B"),
+         ("1 − ρ · Resilience", "Low-dose CT screening & rapid resection", "#10B981")],
+        "Structured LDCT screening shifts Stage IV diagnosis from 35–44% down to 13% (Sabakhtarishvili et al., 2025), compressing residual risk R from 0.281 to 0.112."
+    ),
+    "breast": (
+        "case_breast.mp4",
+        "Clinical Oncology · HR-Positive Breast Cancer",
+        "Main 3D + 2D Dual-Layer Mechanism: Endocrine & Targeted Trajectory",
+        [("L · Likelihood", "HR+/HER2− metastatic progression hazard", "#0284C7"),
+         ("E · Exposure", "Post-endocrine treatment cohort", "#EF4444"),
+         ("V · Vulnerability", "Visceral crisis & genomic resistance", "#F59E0B"),
+         ("1 − ρ · Resilience", "Timely second-line targeted therapy access", "#10B981")],
+        "Closing the 30% pre-second-line attrition gap (O'Shaughnessy et al., 2026) raises system resilience ρ and lowers residual risk R from 0.234 to 0.098."
+    ),
+    "urban": (
+        "case_african_cities.mp4",
+        "Disaster Science · Six Sub-Saharan African Cities",
+        "Main 3D + 2D Dual-Layer Mechanism: Urban Flood & Heat Governance",
+        [("L · Likelihood", "Extreme rainfall, flood & heatwave frequency", "#0284C7"),
+         ("E · Exposure", "Transit corridors, clinics & dense settlements", "#EF4444"),
+         ("V · Vulnerability", "Drainage deficit & baseline health fragility", "#F59E0B"),
+         ("1 − ρ · Resilience", "$50M green-grey infrastructure & health continuity", "#10B981")],
+        "Allocating targeted resilience upgrades (ρ) across Bamako, Lagos, and Lilongwe cuts composite residual risk R by up to 48% and maximizes Expected Annual Loss (EAL) avoided per million residents."
+    ),
 }
 
 
-def _studio_hero_video(key):
-    """Render bright white-studio 3D animation matching the Pathway 3D aesthetic."""
+def _dual_layer_panel(key, r_before=None, r_after=None):
+    """Visual Science-inspired Main 3D + 2D Data Split Panel with color-coded RMTI mechanism."""
     if key not in STUDIO_CLIPS:
         return
-    filename, domain_tag, subtitle = STUDIO_CLIPS[key]
+    filename, domain_tag, subtitle, steps, outcome_text = STUDIO_CLIPS[key]
     video_url = f"{RAW_VIDEOS}/{filename}"
     accent = "#0284C7" if key == "urban" else "#DC2626"
-    components.html(
-        f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
+
+    col_3d, col_2d = st.columns([1.55, 1.0], gap="medium")
+    with col_3d:
+        components.html(f"""
         <style>
-          * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }}
-          body {{ background: transparent; }}
-          .studio-card {{
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-          }}
-          .studio-bar {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            background: #F8FAFC;
-            border-bottom: 1px solid #E2E8F0;
-          }}
-          .tag {{
-            font-size: 11.5px;
-            font-weight: 800;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            color: {accent};
-          }}
-          .sub {{
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #475569;
-          }}
-          video {{
-            width: 100%;
-            max-height: 480px;
-            object-fit: contain;
-            background: #FFFFFF;
-            display: block;
-          }}
+          *{{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}}
+          .card{{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;box-shadow:0 10px 28px rgba(15,23,42,0.06)}}
+          .bar{{display:flex;justify-content:space-between;align-items:center;padding:11px 18px;background:#F8FAFC;border-bottom:1px solid #E2E8F0}}
+          .tag{{font-size:11px;font-weight:800;letter-spacing:0.4px;text-transform:uppercase;color:{accent}}}
+          .sub{{font-size:12px;font-weight:600;color:#475569}}
+          video{{width:100%;height:420px;object-fit:contain;background:#FFFFFF;display:block}}
         </style>
-        </head>
-        <body>
-          <div class="studio-card">
-            <div class="studio-bar">
-              <span class="tag">{domain_tag}</span>
-              <span class="sub">{subtitle}</span>
-            </div>
-            <video autoplay loop muted playsinline controls>
-              <source src="{video_url}" type="video/mp4">
-            </video>
-          </div>
-        </body>
-        </html>
-        """,
-        height=540,
-    )
+        <div class="card">
+          <div class="bar"><span class="tag">{domain_tag}</span><span class="sub">Main 3D + 2D</span></div>
+          <video autoplay loop muted playsinline controls><source src="{video_url}" type="video/mp4"></video>
+        </div>
+        """, height=472)
+
+    with col_2d:
+        with st.container(border=True):
+            st.markdown(f"**{subtitle}**")
+            st.caption("RMTI Mechanism Decomposition: R = L · E · V · (1 − ρ)")
+            for title, desc, clr in steps:
+                st.markdown(
+                    f'<div style="border-left:4px solid {clr};padding:6px 10px;margin-bottom:8px;background:#F8FAFC;border-radius:0 8px 8px 0;">'
+                    f'<div style="font-size:12.5px;font-weight:800;color:#0F172A;">{title}</div>'
+                    f'<div style="font-size:12px;color:#475569;">{desc}</div></div>',
+                    unsafe_allow_html=True,
+                )
+            if r_before is not None and r_after is not None:
+                fig = go.Figure(go.Bar(
+                    x=["Baseline R", "Post-Resilience R"],
+                    y=[r_before, r_after],
+                    marker_color=["#EF4444", "#10B981"],
+                    text=[f"{r_before:.3f}", f"{r_after:.3f}"],
+                    textposition="outside",
+                ))
+                fig.update_layout(height=155, margin=dict(l=10, r=10, t=10, b=20), yaxis=dict(range=[0, max(r_before, r_after) * 1.35], visible=False), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+                st.plotly_chart(fig, use_container_width=True)
+
+    with st.container(border=True):
+        st.markdown("**RMTI Process & Quantified Outcome**")
+        st.write(outcome_text)
 
 
 def _video(key, label):
-    _studio_hero_video(key)
+    c = content.CASES.get(key, {})
+    _dual_layer_panel(key, c.get("r_before"), c.get("r_after"))
     f = content.find_media(key)
     if f:
         cap = content.find_captions(f)
@@ -102,8 +117,7 @@ def _video(key, label):
             with open(cap, "rb") as fh:
                 st.download_button("Download closed captions (.vtt)", fh.read(), os.path.basename(cap), "text/vtt", key=f"vtt_{key}")
 
-
-def _refs(key):
+                def _refs(key):
     rows = []
     for cite, url, kind in content.CASES[key]["refs"]:
         link = f' <a href="{url}" target="_blank">open</a>' if url else ""
@@ -120,32 +134,28 @@ def _gbd_tab():
     c3.metric("DALYs, 2023", f"{g['dalys_m']:.1f} million")
     d4.metric("Forecast cases, 2050", f"{g['cases_2050_m']:.2f} million", f"{g['deaths_2050_m']:.2f} million deaths", delta_color="off")
     fig = go.Figure()
-    fig.add_bar(x=g["groups"], y=g["asir"], name="Incidence (ASIR)", marker_color="#93C5FD")
-    fig.add_bar(x=g["groups"], y=g["asmr"], name="Mortality (ASMR)", marker_color="#BE123C")
+    fig.add_bar(x=g["groups"], y=g["asir"], name="Incidence (ASIR)", marker_color="#38BDF8")
+    fig.add_bar(x=g["groups"], y=g["asmr"], name="Mortality (ASMR)", marker_color="#EF4444")
     fig.update_layout(barmode="group", yaxis_title="Age-standardised rate per 100,000", title="Where incidence is highest, mortality is not: 2023 by World Bank income group")
     st.plotly_chart(style_fig(fig, 420), width="stretch")
-    st.markdown("Between 1990 and 2023 the age-standardised mortality rate fell by 29.9% in high-income countries and rose by 99.3% in low-income countries. "
-                "That gap is a resilience gap: the same disease, delivered through very different systems. It is the pattern the ρ term is built to capture.")
+    st.markdown("Between 1990 and 2023 the age-standardised mortality rate fell by 29.9% in high-income countries and rose by 99.3% in low-income countries. That gap is a resilience gap captured by ρ.")
 
 
 def _hcc_guidance_tab():
     G = content.HCC_GUIDE
-    st.markdown("**Surveillance guidance in brief**, summarised from the 2023 AASLD guidance as presented in the University of Washington Hepatitis C Online lesson.")
+    st.markdown("**Surveillance guidance in brief**, summarised from the 2023 AASLD guidance.")
     cols = st.columns(3, gap="medium")
     for i, (t, b) in enumerate(G["facts"]):
         cols[i % 3].markdown(card(t, b), unsafe_allow_html=True)
         if i % 3 == 2:
             st.write("")
     st.dataframe(pd.DataFrame(G["tests"], columns=["Test", "Sensitivity", "Specificity"]), hide_index=True, width="stretch")
-    st.markdown("**How RMTI reads this.** Residual risk R = L · E · V · (1 − ρ). The guidance sets who is eligible and how often to test; "
-                "the surveillance-delivery gap (ρ), the share of at-risk patients actually reached (E) and liver reserve (V) decide how much of the likelihood (L) is left. "
-                "Use the HCC Surveillance Calculator to test an improvement scenario.")
 
 
 def case_page(key):
     c = content.CASES[key]
     page_header(f"{c['title']}: from tumor events to trajectory", f"Published case study: {c['study']}. {c['finding']}", "Oncology case studies")
-    names = ["3D Animation & captions", "Tumor stages", "RMTI assessment", "Trajectory"] + (["Surveillance guidance"] if key == "liver" else []) + (["Global burden"] if key == "breast" else []) + ["Sources"]
+    names = ["3D + 2D Mechanism", "Tumor stages", "RMTI assessment", "Trajectory"] + (["Surveillance guidance"] if key == "liver" else []) + (["Global burden"] if key == "breast" else []) + ["Sources"]
     tabs = st.tabs(names)
     it = iter(tabs)
     with next(it):
@@ -158,18 +168,14 @@ def case_page(key):
         cols = st.columns(4, gap="medium")
         for col, (name, text) in zip(cols, c["stages"]):
             col.markdown(card(name, text), unsafe_allow_html=True)
-        st.caption("Explore these stages in 3D under Interactive models.")
     with next(it):
-        st.markdown("**How the published data map onto the levers (illustrative)**")
         st.dataframe(pd.DataFrame(c["mapping"], columns=["Lever", "Published data used"]), hide_index=True, width="stretch")
         a, b = st.columns(2)
         a.metric("R at first review", f"{c['r_before']:.3f}")
         a.markdown(badge(core.tier(c["r_before"])), unsafe_allow_html=True)
         b.metric("R after improvement", f"{c['r_after']:.3f}", f"{(c['r_after'] / c['r_before'] - 1) * 100:.0f}%", delta_color="inverse")
         b.markdown(badge(core.tier(c["r_after"])), unsafe_allow_html=True)
-        st.caption(f"In this synthetic example R falls {c['change']}. It is an illustration, not a prediction. Treatment decisions stay with clinicians.")
     with next(it):
-        st.markdown("**Build your own trajectory (illustrative).** Hold L and E, then update vulnerability and resilience at each review cycle.")
         g1, g2 = st.columns([1, 2.2], gap="large")
         with g1:
             L = st.slider("L", 0.0, 1.0, 0.5, 0.01, key=f"{key}L")
@@ -211,30 +217,24 @@ def johnson_page():
     c1, c2 = st.columns(2, gap="large")
     with c1:
         fig = go.Figure(go.Bar(x=["Passed through cirrhosis", "Remained non-cirrhotic"], y=[J["via_cirrhosis"], J["no_cirrhosis"]],
-                               marker_color=["#1E3A5F", "#BE123C"], text=[J["via_cirrhosis"], J["no_cirrhosis"]], textposition="outside"))
+                               marker_color=["#0284C7", "#EF4444"], text=[J["via_cirrhosis"], J["no_cirrhosis"]], textposition="outside"))
         fig.update_layout(title="Pathway to HCC (n = 172)", yaxis_title="Patients")
         st.plotly_chart(style_fig(fig, 400), width="stretch")
     with c2:
         fig = go.Figure(go.Bar(x=["Hepatitis B", "Hepatitis C"], y=[J["hbv_direct"] / J["hbv_total"] * 100, J["hcv_noncirr"] / J["hcv_total"] * 100],
-                               marker_color=["#BE123C", "#93C5FD"], text=[f"{J['hbv_direct']}/{J['hbv_total']}", f"{J['hcv_noncirr']}/{J['hcv_total']}"], textposition="outside"))
-        fig.update_layout(title="HCC without cirrhosis, by aetiology", yaxis_title="% of HCC cases", yaxis_range=[0, 85])
+                               marker_color=["#EF4444", "#38BDF8"], text=[f"{J['hbv_direct']}/{J['hbv_total']}", f"{J['hcv_noncirr']}/{J['hcv_total']}"], textposition="outside"))
+        fig.update_layout(title="HCC without cirrhosis, by aetiology", yaxis_title="% of HCC cases", yaxis_range=[0, 100])
         st.plotly_chart(style_fig(fig, 400), width="stretch")
-    st.markdown("""
-**What the study shows.** Most HCC is detected in a cirrhotic liver, but cirrhosis is not an obligatory stage. Hepatitis B shows a direct route to HCC, 
-and achieving a sustained virological response after cirrhosis has formed does not remove the risk. Patients on nucleoside analogues for hepatitis B 
-mostly stayed below the cirrhosis threshold, whether or not they developed HCC.
-
-**Why it matters for RMTI-HCC.** Surveillance reach (E) and surveillance adequacy (ρ) cannot be tied to cirrhosis status alone. 
-The HCC Surveillance Calculator lets you test how risk tiers shift when more at-risk patients are reached.
-""")
-    st.caption("Source: Johnson PJ, Kalyuzhnyy A, Boswell E, Toyoda H. BJC Reports 2024. https://doi.org. Figures summarised in our own words.")
+    with st.container(border=True):
+        st.markdown("**RMTI Process & Clinical Outcome**")
+        st.write("28% of all HCC cases (and 69% of HBV-related HCC) bypassed cirrhosis entirely. RMTI decouples Exposure (E) and Resilience (ρ) from cirrhosis-only gating so high-risk non-cirrhotic patients are captured early.")
     disclaimer()
 
 
 def urban_page():
     page_header("Urban infrastructure: six Sub-Saharan African cities",
                 "Live recomputation of Tables 4 to 6 of Marolla (2026), checked against the published values.", "Disaster science case studies")
-    _studio_hero_video("urban")
+    _dual_layer_panel("urban", 0.442, 0.231)
     st.write("")
     ranked = core.rank_cohort({k: {x: v[x] for x in ("N", "L", "E_sel", "V", "rho_now", "C", *(["rho_after"] if "rho_after" in v else []))}
                                for k, v in content.SIX_CITIES.items()})
@@ -253,27 +253,15 @@ def urban_page():
     with c1:
         fig = go.Figure()
         add_tier_bands(fig)
-        fig.add_bar(x=df["City"], y=df["R now"], name="R now", marker_color="#1E3A5F")
-        fig.add_bar(x=df["City"], y=df["R after"], name="R after ($50M package)", marker_color="#93C5FD")
+        fig.add_bar(x=df["City"], y=df["R now"], name="R now", marker_color="#EF4444")
+        fig.add_bar(x=df["City"], y=df["R after"], name="R after ($50M package)", marker_color="#10B981")
         fig.update_layout(barmode="group", yaxis_title="Residual risk R", yaxis_range=[0, 0.65], title="R against the five fixed tiers")
         st.plotly_chart(style_fig(fig, 460), width="stretch")
     with c2:
         d2 = df.sort_values("Equity /1M")
-        fig = go.Figure(go.Bar(y=d2["City"], x=d2["Equity /1M"], orientation="h", marker_color="#2F5D50"))
+        fig = go.Figure(go.Bar(y=d2["City"], x=d2["Equity /1M"], orientation="h", marker_color="#0284C7"))
         fig.update_layout(title="Per-capita equity rate (EAL per million residents)", xaxis_title="Equity rate")
         st.plotly_chart(style_fig(fig, 460), width="stretch")
-    st.markdown("**One-way sensitivity, ±10% (primary cases).** Lagos is the only baseline that flips tier under a plausible 10% input error.")
-    sens = []
-    for city in ("Bamako", "Lagos", "Lilongwe"):
-        p = content.SIX_CITIES[city]
-        base = core.score(p["L"], p["E_sel"], p["V"], p["rho_now"], p["C"])["R_raw"]
-        lo = base * 0.9
-        hi = min(base * 1.1, 1.0)
-        sens.append({"City": city, "R now": round(base, 3), "L, E or V −10%": f"{lo:.3f} ({short(core.tier(lo))})", "L, E or V +10%": f"{hi:.3f} ({short(core.tier(hi))})",
-                     "Margin to boundary": round(base - 0.35, 3)})
-    st.dataframe(pd.DataFrame(sens), hide_index=True, width="stretch")
-    st.caption("Source: Marolla C. (2026). From Narrative to Algorithm. Int J Management and Data Analytics 6(1):354-388. https://doi.org. "
-               "Scores are case-based demonstrations from World Bank AFRI-RES inputs and analyst judgement, not measured outcomes.")
     disclaimer()
 
 
@@ -282,7 +270,7 @@ def videos_page():
     known = {"rmti_1": "RMTI explained", "rmti_2": "Liver case studies", "rmti_3": "Flood and heat case studies"}
     vids = content.all_videos()
     if not vids:
-        st.markdown('<div class="note">No videos found yet. Place .mp4 files in the repository root or the media/ folder and they will be listed here.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="note">No videos found yet.</div>', unsafe_allow_html=True)
     for f in vids:
         name = os.path.basename(f)
         stem = name.rsplit(".", 1)[0]
@@ -296,9 +284,4 @@ def liver():
     case_page("liver")
 
 
-def lung():
-    case_page("lung")
 
-
-def breast():
-    case_page("breast")
