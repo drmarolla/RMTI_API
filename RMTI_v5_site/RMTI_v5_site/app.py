@@ -19,8 +19,10 @@ def P(fn, title, icon, slug, default=False):
 
 
 RAW_VIDEO_BASE = (
-    "https://" + "raw." + "://githubusercontent.com"
-    + "drmarolla/RMTI_API/main/assets/videos"
+    "https://raw."
+    "githubusercontent"
+    ".com/"
+    "drmarolla/RMTI_API/main/assets/videos"
 )
 
 
