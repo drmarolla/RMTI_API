@@ -1,4 +1,4 @@
-"""Home view — Full-page dark cinematic video background (Visual Science style) + all RMTI tools & menus."""
+"""Home view — Full-page dark cinematic video background + high-contrast clickable RMTI cards."""
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -24,39 +24,52 @@ def render():
     fallback_oncology = f"{RAW_VIDEOS}/video1_4stages_3d.mp4"
     fallback_disaster = f"{RAW_ROOT}/rmti_3_flood_heat_case_studies.mp4"
 
-    # Full-page dark high-contrast theme over the fixed full-viewport video background
     st.markdown(
         """
         <style>
-        .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+        html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
             background: transparent !important;
         }
-        [data-testid="stAppViewContainer"] > .main {
-            position: relative;
-            z-index: 2;
+        [data-testid="stMain"], [data-testid="stAppViewContainer"] > .main {
+            position: relative !important;
+            z-index: 5 !important;
+            background: transparent !important;
         }
-        /* Keep sidebar dark-frosted and legible over the full-page video */
+        /* Dark frosted sidebar */
         [data-testid="stSidebar"] {
-            background: rgba(11, 17, 32, 0.90) !important;
+            background: rgba(11, 17, 32, 0.92) !important;
             backdrop-filter: blur(14px);
-            border-right: 1px solid rgba(148, 163, 184, 0.18);
+            border-right: 1px solid rgba(148, 163, 184, 0.22);
+            z-index: 6 !important;
         }
         [data-testid="stSidebar"] * {
             color: #F1F5F9 !important;
         }
-        /* High-contrast typography across main page */
-        .main h1, .main h2, .main h3, .main p, .main span, .main label, .main div {
-            color: #F8FAFC;
+        /* Force crisp white/light-slate text across all headings, metrics, and cards */
+        [data-testid="stMain"] h1,
+        [data-testid="stMain"] h2,
+        [data-testid="stMain"] h3,
+        [data-testid="stMain"] p,
+        [data-testid="stMain"] strong,
+        [data-testid="stMain"] [data-testid="stMarkdownContainer"] p,
+        [data-testid="stMain"] [data-testid="stMarkdownContainer"] strong {
+            color: #FFFFFF !important;
         }
+        [data-testid="stMain"] [data-testid="stCaptionContainer"] p,
+        [data-testid="stMain"] small {
+            color: #CBD5E1 !important;
+            opacity: 1 !important;
+        }
+        /* Hero typography */
         .hero-wrap {
-            padding: 36px 8px 28px 8px;
+            padding: 28px 4px 20px 4px;
             max-width: 660px;
         }
         .hero-pills {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
         .hero-pill {
             background: #FFFFFF;
@@ -79,56 +92,93 @@ def render():
             color: #E2E8F0 !important;
             font-size: 16px;
             line-height: 1.6;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             max-width: 560px;
         }
         .hero-title {
             color: #FFFFFF !important;
-            font-size: 52px;
+            font-size: 50px;
             font-weight: 800;
             line-height: 1.06;
             letter-spacing: -0.03em;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
         .hero-eq {
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            background: rgba(15, 23, 42, 0.82);
-            border: 1px solid rgba(148, 163, 184, 0.30);
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.35);
             backdrop-filter: blur(10px);
             padding: 10px 18px;
             border-radius: 8px;
             font-size: 14px;
             font-weight: 700;
-            margin-bottom: 12px;
+            color: #FFFFFF !important;
         }
-        /* Frosted dark-glass cards so the moving background shines through cleanly */
-        [data-testid="stVerticalBlockBorderWrapper"] {
-            background: rgba(11, 17, 32, 0.78) !important;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(148, 163, 184, 0.22) !important;
-            border-radius: 12px !important;
-        }
+        /* Metric cards */
         [data-testid="stMetric"] {
-            background: rgba(11, 17, 32, 0.78);
+            background: rgba(11, 17, 32, 0.84) !important;
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(148, 163, 184, 0.22);
+            border: 1px solid rgba(148, 163, 184, 0.28) !important;
             padding: 14px 16px;
             border-radius: 12px;
+        }
+        [data-testid="stMetricLabel"] * {
+            color: #94A3B8 !important;
+            font-weight: 600 !important;
         }
         [data-testid="stMetricValue"] * {
             color: #FFFFFF !important;
         }
-        [data-testid="stMetricDelta"] * {
-            color: #38BDF8 !important;
+        /* 9 Tool Cards ("Everything in one place") */
+        [data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
+            background: rgba(15, 23, 42, 0.86) !important;
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(148, 163, 184, 0.30) !important;
+            border-radius: 12px !important;
+            padding: 6px !important;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+        [data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"]:hover {
+            border-color: #38BDF8 !important;
+        }
+        /* High-contrast clickable buttons across the dark page */
+        [data-testid="stMain"] .stButton > button[kind="secondary"] {
+            background: #F8FAFC !important;
+            color: #0F172A !important;
+            border: 1px solid #FFFFFF !important;
+            font-weight: 700 !important;
+            opacity: 1 !important;
+            cursor: pointer !important;
+        }
+        [data-testid="stMain"] .stButton > button[kind="secondary"] * {
+            color: #0F172A !important;
+        }
+        [data-testid="stMain"] .stButton > button[kind="secondary"]:hover {
+            background: #0284C7 !important;
+            border-color: #0284C7 !important;
+            color: #FFFFFF !important;
+        }
+        [data-testid="stMain"] .stButton > button[kind="secondary"]:hover * {
+            color: #FFFFFF !important;
+        }
+        [data-testid="stMain"] .stButton > button[kind="primary"] {
+            background: #DC2626 !important;
+            border-color: #DC2626 !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            opacity: 1 !important;
+        }
+        [data-testid="stMain"] .stButton > button[kind="primary"] * {
+            color: #FFFFFF !important;
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-    # Inject full-viewport (100vw x 100vh) fixed rotating video background into parent document
+    # Full-viewport fixed rotating video background at z-index: -1 (never blocks clicks)
     components.html(
         f"""
         <script>
@@ -138,7 +188,7 @@ def render():
           if (!bg) {{
             bg = doc.createElement('div');
             bg.id = 'rmti-fullpage-bg';
-            bg.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:0;background:#0B1120;overflow:hidden;pointer-events:none;';
+            bg.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;background:#0B1120;overflow:hidden;pointer-events:none;';
             bg.innerHTML = `
               <video id="rmti-bg-onc" autoplay loop muted playsinline
                 style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;opacity:1;transition:opacity 1.5s ease-in-out;">
@@ -171,7 +221,7 @@ def render():
         height=0,
     )
 
-    # Visual Science Style Left-Aligned Hero Copy over the Full-Page Rotating Video
+    # Visual Science Style Left-Aligned Hero Copy
     st.markdown(
         """
         <div class="hero-wrap">
@@ -202,39 +252,3 @@ def render():
     if c1.button("Explore the tools", type="primary", use_container_width=True, key="hero_explore"):
         if "calc" in PAGES:
             st.switch_page(PAGES["calc"])
-    if c2.button("Disaster case studies", use_container_width=True, key="hero_disaster"):
-        if "urban" in PAGES:
-            st.switch_page(PAGES["urban"])
-    if c3.button("Oncology case studies", use_container_width=True, key="hero_oncology"):
-        if "liver" in PAGES:
-            st.switch_page(PAGES["liver"])
-
-    st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
-
-    # 4-Column Metric Strip
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Unified framework", "R = L·E·V·(1−ρ)", "Disaster & Oncology")
-    m2.metric("Cancer cohorts", "Liver, Lung, Breast", "BCLC & ALBI calibrated")
-    m3.metric("Urban resilience", "Six African cities", "Flood & heat stress")
-    m4.metric("Clinical integration", "HL7 FHIR R4", "Deterministic tiers 1–4")
-
-    st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
-    st.subheader("Everything in one place")
-
-    cards = [
-        ("RMTI Calculator", "Score any asset or cohort, model an investment, rank a portfolio.", "calc"),
-        ("HCC Surveillance Calculator", "Triage surveillance for a patient or the six published cohorts.", "hccs"),
-        ("HCC Treatment Calculator", "Evidence-gated regimen matching for stage 0 to D.", "hcct"),
-        ("Cohort Sandbox", "Rank a synthetic or uploaded cohort and test scenarios.", "sandbox"),
-        ("Interactive Tumor Models", "Rotate liver, lung, and breast models through stages 1 to 4.", "models"),
-        ("Live Risk Matrix", "Tier maps that redraw as you move the levers.", "live"),
-        ("4D Risk Matrix", "Tier surfaces in 3D, animated across Exposure.", "m4d"),
-        ("Case Studies and Videos", "Liver, lung, breast videos with captions, HCC pathway, six African cities.", "library"),
-        ("Developer API", "Deterministic scoring for EHR and dashboard integration.", "api"),
-    ]
-
-    for row_start in range(0, len(cards), 3):
-        cols = st.columns(3)
-        for col, (title, desc, page_key) in zip(cols, cards[row_start:row_start + 3]):
-            with col.container(border=True):
-                st.markdown(f"**{title}**")
