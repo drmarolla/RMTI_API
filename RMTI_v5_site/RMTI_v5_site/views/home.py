@@ -132,3 +132,5 @@ def render():
             st.markdown(f"### {val}")
             st.markdown(f'<span class="pillar-tag">{tag}</span>', unsafe_allow_html=True)
             if st.button("Open", key=f"pil_{pk}", use_container_width=True):
+                if pk in PAGES:
+                    st.switch_page(PAGES[pk])
