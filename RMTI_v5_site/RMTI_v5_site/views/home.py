@@ -1,10 +1,10 @@
-"""Home view — Full-page dark video background, ambient audio toggle, and RMTI cards."""
+"""Home view — Full-page dark 3D video background, ambient audio toggle, and clickable RMTI cards."""
 import streamlit as st
 import streamlit.components.v1 as components
 
-RAW_VIDEOS = "https://raw." + "://githubusercontent.com"
-RAW_ROOT = "https://raw." + "://githubusercontent.com"
-
+PAGES = {}
+RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
+RAW_ROOT = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main"])
 
 
 def render():
@@ -21,19 +21,18 @@ def render():
     [data-testid="stSidebar"] * { color: #F1F5F9 !important; }
     [data-testid="stMain"] h1, [data-testid="stMain"] h2, [data-testid="stMain"] h3, [data-testid="stMain"] p, [data-testid="stMain"] strong { color: #FFFFFF !important; }
     [data-testid="stMain"] [data-testid="stCaptionContainer"] p, [data-testid="stMain"] small { color: #CBD5E1 !important; opacity: 1 !important; }
-    .hero-wrap { padding: 24px 4px 10px 4px; max-width: 680px; }
+    .hero-wrap { padding: 20px 4px 8px 4px; max-width: 680px; }
     .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
     .hero-pill { background: #FFFFFF; color: #0F172A !important; font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 4px; }
     .hero-pill.red { background: #DC2626; color: #FFFFFF !important; }
     .hero-pill.blue { background: #0284C7; color: #FFFFFF !important; }
     .hero-lead { color: #E2E8F0 !important; font-size: 16px; line-height: 1.6; margin-bottom: 14px; max-width: 560px; }
-    .hero-title { color: #FFFFFF !important; font-size: 48px; font-weight: 800; line-height: 1.06; letter-spacing: -0.03em; margin-bottom: 16px; }
-    [data-testid="stMetric"], [data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
+    .hero-title { color: #FFFFFF !important; font-size: 48px; font-weight: 800; line-height: 1.06; letter-spacing: -0.03em; margin-bottom: 14px; }
+    .pillar-tag { display: inline-block; background: rgba(2,132,199,0.25); color: #38BDF8 !important; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; margin-bottom: 8px; }
+    [data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
         background: rgba(15,23,42,0.86) !important; backdrop-filter: blur(12px);
-        border: 1px solid rgba(148,163,184,0.30) !important; border-radius: 12px !important; padding: 10px !important;
+        border: 1px solid rgba(148,163,184,0.32) !important; border-radius: 12px !important; padding: 10px !important;
     }
-    [data-testid="stMetricLabel"] * { color: #94A3B8 !important; }
-    [data-testid="stMetricValue"] * { color: #FFFFFF !important; }
     [data-testid="stMain"] .stButton > button[kind="secondary"] { background: #F8FAFC !important; color: #0F172A !important; border: 1px solid #FFF !important; font-weight: 700 !important; }
     [data-testid="stMain"] .stButton > button[kind="secondary"] * { color: #0F172A !important; }
     [data-testid="stMain"] .stButton > button[kind="secondary"]:hover { background: #0284C7 !important; border-color: #0284C7 !important; }
@@ -47,25 +46,25 @@ def render():
     <script>
     (function() {{
       const doc = window.parent.document;
-      if (!doc.getElementById('rmti-fullpage-bg')) {{
-        const bg = doc.createElement('div');
-        bg.id = 'rmti-fullpage-bg';
-        bg.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;background:#0B1120;overflow:hidden;pointer-events:none;';
-        bg.innerHTML = `
-          <video id="rmti-bg-onc" autoplay loop muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;opacity:1;transition:opacity 1.5s;">
-            <source src="{onc_mp4}" type="video/mp4"><source src="{fb_onc}" type="video/mp4">
-          </video>
-          <video id="rmti-bg-dis" autoplay loop muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;opacity:0;transition:opacity 1.5s;">
-            <source src="{dis_mp4}" type="video/mp4"><source src="{fb_dis}" type="video/mp4">
-          </video>
-          <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,17,32,0.95) 0%,rgba(11,17,32,0.84) 38%,rgba(11,17,32,0.35) 72%,rgba(11,17,32,0.14) 100%);"></div>`;
-        doc.body.prepend(bg);
-        let s = true;
-        setInterval(() => {{
-          const o = doc.getElementById('rmti-bg-onc'), d = doc.getElementById('rmti-bg-dis');
-          if (o && d) {{ s = !s; o.style.opacity = s ? '1' : '0'; d.style.opacity = s ? '0' : '1'; }}
-        }}, 9000);
-      }}
+      const old = doc.getElementById('rmti-fullpage-bg');
+      if (old) old.remove();
+      const bg = doc.createElement('div');
+      bg.id = 'rmti-fullpage-bg';
+      bg.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;background:#0B1120;overflow:hidden;pointer-events:none;';
+      bg.innerHTML = `
+        <video id="rmti-bg-onc" autoplay loop muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;opacity:1;transition:opacity 1.5s;">
+          <source src="{onc_mp4}" type="video/mp4"><source src="{fb_onc}" type="video/mp4">
+        </video>
+        <video id="rmti-bg-dis" autoplay loop muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;opacity:0;transition:opacity 1.5s;">
+          <source src="{dis_mp4}" type="video/mp4"><source src="{fb_dis}" type="video/mp4">
+        </video>
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,17,32,0.94) 0%,rgba(11,17,32,0.80) 38%,rgba(11,17,32,0.28) 72%,rgba(11,17,32,0.10) 100%);"></div>`;
+      doc.body.prepend(bg);
+      let s = true;
+      setInterval(() => {{
+        const o = doc.getElementById('rmti-bg-onc'), d = doc.getElementById('rmti-bg-dis');
+        if (o && d) {{ s = !s; o.style.opacity = s ? '1' : '0'; d.style.opacity = s ? '0' : '1'; }}
+      }}, 9000);
     }})();
     </script>
     """, height=0)
@@ -86,9 +85,9 @@ def render():
     components.html("""
     <style>
       body{margin:0;background:transparent;font-family:sans-serif}
-      .bar{display:inline-flex;align-items:center;gap:14px;background:rgba(15,23,42,0.86);border:1px solid rgba(148,163,184,0.35);padding:10px 18px;border-radius:10px;color:#FFF;font-size:14px;font-weight:700}
-      .btn{background:#1E293B;color:#CBD5E1;border:1px solid #475569;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer}
-      .btn.on{background:rgba(2,132,199,0.25);border-color:#38BDF8;color:#38BDF8}
+      .bar{display:inline-flex;align-items:center;gap:14px;background:rgba(15,23,42,0.88);border:1px solid rgba(148,163,184,0.38);padding:10px 18px;border-radius:10px;color:#FFF;font-size:14px;font-weight:700}
+      .btn{background:#1E293B;color:#F8FAFC;border:1px solid #64748B;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer}
+      .btn.on{background:#0284C7;border-color:#38BDF8;color:#FFFFFF}
     </style>
     <div class="bar">
       <span>R = <span style="color:#38BDF8">L</span> · <span style="color:#F87171">E</span> · <span style="color:#FBBF24">V</span> · (1 − <span style="color:#34D399">ρ</span>)</span>
@@ -96,24 +95,25 @@ def render():
     </div>
     <script>
       let ctx=null,g=null,tm=null,on=false;
-      function tog(){
+      async function tog(){
         const b=document.getElementById('t');
         if(!on){
           on=true; const AC=window.AudioContext||window.webkitAudioContext; ctx=new AC();
-          g=ctx.createGain(); g.gain.setValueAtTime(0.0001,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.055,ctx.currentTime+2);
-          const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=680; f.connect(g); g.connect(ctx.destination);
-          [65.41,98,146.83,164.81,246.94].forEach((hz,i)=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=i<2?'sine':'triangle';o.frequency.value=hz;og.gain.value=i<2?0.3:0.12;o.connect(og);og.connect(f);o.start();});
-          tm=setInterval(()=>{if(!ctx||!on)return;const n=ctx.currentTime,p=ctx.createOscillator(),pg=ctx.createGain();p.frequency.value=293.66;pg.gain.setValueAtTime(0.0001,n);pg.gain.exponentialRampToValueAtTime(0.04,n+0.35);pg.gain.exponentialRampToValueAtTime(0.0001,n+0.9);p.connect(pg);pg.connect(f);p.start(n);p.stop(n+0.92);},937);
+          if(ctx.state==='suspended') await ctx.resume();
+          g=ctx.createGain(); g.gain.setValueAtTime(0.001,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.16,ctx.currentTime+1.5);
+          const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=760; f.connect(g); g.connect(ctx.destination);
+          [130.81,196.00,293.66,329.63,493.88].forEach((hz,i)=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=i<2?'sine':'triangle';o.frequency.value=hz;og.gain.value=i<2?0.32:0.14;o.connect(og);og.connect(f);o.start();});
+          tm=setInterval(()=>{if(!ctx||!on)return;const n=ctx.currentTime,p=ctx.createOscillator(),pg=ctx.createGain();p.frequency.value=587.33;pg.gain.setValueAtTime(0.001,n);pg.gain.exponentialRampToValueAtTime(0.08,n+0.35);pg.gain.exponentialRampToValueAtTime(0.001,n+0.9);p.connect(pg);pg.connect(f);p.start(n);p.stop(n+0.92);},937);
           b.classList.add('on'); b.textContent='🔊 Ambient Sound: On';
         } else {
-          on=false; clearInterval(tm); if(g)g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.7); const c=ctx; setTimeout(()=>c&&c.close(),800); ctx=null;
+          on=false; clearInterval(tm); if(g&&ctx)g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.5); const c=ctx; setTimeout(()=>c&&c.close(),600); ctx=null;
           b.classList.remove('on'); b.textContent='🔇 Ambient Sound: Off';
         }
       }
     </script>
-    """, height=56)
+    """, height=58)
 
-    c1, c2, c3, c4, _ = st.columns([1.5, 1.7, 1.7, 1.8, 2.3])
+    c1, c2, c3, c4, _ = st.columns([1.5, 1.7, 1.8, 1.8, 2.2])
     if c1.button("Explore the tools", type="primary", use_container_width=True, key="hero_explore"):
         if "calc" in PAGES:
             st.switch_page(PAGES["calc"])
@@ -128,34 +128,25 @@ def render():
             st.switch_page(PAGES["pubs"])
 
     st.write("")
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Unified framework", "R = L·E·V·(1−ρ)", "Disaster & Oncology")
-    m2.metric("Cancer cohorts", "Liver, Lung, Breast", "BCLC & ALBI calibrated")
-    m3.metric("Urban resilience", "Six African cities", "Flood & heat stress")
-    m4.metric("Clinical integration", "HL7 FHIR R4", "Deterministic tiers 1–4")
+    # 4 High-Contrast Clickable Domain Pillar Cards (replaces faded metric badges)
+    pillars = [
+        ("Unified framework", "R = L·E·V·(1−ρ)", "Disaster & Oncology", "method"),
+        ("Cancer cohorts", "Liver, Lung, Breast", "BCLC & ALBI calibrated", "liver"),
+        ("Urban resilience", "Six African cities", "Flood & heat stress", "urban"),
+        ("Clinical integration", "HL7 FHIR R4", "Deterministic tiers 1–4", "api"),
+    ]
+    p_cols = st.columns(4)
+    for col, (lbl, val, tag, pk) in zip(p_cols, pillars):
+        with col.container(border=True):
+            st.caption(lbl)
+            st.markdown(f"### {val}")
+            st.markdown(f'<span class="pillar-tag">{tag}</span>', unsafe_allow_html=True)
+            if st.button("Open", key=f"pil_{pk}", use_container_width=True):
+                if pk in PAGES:
+                    st.switch_page(PAGES[pk])
 
     st.write("")
     st.subheader("Everything in one place")
     cards = [
         ("RMTI Calculator", "Score any asset or cohort, model an investment, rank a portfolio.", "calc"),
         ("HCC Surveillance Calculator", "Triage surveillance for a patient or the six published cohorts.", "hccs"),
-        ("HCC Treatment Calculator", "Evidence-gated regimen matching for stage 0 to D.", "hcct"),
-        ("Cohort Sandbox", "Rank a synthetic or uploaded cohort and test scenarios.", "sandbox"),
-        ("Interactive Tumor Models", "Rotate liver, lung, and breast models through stages 1 to 4.", "models"),
-        ("Live Risk Matrix", "Tier maps that redraw as you move the levers.", "live"),
-        ("4D Risk Matrix", "Tier surfaces in 3D, animated across Exposure.", "m4d"),
-        ("Books, Papers & Author Bio", "Monographs, World Bank compendium, peer-reviewed papers, and Dr. Marolla's CV.", "pubs"),
-                ("Developer API", "Deterministic scoring for EHR and dashboard integration.", "api"),
-    ]
-    for r in range(0, len(cards), 3):
-        cols = st.columns(3)
-        for col, (title, desc, pk) in zip(cols, cards[r:r + 3]):
-            with col.container(border=True):
-                st.markdown(f"**{title}**")
-                st.caption(desc)
-                if st.button("Open", key=f"card_{pk}", use_container_width=True):
-                    if pk in PAGES:
-                        st.switch_page(PAGES[pk])
-
-    st.caption("Research prototype: Not validated against outcomes, not a medical device, and not for patient care or emergency decisions.")
-
