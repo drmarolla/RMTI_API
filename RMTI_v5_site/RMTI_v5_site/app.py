@@ -7,6 +7,7 @@ from views import author, calculator, cases, developer_api, docs, hcc_surveillan
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
 inject_css()
+
 st.sidebar.markdown("""
 <style>
 @keyframes rmtiSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -30,7 +31,6 @@ st.sidebar.markdown("""
   </div>
 </div>
 """, unsafe_allow_html=True)
-
 
 
 def P(fn, title, icon, slug, default=False):
@@ -96,7 +96,7 @@ def case_study_dialog():
     with tab1:
         st.video(v1_mp4, subtitles=V1_VTT)
         st.markdown(
-            "**Case & Data Sources:** [Marolla (2026) HCC Preprint (SSRN: 7427450)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7427450) · "
+            "**Case & Data Sources:** [Marolla (2026) HCC Preprint (SSRN: 7427450)](https://ssrn.com) · "
             "Faria et al. ALBI Cohort (Harvard Dataverse, *n* = 54) · Singal et al. (2022) · Lau-Min et al. (*JAMA Netw Open* 2025). "
             "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
         )
