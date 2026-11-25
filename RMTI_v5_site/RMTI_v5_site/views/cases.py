@@ -18,10 +18,10 @@ RAW_VIDEOS = (
 )
 
 STUDIO_CLIPS = {
-    "liver": ("case_liver.mp4", "Clinical Oncology • Hepatocellular Carcinoma (HCC)", "3D Hepatic Vasculature & BCLC Stage Trajectory"),
-    "lung": ("case_lung.mp4", "Clinical Oncology • Non-Small Cell Lung Cancer", "3D Bronchial Tree & Screening Interception Trajectory"),
-    "breast": ("case_breast.mp4", "Clinical Oncology • HR-Positive Breast Cancer", "3D Mammary Ductal-Lobular & Systemic Therapy Trajectory"),
-    "urban": ("case_african_cities.mp4", "Disaster Science • Six Sub-Saharan African Cities", "3D Urban Flood, Heat & Infrastructure Resilience Model"),
+    "liver": ("case_liver.mp4", "Clinical Oncology · Hepatocellular Carcinoma (HCC)", "3D Hepatic Vasculature & BCLC Stage Trajectory"),
+    "lung": ("case_lung.mp4", "Clinical Oncology · Non-Small Cell Lung Cancer", "3D Bronchial Tree & Screening Interception Trajectory"),
+    "breast": ("case_breast.mp4", "Clinical Oncology · HR-Positive Breast Cancer", "3D Mammary Ductal-Lobular & Systemic Therapy Trajectory"),
+    "urban": ("case_african_cities.mp4", "Disaster Science · Six Sub-Saharan African Cities", "3D Urban Flood, Heat & Infrastructure Resilience Model"),
 }
 
 
@@ -31,6 +31,7 @@ def _studio_hero_video(key):
         return
     filename, domain_tag, subtitle = STUDIO_CLIPS[key]
     video_url = f"{RAW_VIDEOS}/{filename}"
+    accent = "#0284C7" if key == "urban" else "#DC2626"
     components.html(
         f"""
         <!DOCTYPE html>
@@ -59,7 +60,7 @@ def _studio_hero_video(key):
             font-weight: 800;
             letter-spacing: 0.4px;
             text-transform: uppercase;
-            color: {"#0284C7" if key == "urban" else "#DC2626"};
+            color: {accent};
           }}
           .sub {{
             font-size: 12.5px;
@@ -114,8 +115,10 @@ def _gbd_tab():
     g = content.GBD_BREAST
     st.markdown("**Global context, GBD 2023** (Lancet Oncology 2026;27:302-326). Females, all ages.")
     a, b, c3, d4 = st.columns(4)
-    a.metric("Incident cases, 2023", f"{g['cases_m']:.2f} million"); b.metric("Deaths, 2023", f"{g['deaths_k']:,} thousand")
-    c3.metric("DALYs, 2023", f"{g['dalys_m']:.1f} million"); d4.metric("Forecast cases, 2050", f"{g['cases_2050_m']:.2f} million", f"{g['deaths_2050_m']:.2f} million deaths", delta_color="off")
+    a.metric("Incident cases, 2023", f"{g['cases_m']:.2f} million")
+    b.metric("Deaths, 2023", f"{g['deaths_k']:,} thousand")
+    c3.metric("DALYs, 2023", f"{g['dalys_m']:.1f} million")
+    d4.metric("Forecast cases, 2050", f"{g['cases_2050_m']:.2f} million", f"{g['deaths_2050_m']:.2f} million deaths", delta_color="off")
     fig = go.Figure()
     fig.add_bar(x=g["groups"], y=g["asir"], name="Incidence (ASIR)", marker_color="#93C5FD")
     fig.add_bar(x=g["groups"], y=g["asmr"], name="Mortality (ASMR)", marker_color="#BE123C")
@@ -199,6 +202,6 @@ def johnson_page():
     page_header("HCC progression: the pathway matters for surveillance",
                 "Johnson and colleagues (BJC Reports, 2024) followed 2,592 patients with chronic liver disease and no prior cirrhosis at Ogaki Municipal Hospital, Japan (median follow-up 13.2 years).",
                 "Oncology case studies")
-    k = st.columns(4, gap="medium")
-    k[0].metric("HCC developed", f"{J['hcc']}", f"{J['hcc'] / J['n']:.0%} of cohort", delta_color="off")
-    k[1].metric("Never passed through cirrhosis", f"{J['no_cirrhosis']}", "28% of HCC", delta_color="off")
+    k0, k1, k2, k3 = st.columns(4, gap="medium")
+    k0.metric("HCC developed", f"{J['hcc']}", f"{J['hcc'] / J['n']:.0%} of cohort", delta_color="off")
+    k1.metric("Never passed through cirrhosis", f"{J['no_cirrhosis']}", "28% of HCC", delta_color="off")
