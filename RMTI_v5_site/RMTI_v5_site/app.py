@@ -18,12 +18,23 @@ def P(fn, title, icon, slug, default=False):
     return st.Page(fn, title=title, icon=f":material/{icon}:", url_path=slug, default=default)
 
 
-RAW_VIDEO_BASE = (
+ROOT = os.path.dirname(os.path.abspath(__file__))
+RAW_BASE = (
     "https://raw."
     "githubusercontent"
     ".com/"
-    "drmarolla/RMTI_API/main/assets/videos"
+    "drmarolla/RMTI_API/main/assets"
 )
+
+
+def _find_local(rel_path: str):
+    d = ROOT
+    for _ in range(4):
+        p = os.path.join(d, rel_path)
+        if os.path.exists(p) and os.path.getsize(p) > 2048:
+            return p
+        d = os.path.dirname(d)
+    return None
 
 
 V1_VTT = """WEBVTT
@@ -71,8 +82,13 @@ Filtered trajectory slope adds +0.015 to +0.022 AUROC over static baseline R(0) 
 
 @st.dialog("RMTI Clinical Case Studies & 3D Trajectory Models", width="large")
 def case_study_dialog():
-    v1_mp4 = f"{RAW_VIDEO_BASE}/video1_4stages_3d.mp4?v=4"
-    v2_mp4 = f"{RAW_VIDEO_BASE}/video2_trajectory_3d.mp4?v=4"
+    v1_mp4 = f"{RAW_BASE}/videos/video1_4stages_3d.mp4?v=4"
+    v2_mp4 = f"{RAW_BASE}/videos/video2_trajectory_3d.mp4?v=4"
+    v2_mp3 = (
+        _find_local(os.path.join("assets", "raw", "video2_trajectory_voice.mp3.mp3"))
+        or _find_local(os.path.join("assets", "video2_trajectory_voice.mp3.mp3"))
+        or f"{RAW_BASE}/raw/video2_trajectory_voice.mp3.mp3"
+    )
 
     tab1, tab2 = st.tabs([
         "Case Study 1: 4-Stage Liver Progression & Cohort Triage",
@@ -89,10 +105,12 @@ def case_study_dialog():
 
     with tab2:
         st.video(v2_mp4, subtitles=V2_VTT)
+        st.caption("British Female Narration — Time-Indexed Trajectory R(t):")
+        st.audio(v2_mp3)
         st.markdown(
             "**Case & Data Sources:** Marolla (2026) *From Snapshot to Trajectory* (`RMTI-Py v2.5`, Apache-2.0) · "
             "Synthetic 2-Year Landmark Surveillance Cohort (*N* = 2,000, α = 0.41, β = 0.09). "
-            "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
+            "*Press Play on the narration bar above for audio, or click **⋮ → Captions** for subtitles.*"
         )
 
 
