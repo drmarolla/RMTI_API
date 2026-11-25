@@ -1,4 +1,5 @@
 """Risk Mechanism Theory Index (RMTI) - entry point.   streamlit run app.py"""
+import base64
 import os
 
 import streamlit as st
@@ -74,6 +75,7 @@ def case_study_dialog():
     v1_mp4 = f"{RAW_BASE}/videos/video1_4stages_3d.mp4?v=7"
     v2_mp4 = f"{RAW_BASE}/videos/video2_trajectory_3d.mp4?v=7"
     v2_mp3 = f"{RAW_BASE}/raw/video2_trajectory_voice.mp3.mp3"
+    v2_vtt_b64 = base64.b64encode(V2_VTT.encode("utf-8")).decode("ascii")
 
     tab1, tab2 = st.tabs([
         "Case Study 1: 4-Stage Liver Progression & Cohort Triage",
@@ -92,8 +94,9 @@ def case_study_dialog():
         st.audio(v2_mp3)
         st.components.v1.html(
             f"""
-            <video id="v2" width="100%" controls playsinline style="border-radius:8px;">
+            <video id="v2" controls playsinline style="width:100%; max-height:540px; border-radius:8px; background:#0F172A; display:block;">
               <source src="{v2_mp4}" type="video/mp4">
+              <track kind="captions" src="data:text/vtt;base64,{v2_vtt_b64}" srclang="en" label="English" default>
             </video>
             <audio id="a2" src="{v2_mp3}" preload="auto"></audio>
             <script>
@@ -104,13 +107,12 @@ def case_study_dialog():
               v.addEventListener('seeking', () => {{ a.currentTime = v.currentTime; }});
             </script>
             """,
-            height=430,
+            height=560,
         )
         st.markdown(
             "**Case & Data Sources:** Marolla (2026) *From Snapshot to Trajectory* (`RMTI-Py v2.5`, Apache-2.0) · "
             "Synthetic 2-Year Landmark Surveillance Cohort (*N* = 2,000, α = 0.41, β = 0.09)."
         )
-
 
 
 PG = {
