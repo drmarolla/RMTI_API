@@ -183,7 +183,7 @@ def case_page(key):
                 pts.append(core.score(L, E, v, r)["R_raw"])
         fig = go.Figure()
         add_tier_bands(fig)
-                cycles = list(range(1, 5))
+        cycles = list(range(1, 5))
         fig.add_trace(go.Scatter(x=cycles, y=pts, mode="lines+markers", line=dict(color="#0F172A", width=4), marker=dict(size=13)))
         fig.update_layout(xaxis=dict(title="Review cycle", dtick=1), yaxis_title="Residual risk R", yaxis_range=[0, max(0.4, max(pts) * 1.2)], showlegend=False)
         st.plotly_chart(style_fig(fig, 360), width="stretch")
