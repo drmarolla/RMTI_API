@@ -149,3 +149,23 @@ def render():
     cards = [
         ("RMTI Calculator", "Score any asset or cohort, model an investment, rank a portfolio.", "calc"),
         ("HCC Surveillance Calculator", "Triage surveillance for a patient or the six published cohorts.", "hccs"),
+                ("HCC Treatment Calculator", "Evidence-gated regimen matching for stage 0 to D.", "hcct"),
+        ("Cohort Sandbox", "Rank a synthetic or uploaded cohort and test scenarios.", "sandbox"),
+        ("Interactive Tumor Models", "Rotate liver, lung, and breast models through stages 1 to 4.", "models"),
+        ("Live Risk Matrix", "Tier maps that redraw as you move the levers.", "live"),
+        ("4D Risk Matrix", "Tier surfaces in 3D, animated across Exposure.", "m4d"),
+        ("Books, Papers & Author Bio", "Monographs, World Bank compendium, peer-reviewed papers, and Dr. Marolla's CV.", "pubs"),
+        ("Developer API", "Deterministic scoring for EHR and dashboard integration.", "api"),
+    ]
+    for r in range(0, len(cards), 3):
+        cols = st.columns(3)
+        for col, (title, desc, pk) in zip(cols, cards[r:r + 3]):
+            with col.container(border=True):
+                st.markdown(f"**{title}**")
+                st.caption(desc)
+                if st.button("Open", key=f"card_{pk}", use_container_width=True):
+                    if pk in PAGES:
+                        st.switch_page(PAGES[pk])
+
+    st.caption("Research prototype: Not validated against outcomes, not a medical device, and not for patient care or emergency decisions.")
+
