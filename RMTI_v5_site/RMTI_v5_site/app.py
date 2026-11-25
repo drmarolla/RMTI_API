@@ -125,7 +125,9 @@ pg = st.navigation({
     "Clinical calculators": [PG["calc"], PG["hccs"], PG["hcct"]],
     "Research tools": [PG["sandbox"]],
     "Interactive models": [PG["models"], PG["live"], PG["m4d"]],
-    "Case studies": [PG["library"], PG["liver"], PG["lung"], PG["breast"], PG["johnson"], PG["urban"], PG["videos"]],
+    "Case studies": [PG["library"], PG["videos"]],
+    "Oncology case studies": [PG["liver"], PG["lung"], PG["breast"], PG["johnson"]],
+    "Disaster science case studies": [PG["urban"]],
     "Documentation": [PG["method"], PG["steps"], PG["refs"]],
     "Platform": [PG["api"]],
 })
