@@ -117,8 +117,8 @@ def _video(key, label):
             with open(cap, "rb") as fh:
                 st.download_button("Download closed captions (.vtt)", fh.read(), os.path.basename(cap), "text/vtt", key=f"vtt_{key}")
 
-                def _refs(key):
-    rows = []
+def _refs(key):
+    rows = []    
     for cite, url, kind in content.CASES[key]["refs"]:
         link = f' <a href="{url}" target="_blank">open</a>' if url else ""
         rows.append(f'<div class="card" style="margin-bottom:.6rem"><p><b>{kind}</b> · {cite}{link}</p></div>')
