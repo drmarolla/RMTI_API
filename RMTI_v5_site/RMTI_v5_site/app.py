@@ -1,5 +1,4 @@
 """Risk Mechanism Theory Index (RMTI) - entry point.   streamlit run app.py"""
-import os
 import streamlit as st
 from engine import APP_TITLE
 from rmti_ui import inject_css
@@ -7,6 +6,7 @@ from views import author, calculator, cases, developer_api, docs, hcc_surveillan
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
 inject_css()
+
 st.logo(
     '<svg xmlns="http://w3.org" viewBox="0 0 220 52" width="220" height="52">'
     '<defs><linearGradient id="halo" x1="0%" y1="0%" x2="100%" y2="100%">'
@@ -23,7 +23,6 @@ st.logo(
     size="medium",
 )
 st.markdown("<style>@keyframes rmtiResonate{0%,100%{filter:drop-shadow(0 0 3px rgba(16,185,129,.45)) drop-shadow(0 0 6px rgba(56,189,248,.25))}50%{filter:drop-shadow(0 0 9px rgba(16,185,129,.90)) drop-shadow(0 0 14px rgba(56,189,248,.65))}}[data-testid='stSidebarHeader'] img,[data-testid='stLogo']{animation:rmtiResonate 4s ease-in-out infinite}</style>", unsafe_allow_html=True)
-""", unsafe_allow_html=True)
 
 
 def P(fn, title, icon, slug, default=False):
@@ -80,28 +79,17 @@ def case_study_dialog():
     v1_mp4 = f"{RAW_BASE}/videos/video1_4stages_3d.mp4?v=7"
     v2_mp4 = f"{RAW_BASE}/videos/video2_trajectory_3d.mp4?v=7"
     v2_mp3 = f"{RAW_BASE}/raw/video2_trajectory_voice.mp3.mp3"
-
     tab1, tab2 = st.tabs([
         "Case Study 1: 4-Stage Liver Progression & Cohort Triage",
         "Case Study 2: Time-Indexed Trajectory R(t) & Kalman Filtering",
     ])
-
     with tab1:
         st.video(v1_mp4, subtitles=V1_VTT)
-        st.markdown(
-            "**Case & Data Sources:** [Marolla (2026) HCC Preprint (SSRN: 7427450)](https://ssrn.com) · "
-            "Faria et al. ALBI Cohort (Harvard Dataverse, *n* = 54) · Singal et al. (2022) · Lau-Min et al. (*JAMA Netw Open* 2025). "
-            "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
-        )
-
+        st.markdown("**Case & Data Sources:** [Marolla (2026) HCC Preprint (SSRN: 7427450)](https://ssrn.com) · Faria et al. ALBI Cohort (*n* = 54) · Singal et al. (2022) · Lau-Min et al. (*JAMA Netw Open* 2025).")
     with tab2:
         st.video(v2_mp4, subtitles=V2_VTT)
         st.audio(v2_mp3)
-        st.markdown(
-            "**Case & Data Sources:** Marolla (2026) *From Snapshot to Trajectory* (`RMTI-Py v2.5`, Apache-2.0) · "
-            "Synthetic 2-Year Landmark Surveillance Cohort (*N* = 2,000, α = 0.41, β = 0.09). "
-            "*Click **⋮ → Captions** in the player bar to toggle closed captions.*"
-        )
+        st.markdown("**Case & Data Sources:** Marolla (2026) *From Snapshot to Trajectory* (`RMTI-Py v2.5`) · Synthetic 2-Year Landmark Cohort (*N* = 2,000, α = 0.41, β = 0.09).")
 
 
 PG = {
