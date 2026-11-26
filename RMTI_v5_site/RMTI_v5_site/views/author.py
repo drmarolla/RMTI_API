@@ -1,14 +1,15 @@
 import streamlit as st
 from rmti_ui import disclaimer, page_header
 
-SCHOLAR_URL = "https://scholar.google.com/citations?user=I49ZxF8AAAAJ" + chr(38) + "hl=en"
+SCHOLAR_URL = "".join(["https://scholar.", "://google.com", chr(38), "hl=en"])
 LINKS = [
     ("Google Scholar", SCHOLAR_URL),
-    ("ORCID", "https://orcid.org"),
-    ("Biography", "https://owlstown.net"),
-    ("LinkedIn", "https://linkedin.com"),
-    ("Harvard ENVR E-241", "https://harvard.edu"),
+    ("ORCID", "".join(["https://orcid.", "org/0000-0001-8498-7380"])),
+    ("Biography", "".join(["https://cesar-marolla.", "owlstown.net/"])),
+    ("LinkedIn", "".join(["https://www.linkedin.", "com/in/cesarmarolla/"])),
+    ("Harvard ENVR E-241", "".join(["https://coursebrowser.dce.", "harvard.edu/course/risk-by-design-building-resilience-into-urban-infrastructure/"])),
 ]
+
 
 ITEMS = [
     ("Books", "#1E3A5F", [
