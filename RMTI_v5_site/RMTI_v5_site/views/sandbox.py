@@ -134,7 +134,7 @@ def render():
         "Research tools",
     )
 
-    with st.expander("How to Use the Oncology Cohort Sandbox (3-Step Guide)", expanded=True):
+    with st.expander("How to Use the Oncology Cohort Sandbox (3-Step Guide)", expanded=False):
         g1, g2, g3 = st.columns(3)
         g1.markdown("**1. Select or Customize Cohort**\nRun a synthetic HCC cohort, switch to **Custom Editable Table** to edit BCLC/ALBI rows or add your own with **`+`**, or upload an aggregate CSV.")
         g2.markdown("**2. Simulate Surveillance (ρ)**\nAdjust **ρ after (surveillance scenario)** to model ultrasound + AFP adherence, LDCT screening, or second-line systemic delivery.")
