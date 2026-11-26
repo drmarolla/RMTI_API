@@ -50,7 +50,7 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
     for t, c0, c1 in zip(tiers, now_counts, aft_counts):
         h0 = max(4, int((c0 / max_c) * 110))
         h1 = max(4, int((c1 / max_c) * 110))
-        lbl = t.split(" ", 1)
+        lbl = t.split(" ", 1)[1]
         bars_html.append(f"""
         <div class="tgroup">
           <div class="pair">
@@ -64,7 +64,7 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
     clip_primary = f"{RAW_VIDEOS}/sandbox_dual3d.mp4"
     clip_fallback = f"{RAW_VIDEOS}/video1_4stages_3d.mp4"
 
-    components.html(f"""
+   st.html(f"""
     <style>
       *{{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}}
       .card{{position:relative;height:365px;border-radius:16px;overflow:hidden;border:1px solid #D6B899;background:linear-gradient(125deg,#F3DFC8 0%,#C88A55 52%,#8F562E 100%);box-shadow:0 10px 28px rgba(15,23,42,0.09)}}
@@ -124,7 +124,7 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
         </div>
       </div>
     </div>
-    """, height=372)
+    """)
 
 
 def render():
