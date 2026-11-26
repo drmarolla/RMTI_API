@@ -176,7 +176,7 @@ def render():
             v["rho_after"] = float(rho_scen)
 
     ranked = core.rank_cohort(raw_rows)
-    out = []
+       out = []
     for r in ranked:
         out.append({
             "Name": r["name"],
@@ -184,3 +184,33 @@ def render():
             "R now": r["R_now"],
             "Tier now": short(r["tier_now"]),
             "R after": r.get("R_after"),
+            "Tier after": short(r["tier_after"]) if "tier_after" in r else "",
+            "Reduction %": r.get("risk_reduction_pct"),
+            "EAL now": r["EAL_now"],
+        })
+    df = pd.DataFrame(out)
+    mean_now = float(df["R now"].mean())
+    mean_after = float(df["R after"].mean()) if df["R after"].notna().any() else mean_now
+    mean_eal = float(df["EAL now"].mean())
+    pct_chg = ((mean_after / mean_now) - 1.0) * 100 if mean_now > 0 else 0.0
+
+    with right:
+        _dual_layer_sandbox_card(df, raw_rows, mean_now, mean_after, mean_eal, rho_scen or 0.65)
+        st.write("")
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Rows scored", f"{len(df):,}")
+        m2.metric("Mean R now", f"{mean_now:.3f}")
+        m3.metric("Mean R after", f"{mean_after:.3f}", f"{pct_chg:+.1f}%", delta_color="inverse")
+
+        st.subheader("Tier distribution")
+        tiers = ["1 Low", "2 Moderate", "3 High", "4 Severe", "5 Critical"]
+        fig = go.Figure()
+        fig.add_bar(x=tiers, y=[int((df["Tier now"] == t).sum()) for t in tiers], name="now", marker_color="#1E293B")
+        fig.add_bar(x=tiers, y=[int((df["Tier after"] == t).sum()) for t in tiers], name="after scenario", marker_color="#93C5FD")
+        fig.update_layout(barmode="group", yaxis_title="Patients or cohorts")
+        st.plotly_chart(style_fig(fig, 310), width="stretch")
+
+        st.dataframe(df, hide_index=True, width="stretch", height=320)
+        st.download_button("Download scored cohort (CSV)", df.to_csv(index=False).encode(), "rmti_cohort_sandbox.csv", "text/csv")
+
+    disclaimer()
