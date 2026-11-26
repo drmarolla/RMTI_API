@@ -216,41 +216,12 @@ def johnson_page():
 
 
 def urban_page():
-    page_header("Urban infrastructure: six Sub-Saharan African cities", "Live recomputation of Tables 4 to 6 of Marolla (2026).", "Disaster science case studies")
-    _dual_layer_panel("urban", 0.442, 0.231)
-    st.write("")
-    ranked = core.rank_cohort({k: {x: v[x] for x in ("N", "L", "E_sel", "V", "rho_now", "C", *(["rho_after"] if "rho_after" in v else []))} for k, v in content.SIX_CITIES.items()})
-    rows, ok_all = [], True
-    for r in ranked:
-        pub_now, pub_after = content.SIX_CITIES_PUBLISHED[r["name"]]
-        ok = abs(r["R_now"] - pub_now) < 0.0015 and (pub_after is None or abs(r["R_after"] - pub_after) < 0.0015)
-        ok_all &= ok
-        rows.append({"Priority in tier": r["priority_in_tier"], "City": r["name"], "Asset": content.SIX_CITIES[r["name"]]["asset"], "R now": r["R_now"], "Tier now": short(r["tier_now"]), "R after": r.get("R_after"), "Tier after": short(r["tier_after"]) if "tier_after" in r else "", "Reduction %": r.get("risk_reduction_pct"), "EAL now": r["EAL_now"], "Equity /1M": r["equity_now_per_1M"], "Matches paper": "Yes" if ok else "No"})
-    df = pd.DataFrame(rows)
-    (st.success if ok_all else st.warning)("All published R values reproduced." if ok_all else "Some values differ from the paper.")
-    st.dataframe(df, hide_index=True, width="stretch")
-    c1, c2 = st.columns(2, gap="large")
-    with c1:
-        fig = go.Figure()
-        add_tier_bands(fig)
-        fig.add_bar(x=df["City"], y=df["R now"], name="R now", marker_color="#EF4444")
-        fig.add_bar(x=df["City"], y=df["R after"], name="R after ($50M package)", marker_color="#10B981")
-        fig.update_layout(barmode="group", yaxis_title="Residual risk R", yaxis_range=(0, 0.65), title="R against the five fixed tiers")
-        st.plotly_chart(style_fig(fig, 460), width="stretch")
-    with c2:
-        d2 = df.sort_values("Equity /1M")
-        fig = go.Figure(go.Bar(y=d2["City"], x=d2["Equity /1M"], orientation="h", marker_color="#0284C7"))
-        fig.update_layout(title="Per-capita equity rate (EAL per million residents)", xaxis_title="Equity rate")
-        st.plotly_chart(style_fig(fig, 460), width="stretch")
-    disclaimer()
-
+    from views import urban_cases
+    urban_cases.render()
 
 def videos_page():
     page_header("Video library", "Narrated walkthroughs of the framework and the case studies.", "Case studies")
-    vids = content.all_videos()
-    if not vids:
-        st.markdown('<div class="note">No videos found yet.</div>', unsafe_allow_html=True)
-    for f in vids:
+    for f in content.all_videos():
         st.subheader(os.path.basename(f))
         st.video(f)
     disclaimer()
