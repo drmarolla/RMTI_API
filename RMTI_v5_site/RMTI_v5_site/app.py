@@ -3,7 +3,7 @@ import os
 import streamlit as st
 from engine import APP_TITLE
 from rmti_ui import inject_css
-from views import author, calculator, cases, developer_api, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox
+from views import author, calculator, cases, developer_api, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
 inject_css()
@@ -125,7 +125,13 @@ PG = {
     "lung": P(cases.lung, "Lung cancer", "air", "case-lung"),
     "breast": P(cases.breast, "Breast cancer", "favorite", "case-breast"),
     "johnson": P(cases.johnson_page, "HCC pathway (Johnson)", "timeline", "case-hcc-pathway"),
-    "urban": P(cases.urban_page, "Six African cities", "location_city", "case-urban"),
+    "lagos": P(urban_cases.lagos, "Lagos, Nigeria", "location_city", "case-lagos"),
+    "lilongwe": P(urban_cases.lilongwe, "Lilongwe, Malawi", "water", "case-lilongwe"),
+    "bamako": P(urban_cases.bamako, "Bamako, Mali", "local_hospital", "case-bamako"),
+    "nairobi": P(urban_cases.nairobi, "Nairobi, Kenya", "alt_route", "case-nairobi"),
+    "dar": P(urban_cases.dar_es_salaam, "Dar es Salaam, Tanzania", "directions_boat", "case-dar"),
+    "lusaka": P(urban_cases.lusaka, "Lusaka, Zambia", "layers", "case-lusaka"),
+    "urban": P(urban_cases.synthesis_page, "Six-City Synthesis & 3D Axis", "3d_rotation", "case-urban"),
     "videos": P(cases.videos_page, "Video library", "movie", "video-library"),
     "pubs": P(author.publications_page, "Books & Peer-Reviewed Work", "auto_stories", "publications"),
     "bio": P(author.bio_page, "Author Biography & CV", "person", "author-biography"),
@@ -142,7 +148,7 @@ pg = st.navigation({
     "Interactive models": [PG["models"], PG["live"], PG["m4d"]],
     "Case studies": [PG["library"], PG["videos"]],
     "Oncology case studies": [PG["liver"], PG["lung"], PG["breast"], PG["johnson"]],
-    "Disaster science case studies": [PG["urban"]],
+    "Disaster science case studies": [PG["lagos"], PG["lilongwe"], PG["bamako"], PG["nairobi"], PG["dar"], PG["lusaka"], PG["urban"]],
     "Publications & Author": [PG["pubs"], PG["bio"]],
     "Documentation": [PG["method"], PG["steps"], PG["refs"]],
     "Platform": [PG["api"]],
