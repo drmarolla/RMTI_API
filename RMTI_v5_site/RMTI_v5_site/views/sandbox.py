@@ -128,13 +128,14 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
 
 
 def render():
-        page_header(
+    page_header(
         "Oncology Cohort Sandbox — Hepatocellular Carcinoma (HCC) & Custom Cohort Triage",
         "Case Study: Hepatocellular Carcinoma (HCC) BCLC & ALBI Surveillance Cohort (Marolla, 2026, SSRN: 7427450; Faria et al. ALBI Cohort, n = 54; Singal et al., 2022; Lau-Min et al., JAMA Netw Open, 2025).",
         "Research tools",
     )
 
     with st.expander("How to Use the Oncology Cohort Sandbox (3-Step Guide)", expanded=False):
+
         g1, g2, g3 = st.columns(3)
         g1.markdown("**1. Select or Customize Cohort**\nRun a synthetic HCC cohort, switch to **Custom Editable Table** to edit BCLC/ALBI rows or add your own with **`+`**, or upload an aggregate CSV.")
         g2.markdown("**2. Simulate Surveillance (ρ)**\nAdjust **ρ after (surveillance scenario)** to model ultrasound + AFP adherence, LDCT screening, or second-line systemic delivery.")
