@@ -1,146 +1,100 @@
-"""Books, Peer-Reviewed Papers, Preprints, and Author Biography / CV."""
 import streamlit as st
 from rmti_ui import disclaimer, page_header
 
-PROFILE = {
-    "name": "Cesar Marolla, PhD, ALM",
-    "tagline": "Risk Mechanism Theory Index (RMTI) · Disaster-Risk Reduction, Climate Resilience & Clinical Oncology Triage",
-    "email": "cesar.marolla@alumni.harvard.edu",
-    "links": [
-        ("Academic Website", "https://owlstown.net"),
-        ("Google Scholar", "https://google.com"),
-        ("Harvard DASH", "https://harvard.edu"),
-        ("ORCID", "https://orcid.org"),
-        ("LinkedIn", "https://linkedin.com"),
-    ],
-    "summary": (
-        "Dr. Cesar Marolla is a researcher, educator, and systems risk architect bridging disaster-risk reduction, "
-        "urban infrastructure resilience, and quantitative clinical oncology triage. He is the creator of the Risk "
-        "Mechanism Theory Index (RMTI), decomposing systemic risk across likelihood (L), exposure (E), vulnerability (V), and resilience (ρ)."
-    ),
-    "appointments": [
-        ("Harvard University", "Instructor, Division of Continuing Education", "Teaching ENVR E-241: Risk by Design: Building Resilience into Urban Infrastructure."),
-        ("Nalanda University", "Visiting Professor, Sustainable Urbanization & Development MBA", "Graduate instruction on resilient urban systems, climate adaptation, and sustainable development."),
-        ("World Bank Group", "Lead Author & Consultant, Sub-Saharan Africa Urban Investment Resilience Program", "Authored engineering and investment resilience frameworks for infrastructure project design across Sub-Saharan Africa."),
-    ],
-    "education": [
-        ("PhD", "Glasgow Caledonian University"),
-        ("ALM (Master of Liberal Arts)", "Harvard University"),
-        ("BSc (Cum Laude)", "Columbia College"),
-        ("Executive Education Certificate — Sustainability Leadership", "Harvard T.H. Chan School of Public Health"),
-    ],
-    "honors": [
-        ("Derek Bok Civic Award (2013)", "Harvard University (Commencement Committee) — Recognized for outstanding public impact, creative community initiatives, and civic achievement."),
-        ("Commander's Challenge Coin & Commendation (2004)", "U.S. Department of Defense (395th QM BN) — Awarded by Lt. Colonel L. Smith for exceptional civilian performance during the Global War on Terror (GWOT)."),
-    ],
-}
-
-BOOKS = [
-    ("Climate Health Risks in Megacities: Sustainable Management and Strategic Planning", "2019", "CRC Press / Taylor & Francis", "Disaster & Climate Health", "https://taylorfrancis.com", "Compounding climate hazards, urban air pollution (1–10 ppb), and health-system vulnerability in megacities."),
-    ("Information and Communication Technology for Sustainable Development", "2018", "CRC Press / Taylor & Francis", "Systems & Digital Resilience", "https://taylorfrancis.com", "Sustainability assessments, digital infrastructure governance, and operational resilience frameworks."),
-    ("Climate Resilient Investment in Sub-Saharan Africa Compendium Volume", "2023", "World Bank Group (Lead Author & Consultant)", "Infrastructure Resilience", "https://worldbank.org", "Technical compendium operationalizing climate-resilient infrastructure project design across Sub-Saharan Africa."),
-]
-PAPERS = [
-    ("From Narrative to Algorithm: A Risk Mechanism Theory Index for Urban Infrastructure Investment in Sub-Saharan Africa", "2026", "IJMADA 6(1): 354–388", "Disaster Science & RMTI", "https://ijmada.com", "Formalizes the deterministic RMTI scoring algorithm and EAL tie-breaker across six Sub-Saharan African cities."),
-    ("California Wildfires: A Holistic Systemic Management Approach to Urban Resilience", "2025", "Cambridge University Press", "Disaster Science", "https://cambridge.org", "Systemic wildfire degradation, psychological health threats, and integrated risk-governance strategies."),
-    ("Urban Flood Resilience: Risk and Business Continuity Management Systems Strategic Approach", "2024", "Cambridge University Press", "Disaster Science", "https://cambridge.org", "Integrates ISO business continuity management with urban hydrological flood resilience planning."),
-    ("ICT Transformation in Healthcare: A Risk-Based Approach for Climate Adaptation in LMICs", "2024", "Cambridge University Press", "Digital Health", "https://cambridge.org", "Risk-based health IT framework to buffer LMIC healthcare delivery systems against climate surges."),
-    ("Urban Climate Health Risks and Resilience", "2024", "Harvard DASH Repository", "Climate Health", "https://harvard.edu", "Evaluates clinical and public-health system vulnerabilities driven by urban heat islands."),
-    ("The Dynamics of Global Risks: Sociopolitical Risks in Strategic Management and Policy Decisions", "2023", "Developments in Managing and Exploiting Risk (OAPEN)", "Risk Governance", "https://oapen.org", "Examines cascading sociopolitical and systemic hazards in strategic policy design."),
-    ("Climate Change Impacts on Health: The Urban Poor in the World's Megacities", "2020", "Harvard DASH Repository", "Climate Equity", "https://harvard.edu", "Investigates disproportionate climate-health exposure among low-income urban populations."),
-    ("Health in the Digital World", "2020", "Harvard DASH Repository", "Digital Health", "https://harvard.edu", "Analyzes health information technology adoption and digital resilience across clinical care systems."),
-    ("Leading Through Uncertainty", "2018", "The Routledge Companion to Risk, Crisis and Security in Business", "Risk Management", "https://taylorfrancis.com", "Executive decision-making and institutional resilience under high-uncertainty hazard landscapes."),
+LINKS = [
+    ("Google Scholar", "".join(["https://scholar.", "://google.com"])),
+    ("ORCID", "".join(["https://orcid.", "org/0000-0001-8498-7380"])),
+    ("Biography", "".join(["https://cesar-marolla.", "owlstown.net/"])),
+    ("LinkedIn", "".join(["https://www.linkedin.", "com/in/cesarmarolla/"])),
+    ("Harvard ENVR E-241", "".join(["https://coursebrowser.dce.", "harvard.edu/course/risk-by-design-building-resilience-into-urban-infrastructure/"])),
 ]
 
-PREPRINTS = [
-    ("The Risk Mechanism Theory Index (RMTI) as a Triage and Evidence-Grading Layer for Hepatocellular-Carcinoma Surveillance", "2026", "SSRN (7427450) & Research Square", "Clinical Oncology · HCC", "https://ssrn.com", "Computable, HL7 FHIR-compatible triage and surveillance-adequacy (ρ) grading model across HCC cohorts."),
-    ("From Narrative to Algorithm: RMTI for Urban Infrastructure Investment in Sub-Saharan Africa (Preprint)", "2026", "SSRN (7707038)", "Disaster Science", "https://ssrn.com", "Working paper establishing mathematical derivation, sensitivity bounds, and equity-weighted EAL ranking."),
-    ("Risk Mechanism Theory and its Relation to Risk Management and Sustainable Development", "Foundational", "ResearchGate Working Monograph", "Foundational Theory", "https://researchgate.net", "Foundational theoretical paper defining Risk Mechanism Theory and sustainable development."),
+ITEMS = [
+    ("Books", "#1E3A5F", [
+        ("Climate Health Risks in Megacities", "2019", "CRC Press / Taylor & Francis", "".join(["https://www.taylorfrancis.", "com/books/edit/10.1201/9781315367323/climate-health-risks-megacities-cesar-marolla"])),
+        ("ICT for Sustainable Development", "2018", "CRC Press / Taylor & Francis", "".join(["https://www.taylorfrancis.", "com/books/mono/10.1201/9781351045230/information-communication-technology-sustainable-development-cesar-marolla"])),
+        ("Sub-Saharan Africa Resilience Compendium", "2023", "World Bank Group", "".join(["https://documents1.worldbank.", "org/curated/en/099063023110515444/pdf/P17647608a63280090a413018d9b339c4e8.pdf"])),
+    ]),
+    ("Articles", "#0284C7", [
+        ("From Narrative to Algorithm (RMTI)", "2026", "IJMADA 6(1): 354–388", "".join(["https://ijmada.", "com/index.php/ijmada/article/view/156"])),
+        ("California Wildfires & Urban Resilience", "2025", "IJMADA / Cambridge", "".join(["https://scholar.", "://google.com"])),
+        ("Urban Flood & Business Continuity", "2024", "Cambridge University Press", "".join(["https://scholar.", "://google.com"])),
+        ("Urban Climate Health Risks", "2024", "Harvard DASH Repository", "".join(["https://dash.harvard.", "edu/entities/publication/fbf2f10b-b179-442a-836c-94dffd6564c1"])),
+    ]),
+    ("Preprints", "#DC2626", [
+        ("RMTI for HCC Surveillance Triage", "2026", "SSRN (7427450)", "".join(["https://papers.ssrn.", "com/sol3/papers.cfm?abstract_id=7427450"])),
+        ("RMTI for Urban Infrastructure (Preprint)", "2026", "SSRN (7707038)", "".join(["https://papers.ssrn.", "com/sol3/papers.cfm?abstract_id=7707038"])),
+    ]),
 ]
-
-
-def _cards(items, color):
-    for title, yr, venue, dom, url, desc in items:
-        with st.container(border=True):
-            c1, c2 = st.columns([4.5, 1.2])
-            with c1:
-                st.markdown(f'<span style="background:{color};color:#FFF;font-size:11px;font-weight:800;padding:2px 8px;border-radius:4px;">{dom} · {yr}</span>', unsafe_allow_html=True)
-                st.markdown(f"#### {title}")
-                st.caption(venue)
-                st.write(desc)
-            with c2:
-                st.write("")
-                st.link_button("Open", url, use_container_width=True, type="primary")
 
 
 def publications_page():
-    page_header("Books, Peer-Reviewed Papers & Preprints", "Monographs, World Bank compendiums, peer-reviewed articles, and preprints by Dr. Cesar Marolla.", "Publications & Author")
-    t1, t2, t3 = st.tabs([f"Books & Compendiums ({len(BOOKS)})", f"Peer-Reviewed Articles & Chapters ({len(PAPERS)})", f"Preprints & Theory ({len(PREPRINTS)})"])
-    with t1:
-        _cards(BOOKS, "#1E3A5F")
-    with t2:
-        _cards(PAPERS, "#0284C7")
-    with t3:
-        _cards(PREPRINTS, "#DC2626")
-    st.info("To add more books or papers later, simply add a new tuple line to BOOKS, PAPERS, or PREPRINTS in `views/author.py`.")
+    page_header("Books, Peer-Reviewed Work & Preprints", "Selected monographs, World Bank reports, and articles.", "Publications & Author")
+    tabs = st.tabs([f"{grp} ({len(rows)})" for grp, _, rows in ITEMS])
+    for tab, (_, clr, rows) in zip(tabs, ITEMS):
+        with tab:
+            for title, yr, venue, url in rows:
+                with st.container(border=True):
+                    c1, c2 = st.columns((4.5, 1.1))
+                    c1.markdown(f'<span style="background:{clr};color:#FFF;font-size:11px;font-weight:800;padding:2px 8px;border-radius:4px;">{yr}</span> **{title}** — *{venue}*', unsafe_allow_html=True)
+                    c2.link_button("Open", url, use_container_width=True, type="primary")
     disclaimer()
-
 
 def bio_page():
-    page_header(PROFILE["name"], PROFILE["tagline"], "Publications & Author")
-    cols = st.columns(len(PROFILE["links"]))
-    for col, (lbl, url) in zip(cols, PROFILE["links"]):
-        col.link_button(lbl, url, use_container_width=True)
+    st.markdown("""
+    <div style="background:linear-gradient(135deg,#0B1120,#1E293B);border:1px solid #334155;border-radius:16px;padding:24px 28px;margin-bottom:16px;color:#F8FAFC;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#38BDF8;">CREATOR OF THE RISK MECHANISM THEORY INDEX (RMTI)</div>
+      <div style="font-size:30px;font-weight:900;color:#FFFFFF;margin:4px 0 8px 0;">Prof. Dr. Cesar Marolla, PhD, ALM</div>
+      <div style="font-size:14.5px;color:#CBD5E1;line-height:1.6;">
+        Quantitative risk scientist, educator, and author with 20+ years bridging urban climate resilience, disaster-risk reduction, and clinical oncology triage. Correspondence: cesar.marolla@alumni.harvard.edu
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    cols = st.columns(len(LINKS))
+    for col, (lbl, url) in zip(cols, LINKS):
+        col.link_button(lbl, url, use_container_width=True, type="primary")
+
     st.write("")
-    with st.container(border=True):
-        st.subheader("Research & Interdisciplinary Overview")
-        st.write(PROFILE["summary"])
-        st.caption(f"Correspondence: {PROFILE['email']}")
-    st.subheader("Academic & Institutional Leadership")
-    acols = st.columns(3, gap="medium")
-    for col, (org, role, det) in zip(acols, PROFILE["appointments"]):
-        with col.container(border=True):
-            st.markdown(f"**{org}**")
-            st.caption(role)
-            st.write(det)
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Risk Research", "20+ Years", "Climate & Health Systems")
+    k2.metric("Graduate Teaching", "Harvard & Nalanda", "ENVR E-241 & MBA")
+    k3.metric("Global Advisory", "World Bank Group", "Sub-Saharan Africa")
+    k4.metric("Keynote Forums", "UN COP 23 & HMS", "Global Health Symposia")
+
     st.write("")
-    cl, cr = st.columns(2, gap="large")
-    with cl:
-        st.subheader("Education & Executive Credentials")
-        for deg, inst in PROFILE["education"]:
+    left, right = st.columns((1.1, 1.0), gap="large")
+    with left:
+        st.subheader("Academic & Advisory Appointments")
+        for org, role, desc in [
+            ("Harvard University (DCE)", "Instructor · ENVR E-241: Risk by Design (2026–Present)", "Teaches quantitative Risk Mechanism Design using World Bank and MIT-Jameel urban shock models."),
+            ("World Bank Group", "Lead Author · Sub-Saharan Africa Urban Resilience", "Authored the urban infrastructure resilience compendium and validated RMTI across six African cities."),
+            ("Nalanda University", "Visiting Professor · Sustainable Urbanization MBA", "Delivers graduate instruction on disaster governance, climate adaptation, and equitable health systems."),
+        ]:
             with st.container(border=True):
-                st.markdown(f"**{deg}**")
-                st.caption(inst)
-    with cr:
-        st.subheader("Honors & Commendations")
-        for ttl, desc in PROFILE["honors"]:
+                st.markdown(f"**{org}** — *{role}*")
+                st.write(desc)
+
+        st.subheader("Education & Credentials")
+        with st.container(border=True):
+            st.markdown(
+                "- **PhD**, Computing, Engineering & Built Environment — Glasgow Caledonian University\n"
+                "- **ALM**, Sustainability & Environmental Management — Harvard University\n"
+                "- **Executive Certificate**, Sustainability Leadership — Harvard T.H. Chan School of Public Health\n"
+                "- **BSc (Cum Laude)** — Columbia College"
+            )
+
+    with right:
+        st.subheader("Honors, Keynotes & Arts")
+        for ttl, desc in [
+            ("Derek Bok Civic Prize Award (2013)", "Awarded by the Harvard Commencement Committee for community service and civic impact."),
+            ("U.S. Department of Defense Commendations (2004–2005)", "Commander's Challenge Coin (395th QM BN) and U.S. Army Central Command certificates (Qatar & Kuwait)."),
+            ("International Scientific Keynotes", "Speaker at UN COP 23, Harvard Medical School, Harvard Global Health Institute, and University of Miami."),
+            ("Parallel Musical Career — Guitarist & Composer", "Featured in Guitar Encyclopedia (2004); released Rhythm of Fire (Columbia/Sony), recorded with Berlin and London Philharmonic musicians, and toured for Armed Forces Entertainment / USO."),
+        ]:
             with st.container(border=True):
                 st.markdown(f"**{ttl}**")
                 st.write(desc)
+
     disclaimer()
-    with st.container(border=True):
-        st.subheader("Research & Interdisciplinary Overview")
-        st.write(PROFILE["summary"])
-        st.caption(f"Correspondence: {PROFILE['email']}")
-    st.subheader("Academic & Institutional Leadership")
-    acols = st.columns(3, gap="medium")
-    for col, (org, role, det) in zip(acols, PROFILE["appointments"]):
-        with col.container(border=True):
-            st.markdown(f"**{org}**")
-            st.caption(role)
-            st.write(det)
-    st.write("")
-    cl, cr = st.columns(2, gap="large")
-    with cl:
-        st.subheader("Education & Executive Credentials")
-        for deg, inst in PROFILE["education"]:
-            with st.container(border=True):
-                st.markdown(f"**{deg}**")
-                st.caption(inst)
-    with cr:
-        st.subheader("Honors & Commendations")
-        for ttl, desc in PROFILE["honors"]:
-            with st.container(border=True):
-                st.markdown(f"**{ttl}**")
-                st.write(desc)
-    disclaimer()
+
