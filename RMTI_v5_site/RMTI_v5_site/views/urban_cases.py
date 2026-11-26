@@ -95,3 +95,16 @@ def synthesis_page():
         fig.add_trace(go.Scatter3d(x=(v, v), y=(0.0, 1.0), z=(0.002, 0.002), mode="lines", line=dict(color="#64748B", width=1.5), showlegend=False, hoverinfo="skip"))
     # Upper translucent grey plane (z=0.82) + Red (Baseline) & Gold (Post-Resilience) angled beam planes
     fig.add_trace(go.Surface(x=[[0.0, 1.0], [0.0, 1.0]], y=[[0.0, 0.0], [1.0, 1.0]], z=[[0.82, 0.82], [0.82, 0.82]], colorscale=[[0, "rgba(148,163,184,0.32)"], [1, "rgba(148,163,184,0.32)"]], showscale=False, name="Upper Trajectory Plane (T)"))
+
+        fig.update_layout(height=600, paper_bgcolor="#05070B", font=dict(color="#F8FAFC"), margin=dict(l=0, r=0, t=10, b=0), scene=dict(bgcolor="#05070B", xaxis=dict(visible=False, range=[0, 1.15]), yaxis=dict(visible=False, range=[0, 1.15]), zaxis=dict(visible=False, range=[0, 1.05]), camera=dict(eye=dict(x=1.55, y=-1.55, z=0.82))))
+    st.plotly_chart(fig, use_container_width=True)
+    disclaimer()
+
+
+def lagos(): city_page("Lagos")
+def lilongwe(): city_page("Lilongwe")
+def bamako(): city_page("Bamako")
+def nairobi(): city_page("Nairobi")
+def dar_es_salaam(): city_page("Dar es Salaam")
+def lusaka(): city_page("Lusaka")
+
