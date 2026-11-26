@@ -159,3 +159,103 @@ def synthesis_page():
     st.dataframe(df, hide_index=True, width="stretch")
 
     st.subheader("2. Interactive 3D RMTI Coordinate Axis (X: Hazard×Exposure · Y: Vulnerability · Z: Resilience ρ)")
+    def synthesis_page():
+    page_header(
+        "Six-City Portfolio Synthesis & 3D RMTI Coordinate Axis",
+        "Complete cross-city comparison table (Marolla et al., 2023; Marolla, 2026) and interactive 3D Cartesian coordinate space with directional risk vectors.",
+        "Disaster science case studies",
+    )
+
+    ranked = core.rank_cohort({k: {x: v[x] for x in ("N", "L", "E_sel", "V", "rho_now", "C", *(["rho_after"] if "rho_after" in v else []))} for k, v in content.SIX_CITIES.items()})
+    rows = []
+    for r in ranked:
+        rows.append({
+            "Priority": r["priority_in_tier"],
+            "City": r["name"],
+            "Infrastructure Asset": content.SIX_CITIES[r["name"]]["asset"],
+            "L": content.SIX_CITIES[r["name"]]["L"],
+            "E": content.SIX_CITIES[r["name"]]["E_sel"],
+            "V": content.SIX_CITIES[r["name"]]["V"],
+            "ρ now": content.SIX_CITIES[r["name"]]["rho_now"],
+            "R now": r["R_now"],
+            "Tier now": short(r["tier_now"]),
+            "ρ after": content.SIX_CITIES[r["name"]].get("rho_after"),
+            "R after": r.get("R_after"),
+            "Tier after": short(r["tier_after"]) if "tier_after" in r else "",
+            "Reduction %": r.get("risk_reduction_pct"),
+            "EAL now": r["EAL_now"],
+            "Equity /1M": r["equity_now_per_1M"],
+        })
+    df = pd.DataFrame(rows)
+
+    st.subheader("1. Six-City RMTI Calculator & Portfolio Table")
+    st.dataframe(df, hide_index=True, width="stretch")
+
+    st.subheader("2. Interactive 3D RMTI Coordinate Axis (X: Hazard×Exposure · Y: Vulnerability · Z: Resilience ρ)")
+    st.caption("Drag to rotate the 3D coordinate grid. Arrows show each city's trajectory from Baseline (Red) to Post-Resilience Upgrade (Emerald Green).")
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter3d(x=(0.0, 1.05), y=(0.0, 0.0), z=(0.0, 0.0), mode="lines+text", text=("", "X: Hazard × Exposure (L·E)"), textposition="top center", line=dict(color="#0284C7", width=6), name="X-Axis (L·E)"))
+    fig.add_trace(go.Scatter3d(x=(0.0, 0.0), y=(0.0, 1.05), z=(0.0, 0.0), mode="lines+text", text=("", "Y: Vulnerability (V)"), textposition="top center", line=dict(color="#F59E0B", width=6), name="Y-Axis (V)"))
+    fig.add_trace(go.Scatter3d(x=(0.0, 0.0), y=(0.0, 0.0), z=(0.0, 1.05), mode="lines+text", text=("", "Z: Resilience (ρ)"), textposition="top center", line=dict(color="#10B981", width=6), name="Z-Axis (ρ)"))
+    fig.add_trace(go.Cone(x=(1.05, 0.0, 0.0), y=(0.0, 1.05, 0.0), z=(0.0, 0.0, 1.05), u=(0.08, 0.0, 0.0), v=(0.0, 0.08, 0.0), w=(0.0, 0.0, 0.08), sizemode="absolute", sizeref=0.07, showscale=False, colorscale=[[0, "#0F172A"], [1, "#0F172A"]], name="Axis Arrows"))
+
+    bx, by, bz, btxt = [], [], [], []
+    ax, ay, az, atxt = [], [], [], []
+    for city, p in content.SIX_CITIES.items():
+        le = round(p["L"] * p["E_sel"], 3)
+        v = p["V"]
+        r0 = p["rho_now"]
+        r1 = p.get("rho_after", min(0.85, r0 + 0.25))
+        bx.append(le)
+        by.append(v)
+        bz.append(r0)
+        btxt.append(f"{city} (Now)")
+        ax.append(le)
+        ay.append(v)
+        az.append(r1)
+        atxt.append(f"{city} (Upgraded)")
+        fig.add_trace(go.Scatter3d(x=(le, le), y=(v, v), z=(r0, r1), mode="lines", line=dict(color="#64748B", width=4, dash="dash"), showlegend=False))
+        fig.add_trace(go.Cone(x=(le,), y=(v,), z=(r1,), u=(0.0,), v=(0.0,), w=(max(0.04, (r1 - r0) * 0.35),), sizemode="absolute", sizeref=0.05, showscale=False, colorscale=[[0, "#10B981"], [1, "#10B981"]], showlegend=False))
+
+    fig.add_trace(go.Scatter3d(x=bx, y=by, z=bz, mode="markers+text", text=btxt, textposition="bottom center", marker=dict(size=8, color="#EF4444"), name="Baseline Position"))
+    fig.add_trace(go.Scatter3d(x=ax, y=ay, z=az, mode="markers+text", text=atxt, textposition="top center", marker=dict(size=9, color="#10B981"), name="Post-Resilience Position"))
+
+    fig.update_layout(
+        height=620,
+        margin=dict(l=0, r=0, t=20, b=0),
+        scene=dict(
+            xaxis=dict(title="X: Hazard × Exposure (L·E)", range=[0, 1.1], backgroundcolor="#0F172A", gridcolor="#334155", showbackground=True),
+            yaxis=dict(title="Y: Vulnerability (V)", range=[0, 1.1], backgroundcolor="#0F172A", gridcolor="#334155", showbackground=True),
+            zaxis=dict(title="Z: Resilience Capacity (ρ)", range=[0, 1.1], backgroundcolor="#1E293B", gridcolor="#38BDF8", showbackground=True),
+            camera=dict(eye=dict(x=1.55, y=1.45, z=1.15)),
+        ),
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    disclaimer()
+
+
+def lagos():
+    city_page("Lagos")
+
+
+def lilongwe():
+    city_page("Lilongwe")
+
+
+def bamako():
+    city_page("Bamako")
+
+
+def nairobi():
+    city_page("Nairobi")
+
+
+def dar_es_salaam():
+    city_page("Dar es Salaam")
+
+
+def lusaka():
+    city_page("Lusaka")
+
