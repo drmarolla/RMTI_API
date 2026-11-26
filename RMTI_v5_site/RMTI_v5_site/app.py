@@ -10,19 +10,36 @@ inject_css()
 
 _NS = "".join(["http://", "www.w3.", "org/2000/svg"])
 _SVG = (
-    f'<svg xmlns="{_NS}" viewBox="0 0 220 52" width="220" height="52">'
-    '<circle cx="26" cy="26" r="20" fill="rgba(16,185,129,0.14)" stroke="#10B981" stroke-width="2.2"/>'
-    '<rect x="13" y="24" width="4.8" height="12" rx="2" fill="#38BDF8"/>'
-    '<rect x="20" y="19" width="4.8" height="17" rx="2" fill="#F87171"/>'
-    '<rect x="27" y="21" width="4.8" height="15" rx="2" fill="#FBBF24"/>'
-    '<rect x="34" y="15" width="4.8" height="21" rx="2" fill="#10B981"/>'
-    '<circle cx="36.4" cy="11" r="2.5" fill="#10B981"/>'
-    '<text x="54" y="27" font-family="Arial, sans-serif" font-weight="900" font-size="21" letter-spacing="1" fill="#FFFFFF">RMTI</text>'
-    '<text x="55" y="40" font-family="Arial, sans-serif" font-weight="700" font-size="7.8" letter-spacing="0.7" fill="#6EE7B7">RISK MECHANISM THEORY INDEX</text>'
+    f'<svg xmlns="{_NS}" viewBox="0 0 260 64" width="260" height="64">'
+    '<circle cx="32" cy="32" r="25" fill="rgba(56,189,248,0.12)" stroke="#38BDF8" stroke-width="2.4"/>'
+    '<circle cx="32" cy="32" r="20" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1" stroke-dasharray="4 3"/>'
+    '<rect x="20" y="28" width="5.5" height="16" rx="2.5" fill="#93C5FD"/>'
+    '<rect x="29.25" y="19" width="5.5" height="25" rx="2.5" fill="#38BDF8"/>'
+    '<rect x="38.5" y="23" width="5.5" height="21" rx="2.5" fill="#FFFFFF"/>'
+    '<text x="68" y="31" font-family="Arial, sans-serif" font-weight="900" font-size="25" letter-spacing="1.4" fill="#FFFFFF">RMTI</text>'
+    '<text x="69" y="45" font-family="Arial, sans-serif" font-weight="700" font-size="9.5" letter-spacing="0.6" fill="#E2E8F0">RISK MECHANISM</text>'
+    '<text x="69" y="56" font-family="Arial, sans-serif" font-weight="700" font-size="9.5" letter-spacing="0.6" fill="#93C5FD">THEORY INDEX</text>'
     '</svg>'
 )
-st.logo("data:image/svg+xml;base64," + base64.b64encode(_SVG.encode()).decode(), size="medium")
-st.markdown("<style>@keyframes rmtiResonate{0%,100%{filter:drop-shadow(0 0 3px rgba(16,185,129,.45)) drop-shadow(0 0 6px rgba(56,189,248,.25))}50%{filter:drop-shadow(0 0 9px rgba(16,185,129,.90)) drop-shadow(0 0 14px rgba(56,189,248,.65))}}[data-testid='stSidebarHeader'] img,[data-testid='stLogo']{animation:rmtiResonate 4s ease-in-out infinite}</style>", unsafe_allow_html=True)
+st.logo("data:image/svg+xml;base64," + base64.b64encode(_SVG.encode()).decode(), size="large", link="/")
+st.markdown("""
+<style>
+@keyframes rmtiPulse {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(56,189,248,0.35)); }
+  50% { filter: drop-shadow(0 0 8px rgba(56,189,248,0.75)); }
+}
+[data-testid="stSidebarHeader"] { padding-top: 10px !important; padding-bottom: 10px !important; }
+[data-testid="stSidebarHeader"] img, [data-testid="stLogo"] {
+  height: 54px !important; width: auto !important; max-width: 245px !important;
+  cursor: pointer !important; transition: transform 0.25s ease, filter 0.25s ease !important;
+  animation: rmtiPulse 4s ease-in-out infinite;
+}
+[data-testid="stSidebarHeader"] img:hover, [data-testid="stLogo"]:hover {
+  transform: scale(1.06) !important;
+  filter: drop-shadow(0 0 14px rgba(56,189,248,1)) drop-shadow(0 0 4px rgba(255,255,255,0.8)) !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 def P(fn, title, icon, slug, default=False):
