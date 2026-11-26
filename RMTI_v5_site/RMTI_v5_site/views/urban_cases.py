@@ -95,8 +95,18 @@ def synthesis_page():
         fig.add_trace(go.Scatter3d(x=(v, v), y=(0.0, 1.0), z=(0.002, 0.002), mode="lines", line=dict(color="#64748B", width=1.5), showlegend=False, hoverinfo="skip"))
     # Upper translucent grey plane (z=0.82) + Red (Baseline) & Gold (Post-Resilience) angled beam planes
     fig.add_trace(go.Surface(x=[[0.0, 1.0], [0.0, 1.0]], y=[[0.0, 0.0], [1.0, 1.0]], z=[[0.82, 0.82], [0.82, 0.82]], colorscale=[[0, "rgba(148,163,184,0.32)"], [1, "rgba(148,163,184,0.32)"]], showscale=False, name="Upper Trajectory Plane (T)"))
-
-        fig.update_layout(height=600, paper_bgcolor="#05070B", font=dict(color="#F8FAFC"), margin=dict(l=0, r=0, t=10, b=0), scene=dict(bgcolor="#05070B", xaxis=dict(visible=False, range=[0, 1.15]), yaxis=dict(visible=False, range=[0, 1.15]), zaxis=dict(visible=False, range=[0, 1.05]), camera=dict(eye=dict(x=1.55, y=-1.55, z=0.82))))
+    fig.add_trace(go.Surface(x=[[0.0, 1.0], [0.0, 1.0]], y=[[0.0, 0.0], [1.0, 1.0]], z=[[0.82, 0.82], [0.82, 0.82]], colorscale=[[0, "rgba(148,163,184,0.32)"], [1, "rgba(148,163,184,0.32)"]], showscale=False, name="Upper Trajectory Plane (T)"))
+    fig.add_trace(go.Surface(x=[[0.18, 0.18], [0.78, 0.78]], y=[[0.0, 1.0], [0.0, 1.0]], z=[[0.82, 0.82], [0.02, 0.02]], colorscale=[[0, "rgba(220,38,38,0.72)"], [1, "rgba(220,38,38,0.72)"]], showscale=False, name="Baseline Risk Wedge (Red)"))
+    fig.add_trace(go.Surface(x=[[0.36, 0.36], [0.92, 0.92]], y=[[0.0, 1.0], [0.0, 1.0]], z=[[0.82, 0.82], [0.02, 0.02]], colorscale=[[0, "rgba(234,179,8,0.58)"], [1, "rgba(234,179,8,0.58)"]], showscale=False, name="Post-Resilience Wedge (Gold)"))
+    fig.add_trace(go.Scatter3d(x=(0.0, 1.06), y=(0.0, 0.0), z=(0.01, 0.01), mode="lines+text", text=("", "X"), textfont=dict(color="#EF4444", size=14), line=dict(color="#EF4444", width=8), name="X: Hazard×Exposure"))
+    fig.add_trace(go.Scatter3d(x=(0.0, 0.0), y=(0.0, 1.06), z=(0.01, 0.01), mode="lines+text", text=("", "Y"), textfont=dict(color="#22C55E", size=14), line=dict(color="#22C55E", width=8), name="Y: Vulnerability"))
+    fig.add_trace(go.Scatter3d(x=(0.0, 0.0), y=(0.0, 0.0), z=(0.0, 0.96), mode="lines+text", text=("", "T"), textfont=dict(color="#FFFFFF", size=14), line=dict(color="#E2E8F0", width=5), name="T: Resilience Trajectory"))
+    fig.add_trace(go.Cone(x=(1.06, 0.0, 0.0), y=(0.0, 1.06, 0.0), z=(0.01, 0.01, 0.96), u=(0.07, 0.0, 0.0), v=(0.0, 0.07, 0.0), w=(0.0, 0.0, 0.07), sizemode="absolute", sizeref=0.06, showscale=False, colorscale=[[0, "#FFFFFF"], [1, "#FFFFFF"]], showlegend=False, hoverinfo="skip"))
+    for city, p in content.SIX_CITIES.items():
+        le, v, r0 = round(p["L"] * p["E_sel"], 3), p["V"], p["rho_now"]
+        r1 = p.get("rho_after", min(0.85, r0 + 0.25))
+        fig.add_trace(go.Scatter3d(x=(le, le, le), y=(v, v, v), z=(0.0, r0, r1), mode="lines+markers+text", text=("", "", city), textposition="top center", textfont=dict(color="#FFFFFF", size=11), line=dict(color="#FFFFFF", width=3, dash="dash"), marker=dict(size=(4, 6, 8), color=("#94A3B8", "#EF4444", "#22C55E")), showlegend=False))
+    fig.update_layout(height=600, paper_bgcolor="#05070B", font=dict(color="#F8FAFC"), margin=dict(l=0, r=0, t=10, b=0), scene=dict(bgcolor="#05070B", xaxis=dict(visible=False, range=[0, 1.15]), yaxis=dict(visible=False, range=[0, 1.15]), zaxis=dict(visible=False, range=[0, 1.05]), camera=dict(eye=dict(x=1.55, y=-1.55, z=0.82))))
     st.plotly_chart(fig, use_container_width=True)
     disclaimer()
 
@@ -107,4 +117,3 @@ def bamako(): city_page("Bamako")
 def nairobi(): city_page("Nairobi")
 def dar_es_salaam(): city_page("Dar es Salaam")
 def lusaka(): city_page("Lusaka")
-
