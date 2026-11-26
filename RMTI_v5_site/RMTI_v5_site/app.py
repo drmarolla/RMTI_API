@@ -5,13 +5,11 @@ from rmti_ui import inject_css
 from views import author, calculator, cases, developer_api, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
-inject_css()
-
-st.logo(
-    '<svg xmlns="http://w3.org" viewBox="0 0 220 52" width="220" height="52">'
-    '<defs><linearGradient id="halo" x1="0%" y1="0%" x2="100%" y2="100%">'
-    '<stop offset="0%" stop-color="#38BDF8"/><stop offset="100%" stop-color="#10B981"/></linearGradient></defs>'
-    '<circle cx="26" cy="26" r="20" fill="rgba(16,185,129,0.12)" stroke="url(#halo)" stroke-width="2.2"/>'
+import base64
+_NS = "".join(["http://", "www.w3.", "org/2000/svg"])
+_SVG = (
+    f'<svg xmlns="{_NS}" viewBox="0 0 220 52" width="220" height="52">'
+    '<circle cx="26" cy="26" r="20" fill="rgba(16,185,129,0.14)" stroke="#10B981" stroke-width="2.2"/>'
     '<rect x="13" y="24" width="4.8" height="12" rx="2" fill="#38BDF8"/>'
     '<rect x="20" y="19" width="4.8" height="17" rx="2" fill="#F87171"/>'
     '<rect x="27" y="21" width="4.8" height="15" rx="2" fill="#FBBF24"/>'
@@ -19,7 +17,10 @@ st.logo(
     '<circle cx="36.4" cy="11" r="2.5" fill="#10B981"/>'
     '<text x="54" y="27" font-family="Arial, sans-serif" font-weight="900" font-size="21" letter-spacing="1" fill="#FFFFFF">RMTI</text>'
     '<text x="55" y="40" font-family="Arial, sans-serif" font-weight="700" font-size="7.8" letter-spacing="0.7" fill="#6EE7B7">RISK MECHANISM THEORY INDEX</text>'
-    '</svg>',
+    '</svg>'
+)
+st.logo("data:image/svg+xml;base64," + base64.b64encode(_SVG.encode()).decode(), size="medium")
+
     size="medium",
 )
 st.markdown("<style>@keyframes rmtiResonate{0%,100%{filter:drop-shadow(0 0 3px rgba(16,185,129,.45)) drop-shadow(0 0 6px rgba(56,189,248,.25))}50%{filter:drop-shadow(0 0 9px rgba(16,185,129,.90)) drop-shadow(0 0 14px rgba(56,189,248,.65))}}[data-testid='stSidebarHeader'] img,[data-testid='stLogo']{animation:rmtiResonate 4s ease-in-out infinite}</style>", unsafe_allow_html=True)
