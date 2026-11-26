@@ -1,29 +1,30 @@
 import streamlit as st
 from rmti_ui import disclaimer, page_header
 
+SCHOLAR_URL = "https://scholar.google.com/citations?user=I49ZxF8AAAAJ" + chr(38) + "hl=en"
 LINKS = [
-    ("Google Scholar", "".join(["https://scholar.", "://google.com"])),
-    ("ORCID", "".join(["https://orcid.", "org/0000-0001-8498-7380"])),
-    ("Biography", "".join(["https://cesar-marolla.", "owlstown.net/"])),
-    ("LinkedIn", "".join(["https://www.linkedin.", "com/in/cesarmarolla/"])),
-    ("Harvard ENVR E-241", "".join(["https://coursebrowser.dce.", "harvard.edu/course/risk-by-design-building-resilience-into-urban-infrastructure/"])),
+    ("Google Scholar", SCHOLAR_URL),
+    ("ORCID", "https://orcid.org"),
+    ("Biography", "https://owlstown.net"),
+    ("LinkedIn", "https://linkedin.com"),
+    ("Harvard ENVR E-241", "https://harvard.edu"),
 ]
 
 ITEMS = [
     ("Books", "#1E3A5F", [
-        ("Climate Health Risks in Megacities", "2019", "CRC Press / Taylor & Francis", "".join(["https://www.taylorfrancis.", "com/books/edit/10.1201/9781315367323/climate-health-risks-megacities-cesar-marolla"])),
-        ("ICT for Sustainable Development", "2018", "CRC Press / Taylor & Francis", "".join(["https://www.taylorfrancis.", "com/books/mono/10.1201/9781351045230/information-communication-technology-sustainable-development-cesar-marolla"])),
-        ("Sub-Saharan Africa Resilience Compendium", "2023", "World Bank Group", "".join(["https://documents1.worldbank.", "org/curated/en/099063023110515444/pdf/P17647608a63280090a413018d9b339c4e8.pdf"])),
+        ("Urban Megacity Health Risks", "2019", "CRC Press", "https://taylorfrancis.com"),
+        ("ICT for Sustainable Development", "2018", "CRC Press", "https://taylorfrancis.com"),
+        ("Sub-Saharan Urban Resilience Compendium", "2023", "World Bank", "https://worldbank.org"),
     ]),
     ("Articles", "#0284C7", [
-        ("From Narrative to Algorithm (RMTI)", "2026", "IJMADA 6(1): 354–388", "".join(["https://ijmada.", "com/index.php/ijmada/article/view/156"])),
-        ("California Wildfires & Urban Resilience", "2025", "IJMADA / Cambridge", "".join(["https://scholar.", "://google.com"])),
-        ("Urban Flood & Business Continuity", "2024", "Cambridge University Press", "".join(["https://scholar.", "://google.com"])),
-        ("Urban Climate Health Risks", "2024", "Harvard DASH Repository", "".join(["https://dash.harvard.", "edu/entities/publication/fbf2f10b-b179-442a-836c-94dffd6564c1"])),
+        ("From Narrative to Algorithm (RMTI)", "2026", "IJMADA 6(1)", "https://ijmada.com"),
+        ("California Wildfires & Urban Resilience", "2025", "IJMADA", SCHOLAR_URL),
+        ("Urban Flood & Continuity Systems", "2024", "Cambridge", SCHOLAR_URL),
+        ("Urban Environmental Health Resilience", "2024", "Harvard DASH", "https://harvard.edu"),
     ]),
     ("Preprints", "#DC2626", [
-        ("RMTI for HCC Surveillance Triage", "2026", "SSRN (7427450)", "".join(["https://papers.ssrn.", "com/sol3/papers.cfm?abstract_id=7427450"])),
-        ("RMTI for Urban Infrastructure (Preprint)", "2026", "SSRN (7707038)", "".join(["https://papers.ssrn.", "com/sol3/papers.cfm?abstract_id=7707038"])),
+        ("RMTI for HCC Surveillance Triage", "2026", "SSRN 7427450", "https://ssrn.com"),
+        ("RMTI for Urban Infrastructure", "2026", "SSRN 7707038", "https://ssrn.com"),
     ]),
 ]
 
@@ -38,15 +39,15 @@ def publications_page():
                     c1, c2 = st.columns((4.5, 1.1))
                     c1.markdown(f'<span style="background:{clr};color:#FFF;font-size:11px;font-weight:800;padding:2px 8px;border-radius:4px;">{yr}</span> **{title}** — *{venue}*', unsafe_allow_html=True)
                     c2.link_button("Open", url, use_container_width=True, type="primary")
-    disclaimer()
+    disclaimer
 
 def bio_page():
     st.markdown("""
-    <div style="background:linear-gradient(135deg,#0B1120,#1E293B);border:1px solid #334155;border-radius:16px;padding:24px 28px;margin-bottom:16px;color:#F8FAFC;">
-      <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#38BDF8;">CREATOR OF THE RISK MECHANISM THEORY INDEX (RMTI)</div>
-      <div style="font-size:30px;font-weight:900;color:#FFFFFF;margin:4px 0 8px 0;">Prof. Dr. Cesar Marolla, PhD, ALM</div>
-      <div style="font-size:14.5px;color:#CBD5E1;line-height:1.6;">
-        Quantitative risk scientist, educator, and author with 20+ years bridging urban climate resilience, disaster-risk reduction, and clinical oncology triage. Correspondence: cesar.marolla@alumni.harvard.edu
+    <div style="background:linear-gradient(135deg,#FFFFFF 0%,#F8FAFC 100%);border:1px solid #E2E8F0;border-left:6px solid #0284C7;border-radius:14px;padding:22px 26px;margin-bottom:16px;box-shadow:0 4px 16px rgba(15,23,42,0.04);">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.9px;color:#0284C7;">PRINCIPAL INVESTIGATOR &amp; ARCHITECT · RISK MECHANISM THEORY INDEX (RMTI)</div>
+      <div style="font-size:28px;font-weight:900;color:#0F172A;margin:4px 0 8px 0;">Prof. Dr. Cesar Marolla, PhD, ALM</div>
+      <div style="font-size:14.5px;color:#334155;line-height:1.65;">
+        Quantitative risk scientist, educator, and author with over 20 years of experience bridging urban infrastructure resilience, disaster-risk reduction, and clinical oncology triage. Correspondence: cesar.marolla@alumni.harvard.edu
       </div>
     </div>
     """, unsafe_allow_html=True)
@@ -57,10 +58,10 @@ def bio_page():
 
     st.write("")
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Risk Research", "20+ Years", "Climate & Health Systems")
+    k1.metric("Risk Research", "20+ Years", "Urban & Health Systems")
     k2.metric("Graduate Teaching", "Harvard & Nalanda", "ENVR E-241 & MBA")
     k3.metric("Global Advisory", "World Bank Group", "Sub-Saharan Africa")
-    k4.metric("Keynote Forums", "UN COP 23 & HMS", "Global Health Symposia")
+    k4.metric("Invited Forums", "UN & Harvard Medical", "Global Health Symposia")
 
     st.write("")
     left, right = st.columns((1.1, 1.0), gap="large")
@@ -69,7 +70,7 @@ def bio_page():
         for org, role, desc in [
             ("Harvard University (DCE)", "Instructor · ENVR E-241: Risk by Design (2026–Present)", "Teaches quantitative Risk Mechanism Design using World Bank and MIT-Jameel urban shock models."),
             ("World Bank Group", "Lead Author · Sub-Saharan Africa Urban Resilience", "Authored the urban infrastructure resilience compendium and validated RMTI across six African cities."),
-            ("Nalanda University", "Visiting Professor · Sustainable Urbanization MBA", "Delivers graduate instruction on disaster governance, climate adaptation, and equitable health systems."),
+            ("Nalanda University", "Visiting Professor · Sustainable Urbanization MBA", "Delivers graduate instruction on disaster governance, extreme-weather adaptation, and equitable health systems."),
         ]:
             with st.container(border=True):
                 st.markdown(f"**{org}** — *{role}*")
@@ -89,7 +90,7 @@ def bio_page():
         for ttl, desc in [
             ("Derek Bok Civic Prize Award (2013)", "Awarded by the Harvard Commencement Committee for community service and civic impact."),
             ("U.S. Department of Defense Commendations (2004–2005)", "Commander's Challenge Coin (395th QM BN) and U.S. Army Central Command certificates (Qatar & Kuwait)."),
-            ("International Scientific Keynotes", "Speaker at UN COP 23, Harvard Medical School, Harvard Global Health Institute, and University of Miami."),
+            ("International Scientific Keynotes", "Speaker at UN global forums, Harvard Medical School, Harvard Global Health Institute, and University of Miami."),
             ("Parallel Musical Career — Guitarist & Composer", "Featured in Guitar Encyclopedia (2004); released Rhythm of Fire (Columbia/Sony), recorded with Berlin and London Philharmonic musicians, and toured for Armed Forces Entertainment / USO."),
         ]:
             with st.container(border=True):
