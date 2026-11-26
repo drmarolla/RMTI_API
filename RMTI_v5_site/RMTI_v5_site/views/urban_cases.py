@@ -160,7 +160,7 @@ def synthesis_page():
 
     st.subheader("2. Interactive 3D RMTI Coordinate Axis (X: Hazard×Exposure · Y: Vulnerability · Z: Resilience ρ)")
     def synthesis_page():
-    page_header(
+        page_header(
         "Six-City Portfolio Synthesis & 3D RMTI Coordinate Axis",
         "Complete cross-city comparison table (Marolla et al., 2023; Marolla, 2026) and interactive 3D Cartesian coordinate space with directional risk vectors.",
         "Disaster science case studies",
