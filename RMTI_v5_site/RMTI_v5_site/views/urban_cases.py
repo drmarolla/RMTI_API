@@ -1,4 +1,4 @@
-"""Six Sub-Saharan African City Case Studies (Main 3D + 2D Dual-Layer) & 3D RMTI Coordinate Axis Synthesis."""
+"""Six Sub-Saharan African City Case Studies (Main 3D + 2D + Trajectory) & Geometric 3D RMTI Synthesis."""
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 
 import content
 from engine import core, short
-from rmti_ui import badge, disclaimer, page_header
+from rmti_ui import add_tier_bands, badge, disclaimer, page_header, style_fig
 
 RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
 
@@ -26,6 +26,18 @@ CITY_SPECS = {
 }
 
 
+def _city_trajectory(p, rho_target):
+    """Compute 4-cycle RMTI Core trajectory R(t) from baseline rho_now to rho_target."""
+    pts = []
+    for step in range(4):
+        frac = step / 3.0
+        rho_t = p["rho_now"] + frac * (rho_target - p["rho_now"])
+        v_t = max(0.10, p["V"] * (1.0 - 0.08 * frac))
+        res = core.score(p["L"], p["E_sel"], v_t, rho_t, p["C"])
+        pts.append((f"Cycle {step}", round(rho_t, 3), res["R_raw"], short(res["tier"])))
+    return pts
+
+
 def city_page(city_name):
     p = content.SIX_CITIES[city_name]
     clip_file, sector_tag, narrative = CITY_SPECS[city_name]
@@ -38,115 +50,108 @@ def city_page(city_name):
         "Disaster science case studies",
     )
 
-    col_left, col_right = st.columns((1.0, 1.0), gap="large")
+    default_after = float(p.get("rho_after", min(0.85, p["rho_now"] + 0.25)))
+    rho_sim = st.session_state.get(f"rho_{city_name}", round(default_after, 2))
+    r_now = core.score(p["L"], p["E_sel"], p["V"], p["rho_now"], p["C"])["R_raw"]
+    r_sim = core.score(p["L"], p["E_sel"], p["V"], rho_sim, p["C"])["R_raw"]
+    eal_sim = p["L"] * p["C"] * (1.0 - rho_sim)
 
-    # Card 1: Main 3D Infrastructure Animation
+    col_left, col_right = st.columns((1.0, 1.0), gap="large")
     with col_left:
         components.html(f"""
         <style>
-          *{{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}}
-          .frame{{position:relative;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;box-shadow:0 10px 28px rgba(15,23,42,0.07)}}
-          .pills{{position:absolute;top:12px;left:12px;z-index:3;display:flex;gap:6px;flex-wrap:wrap}}
-          .pill{{background:rgba(15,23,42,0.82);backdrop-filter:blur(6px);color:#FFF;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:999px}}
-          video{{width:100%;height:340px;object-fit:cover;background:#F8FAFC;display:block}}
+          *{{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}}
+          .frame{{position:relative;background:#FFF;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,0.06)}}
+          .pills{{position:absolute;top:12px;left:12px;z-index:3;display:flex;gap:6px}}
+          .pill{{background:rgba(15,23,42,0.84);color:#FFF;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:999px}}
+          video{{width:100%;height:330px;object-fit:cover;background:#F8FAFC;display:block}}
         </style>
         <div class="frame">
-          <div class="pills">
-            <span class="pill">Detailed and Dynamic</span>
-            <span class="pill">World Bank Compendium 2023</span>
-          </div>
-          <video autoplay loop muted playsinline controls>
-            <source src="{clip_url}" type="video/mp4">
-            <source src="{fb_url}" type="video/mp4">
-          </video>
+          <div class="pills"><span class="pill">Detailed and Dynamic</span><span class="pill">World Bank Compendium 2023</span></div>
+          <video autoplay loop muted playsinline controls><source src="{clip_url}" type="video/mp4"><source src="{fb_url}" type="video/mp4"></video>
         </div>
-        """, height=348)
+        """, height=338)
         st.markdown(f"### Main 3D Infrastructure Model — {city_name}")
         st.caption(sector_tag)
         st.write(narrative)
 
-    # Card 2: Main 3D + 2D Dual-Layer Integration
     with col_right:
-        default_after = float(p.get("rho_after", min(0.85, p["rho_now"] + 0.25)))
-        rho_sim = st.session_state.get(f"rho_{city_name}", round(default_after, 2))
-        r_now = core.score(p["L"], p["E_sel"], p["V"], p["rho_now"], p["C"])["R_raw"]
-        r_sim = core.score(p["L"], p["E_sel"], p["V"], rho_sim, p["C"])["R_raw"]
-        eal_sim = p["L"] * p["C"] * (1.0 - rho_sim)
-
         components.html(f"""
         <style>
-          *{{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}}
-          .frame{{position:relative;background:#0F172A;border:1px solid #CBD5E1;border-radius:16px;overflow:hidden;box-shadow:0 10px 28px rgba(15,23,42,0.10)}}
-          .pills{{position:absolute;top:12px;left:12px;z-index:4;display:flex;gap:6px;flex-wrap:wrap}}
-          .pill{{background:rgba(15,23,42,0.82);backdrop-filter:blur(6px);color:#FFF;font-size:10px;font-weight:700;padding:4px 9px;border-radius:999px;border:1px solid rgba(255,255,255,0.18)}}
-          video{{width:100%;height:340px;object-fit:cover;opacity:0.42;display:block}}
-          .hud{{position:absolute;inset:44px 14px 14px 14px;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(180deg,rgba(15,23,42,0.15) 0%,rgba(15,23,42,0.88) 100%);border-radius:12px;padding:14px;color:#FFF}}
-          .hud-title{{font-size:11px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#38BDF8;margin-bottom:8px}}
-          .bars{{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:end;height:130px;padding-top:10px}}
+          *{{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}}
+          .frame{{position:relative;background:#0F172A;border:1px solid #CBD5E1;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,0.08)}}
+          .pills{{position:absolute;top:12px;left:12px;z-index:4;display:flex;gap:6px}}
+          .pill{{background:rgba(15,23,42,0.84);color:#FFF;font-size:10px;font-weight:700;padding:4px 9px;border-radius:999px}}
+          video{{width:100%;height:330px;object-fit:cover;opacity:0.40;display:block}}
+          .hud{{position:absolute;inset:44px 14px 14px 14px;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(180deg,rgba(15,23,42,0.12) 0%,rgba(15,23,42,0.90) 100%);border-radius:12px;padding:14px;color:#FFF}}
+          .bars{{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:end;height:125px}}
           .col{{display:flex;flex-direction:column;align-items:center;gap:4px}}
-          .val{{font-size:11px;font-weight:800;color:#FFF}}
-          .bar{{width:100%;border-radius:6px 6px 2px 2px;transition:height 0.3s ease}}
-          .lbl{{font-size:10px;font-weight:700;color:#CBD5E1;text-align:center}}
+          .bar{{width:100%;border-radius:6px 6px 2px 2px}}
         </style>
         <div class="frame">
-          <div class="pills">
-            <span class="pill">Detailed and Dynamic</span>
-            <span class="pill">Dual-Layer Storytelling</span>
-            <span class="pill">For Data-rich Stories</span>
-          </div>
-          <video autoplay loop muted playsinline>
-            <source src="{clip_url}" type="video/mp4">
-            <source src="{fb_url}" type="video/mp4">
-          </video>
+          <div class="pills"><span class="pill">Dual-Layer Storytelling</span><span class="pill">For Data-rich Stories</span></div>
+          <video autoplay loop muted playsinline><source src="{clip_url}" type="video/mp4"><source src="{fb_url}" type="video/mp4"></video>
           <div class="hud">
-            <div class="hud-title">2D RMTI Mechanism Overlay · R = L · E · V · (1 − ρ)</div>
+            <div style="font-size:11px;font-weight:800;color:#38BDF8;margin-bottom:8px">2D RMTI MECHANISM OVERLAY · R = L · E · V · (1 − ρ)</div>
             <div class="bars">
-              <div class="col"><span class="val">{p['L']:.2f}</span><div class="bar" style="height:{int(p['L']*105)}px;background:#38BDF8;"></div><span class="lbl">Hazard (L)</span></div>
-              <div class="col"><span class="val">{p['E_sel']:.2f}</span><div class="bar" style="height:{int(p['E_sel']*105)}px;background:#F87171;"></div><span class="lbl">Exposure (E)</span></div>
-              <div class="col"><span class="val">{p['V']:.2f}</span><div class="bar" style="height:{int(p['V']*105)}px;background:#FBBF24;"></div><span class="lbl">Vuln. (V)</span></div>
-              <div class="col"><span class="val">{1-rho_sim:.2f}</span><div class="bar" style="height:{int((1-rho_sim)*105)}px;background:#34D399;"></div><span class="lbl">1 − ρ</span></div>
-              <div class="col"><span class="val">{r_sim:.3f}</span><div class="bar" style="height:{max(14,int(r_sim*160))}px;background:#FFFFFF;"></div><span class="lbl">Residual R</span></div>
+              <div class="col"><span style="font-size:11px;font-weight:800">{p['L']:.2f}</span><div class="bar" style="height:{int(p['L']*100)}px;background:#38BDF8"></div><span style="font-size:10px;color:#CBD5E1">Hazard L</span></div>
+              <div class="col"><span style="font-size:11px;font-weight:800">{p['E_sel']:.2f}</span><div class="bar" style="height:{int(p['E_sel']*100)}px;background:#F87171"></div><span style="font-size:10px;color:#CBD5E1">Exposure E</span></div>
+              <div class="col"><span style="font-size:11px;font-weight:800">{p['V']:.2f}</span><div class="bar" style="height:{int(p['V']*100)}px;background:#FBBF24"></div><span style="font-size:10px;color:#CBD5E1">Vuln. V</span></div>
+              <div class="col"><span style="font-size:11px;font-weight:800">{1-rho_sim:.2f}</span><div class="bar" style="height:{int((1-rho_sim)*100)}px;background:#34D399"></div><span style="font-size:10px;color:#CBD5E1">1 − ρ</span></div>
+              <div class="col"><span style="font-size:11px;font-weight:800">{r_sim:.3f}</span><div class="bar" style="height:{max(14,int(r_sim*155))}px;background:#FFF"></div><span style="font-size:10px;color:#CBD5E1">Risk R</span></div>
             </div>
           </div>
         </div>
-        """, height=348)
+        """, height=338)
         st.markdown(f"### Main 3D + 2D Assessment — {city_name}")
-        st.caption("Combines the 3D physical corridor model with real-time 2D RMTI parameter overlays inside a single frame.")
-        st.slider(
-            f"Interactive Resilience Intervention (ρ) — Baseline: {p['rho_now']:.2f}",
-            0.05, 0.90, round(default_after, 2), 0.01, key=f"rho_{city_name}",
-        )
+        st.slider(f"Resilience Intervention (ρ) — Baseline: {p['rho_now']:.2f}", 0.05, 0.90, round(default_after, 2), 0.01, key=f"rho_{city_name}")
         m1, m2, m3 = st.columns(3)
         m1.metric("Baseline R", f"{r_now:.3f}", short(core.tier(r_now)), delta_color="off")
         m2.metric("Post-Upgrade R", f"{r_sim:.3f}", f"{(r_sim / r_now - 1) * 100:+.0f}%", delta_color="inverse")
         m3.metric("Simulated EAL", f"{eal_sim:.3f}")
         st.markdown(badge(core.tier(r_sim)), unsafe_allow_html=True)
 
-    st.caption("Source: Marolla et al. (2023). Climate Resilient Investment in Sub-Saharan Africa Compendium Volume. World Bank. https://doi.org")
+    # Single-City RMTI Core Trajectory R(t)
+    st.subheader(f"RMTI Core Multi-Cycle Trajectory R(t) — {city_name}")
+    traj = _city_trajectory(p, rho_sim)
+    fig_t = go.Figure()
+    add_tier_bands(fig_t)
+    fig_t.add_trace(go.Scatter(
+        x=[t[0] for t in traj],
+        y=[t[2] for t in traj],
+        mode="lines+markers+text",
+        text=[f"R={t[2]:.3f}<br>(ρ={t[1]:.2f})" for t in traj],
+        textposition="top center",
+        line=dict(color="#0F172A", width=3.5),
+        marker=dict(size=11, color=["#EF4444", "#F59E0B", "#0284C7", "#10B981"]),
+    ))
+    fig_t.update_layout(height=310, yaxis_title="Residual Risk R(t)", yaxis_range=(0, max(0.55, r_now * 1.25)), showlegend=False)
+    st.plotly_chart(style_fig(fig_t, 310), use_container_width=True)
     disclaimer()
 
 
 def synthesis_page():
     page_header(
-        "Six-City Portfolio Synthesis & 3D RMTI Coordinate Axis",
-        "Complete cross-city comparison table (Marolla et al., 2023; Marolla, 2026) and interactive 3D Cartesian coordinate space with directional risk vectors.",
+        "Six-City Portfolio Compilation & 3D RMTI Geometric Space",
+        "Authoritative cross-city comparison (Marolla et al., 2023; Marolla, 2026) and clean light-grid 3D Cartesian coordinate space with directional arrows and tier planes.",
         "Disaster science case studies",
     )
 
     ranked = core.rank_cohort({k: {x: v[x] for x in ("N", "L", "E_sel", "V", "rho_now", "C", *(["rho_after"] if "rho_after" in v else []))} for k, v in content.SIX_CITIES.items()})
     rows = []
     for r in ranked:
+        c = content.SIX_CITIES[r["name"]]
         rows.append({
             "Priority": r["priority_in_tier"],
             "City": r["name"],
-            "Infrastructure Asset": content.SIX_CITIES[r["name"]]["asset"],
-            "L": content.SIX_CITIES[r["name"]]["L"],
-            "E": content.SIX_CITIES[r["name"]]["E_sel"],
-            "V": content.SIX_CITIES[r["name"]]["V"],
-            "ρ now": content.SIX_CITIES[r["name"]]["rho_now"],
+            "Asset": c["asset"],
+            "L": c["L"],
+            "E": c["E_sel"],
+            "V": c["V"],
+            "ρ now": c["rho_now"],
             "R now": r["R_now"],
             "Tier now": short(r["tier_now"]),
-            "ρ after": content.SIX_CITIES[r["name"]].get("rho_after"),
+            "ρ after": c.get("rho_after"),
             "R after": r.get("R_after"),
             "Tier after": short(r["tier_after"]) if "tier_after" in r else "",
             "Reduction %": r.get("risk_reduction_pct"),
@@ -154,108 +159,4 @@ def synthesis_page():
             "Equity /1M": r["equity_now_per_1M"],
         })
     df = pd.DataFrame(rows)
-
-    st.subheader("1. Six-City RMTI Calculator & Portfolio Table")
-    st.dataframe(df, hide_index=True, width="stretch")
-
-    st.subheader("2. Interactive 3D RMTI Coordinate Axis (X: Hazard×Exposure · Y: Vulnerability · Z: Resilience ρ)")
-    def synthesis_page():
-        page_header(
-        "Six-City Portfolio Synthesis & 3D RMTI Coordinate Axis",
-        "Complete cross-city comparison table (Marolla et al., 2023; Marolla, 2026) and interactive 3D Cartesian coordinate space with directional risk vectors.",
-        "Disaster science case studies",
-    )
-
-    ranked = core.rank_cohort({k: {x: v[x] for x in ("N", "L", "E_sel", "V", "rho_now", "C", *(["rho_after"] if "rho_after" in v else []))} for k, v in content.SIX_CITIES.items()})
-    rows = []
-    for r in ranked:
-        rows.append({
-            "Priority": r["priority_in_tier"],
-            "City": r["name"],
-            "Infrastructure Asset": content.SIX_CITIES[r["name"]]["asset"],
-            "L": content.SIX_CITIES[r["name"]]["L"],
-            "E": content.SIX_CITIES[r["name"]]["E_sel"],
-            "V": content.SIX_CITIES[r["name"]]["V"],
-            "ρ now": content.SIX_CITIES[r["name"]]["rho_now"],
-            "R now": r["R_now"],
-            "Tier now": short(r["tier_now"]),
-            "ρ after": content.SIX_CITIES[r["name"]].get("rho_after"),
-            "R after": r.get("R_after"),
-            "Tier after": short(r["tier_after"]) if "tier_after" in r else "",
-            "Reduction %": r.get("risk_reduction_pct"),
-            "EAL now": r["EAL_now"],
-            "Equity /1M": r["equity_now_per_1M"],
-        })
-    df = pd.DataFrame(rows)
-
-    st.subheader("1. Six-City RMTI Calculator & Portfolio Table")
-    st.dataframe(df, hide_index=True, width="stretch")
-
-    st.subheader("2. Interactive 3D RMTI Coordinate Axis (X: Hazard×Exposure · Y: Vulnerability · Z: Resilience ρ)")
-    st.caption("Drag to rotate the 3D coordinate grid. Arrows show each city's trajectory from Baseline (Red) to Post-Resilience Upgrade (Emerald Green).")
-
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatter3d(x=(0.0, 1.05), y=(0.0, 0.0), z=(0.0, 0.0), mode="lines+text", text=("", "X: Hazard × Exposure (L·E)"), textposition="top center", line=dict(color="#0284C7", width=6), name="X-Axis (L·E)"))
-    fig.add_trace(go.Scatter3d(x=(0.0, 0.0), y=(0.0, 1.05), z=(0.0, 0.0), mode="lines+text", text=("", "Y: Vulnerability (V)"), textposition="top center", line=dict(color="#F59E0B", width=6), name="Y-Axis (V)"))
-    fig.add_trace(go.Scatter3d(x=(0.0, 0.0), y=(0.0, 0.0), z=(0.0, 1.05), mode="lines+text", text=("", "Z: Resilience (ρ)"), textposition="top center", line=dict(color="#10B981", width=6), name="Z-Axis (ρ)"))
-    fig.add_trace(go.Cone(x=(1.05, 0.0, 0.0), y=(0.0, 1.05, 0.0), z=(0.0, 0.0, 1.05), u=(0.08, 0.0, 0.0), v=(0.0, 0.08, 0.0), w=(0.0, 0.0, 0.08), sizemode="absolute", sizeref=0.07, showscale=False, colorscale=[[0, "#0F172A"], [1, "#0F172A"]], name="Axis Arrows"))
-
-    bx, by, bz, btxt = [], [], [], []
-    ax, ay, az, atxt = [], [], [], []
-    for city, p in content.SIX_CITIES.items():
-        le = round(p["L"] * p["E_sel"], 3)
-        v = p["V"]
-        r0 = p["rho_now"]
-        r1 = p.get("rho_after", min(0.85, r0 + 0.25))
-        bx.append(le)
-        by.append(v)
-        bz.append(r0)
-        btxt.append(f"{city} (Now)")
-        ax.append(le)
-        ay.append(v)
-        az.append(r1)
-        atxt.append(f"{city} (Upgraded)")
-        fig.add_trace(go.Scatter3d(x=(le, le), y=(v, v), z=(r0, r1), mode="lines", line=dict(color="#64748B", width=4, dash="dash"), showlegend=False))
-        fig.add_trace(go.Cone(x=(le,), y=(v,), z=(r1,), u=(0.0,), v=(0.0,), w=(max(0.04, (r1 - r0) * 0.35),), sizemode="absolute", sizeref=0.05, showscale=False, colorscale=[[0, "#10B981"], [1, "#10B981"]], showlegend=False))
-
-    fig.add_trace(go.Scatter3d(x=bx, y=by, z=bz, mode="markers+text", text=btxt, textposition="bottom center", marker=dict(size=8, color="#EF4444"), name="Baseline Position"))
-    fig.add_trace(go.Scatter3d(x=ax, y=ay, z=az, mode="markers+text", text=atxt, textposition="top center", marker=dict(size=9, color="#10B981"), name="Post-Resilience Position"))
-
-    fig.update_layout(
-        height=620,
-        margin=dict(l=0, r=0, t=20, b=0),
-        scene=dict(
-            xaxis=dict(title="X: Hazard × Exposure (L·E)", range=[0, 1.1], backgroundcolor="#0F172A", gridcolor="#334155", showbackground=True),
-            yaxis=dict(title="Y: Vulnerability (V)", range=[0, 1.1], backgroundcolor="#0F172A", gridcolor="#334155", showbackground=True),
-            zaxis=dict(title="Z: Resilience Capacity (ρ)", range=[0, 1.1], backgroundcolor="#1E293B", gridcolor="#38BDF8", showbackground=True),
-            camera=dict(eye=dict(x=1.55, y=1.45, z=1.15)),
-        ),
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    disclaimer()
-
-
-def lagos():
-    city_page("Lagos")
-
-
-def lilongwe():
-    city_page("Lilongwe")
-
-
-def bamako():
-    city_page("Bamako")
-
-
-def nairobi():
-    city_page("Nairobi")
-
-
-def dar_es_salaam():
-    city_page("Dar es Salaam")
-
-
-def lusaka():
-    city_page("Lusaka")
 
