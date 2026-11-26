@@ -21,7 +21,7 @@ _SVG = (
     '<text x="69" y="56" font-family="Arial, sans-serif" font-weight="700" font-size="9.5" letter-spacing="0.6" fill="#93C5FD">THEORY INDEX</text>'
     '</svg>'
 )
-st.logo("data:image/svg+xml;base64," + base64.b64encode(_SVG.encode()).decode(), size="large", link="/")
+st.logo("data:image/svg+xml;base64," + base64.b64encode(_SVG.encode()).decode(), size="large")
 st.markdown("""
 <style>
 @keyframes rmtiPulse {
