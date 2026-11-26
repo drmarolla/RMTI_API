@@ -1,9 +1,10 @@
 import os
 import streamlit as st
 
-# Determine the absolute root folder where Streamlit is executing this script
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MEDIA_DIR = os.path.join(BASE_DIR, "media")
+# Step up to the true repository root directory where the 'media' folder sits
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(CURRENT_DIR)  # Moves up out of the nested folder
+MEDIA_DIR = os.path.join(REPO_ROOT, "media")
 
 # Helper function to find files dynamically regardless of spaces, hyphens (-), or en-dashes (–)
 def safe_resolve(filename):
