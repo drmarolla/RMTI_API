@@ -3,7 +3,7 @@ import base64
 import streamlit as st
 from engine import APP_TITLE
 from rmti_ui import inject_css
-from views import author, calculator, cases, developer_api, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
+from views import author, calculator, cases, developer_api, disaster_sandbox, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
 
 st.set_page_config(page_title=APP_TITLE, page_icon=":material/monitoring:", layout="wide", initial_sidebar_state="expanded")
 inject_css()
@@ -114,7 +114,8 @@ PG = {
     "calc": P(calculator.render, "RMTI Calculator", "calculate", "rmti-calculator"),
     "hccs": P(hcc_surveillance.render, "HCC Surveillance Calculator", "monitor_heart", "hcc-surveillance"),
     "hcct": P(hcc_treatment.render, "HCC Treatment Calculator", "medication", "hcc-treatment"),
-    "sandbox": P(sandbox.render, "Cohort Sandbox", "folder_open", "cohort-sandbox"),
+    "sandbox": P(sandbox.render, "Oncology Cohort Sandbox", "biotech", "oncology-sandbox"),
+    "dis_sandbox": P(disaster_sandbox.render, "Disaster Science Sandbox", "local_fire_department", "disaster-sandbox"),
     "models": P(models3d.render, "Interactive Tumor Models", "deployed_code", "tumor-models"),
     "live": P(live_matrix.render, "Live Risk Matrix", "grid_view", "live-risk-matrix"),
     "m4d": P(matrix4d.render, "4D Risk Matrix", "view_in_ar", "4d-risk-matrix"),
@@ -142,7 +143,7 @@ home.PAGES = PG
 pg = st.navigation({
     "": [PG["home"]],
     "Clinical calculators": [PG["calc"], PG["hccs"], PG["hcct"]],
-    "Research tools": [PG["sandbox"]],
+    "Research tools": [PG["sandbox"], PG["dis_sandbox"]],
     "Interactive models": [PG["models"], PG["live"], PG["m4d"]],
     "Case studies": [PG["library"], PG["videos"]],
     "Oncology case studies": [PG["liver"], PG["lung"], PG["breast"], PG["johnson"]],
