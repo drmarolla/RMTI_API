@@ -176,7 +176,7 @@ def render():
             v["rho_after"] = float(rho_scen)
 
     ranked = core.rank_cohort(raw_rows)
-       out = []
+    out = []
     for r in ranked:
         out.append({
             "Name": r["name"],
