@@ -141,7 +141,7 @@ def render():
                     udf = pd.read_csv(up).dropna(subset=["Name", "L", "E_sel", "V", "rho_now"])
                     raw_rows = {str(r["Name"]): dict(N=float(r.get("N", 1000)), L=float(r["L"]), E_sel=float(r["E_sel"]), V=float(r["V"]), rho_now=float(r["rho_now"]), C=int(r.get("C", 4))) for _, r in udf.iterrows()}
                 else:
-                                       st.info("Showing Pacific Palisades baseline until a CSV is uploaded.")
+                    st.info("Showing Pacific Palisades baseline until a CSV is uploaded.")
                     raw_rows = {r["Name"]: dict(N=r["N"], L=r["L"], E_sel=r["E_sel"], V=r["V"], rho_now=r["rho_now"], rho_after=r["rho_after"], C=r["C"]) for r in PALISADES_ZONES}
 
             st.subheader("Scenario")
