@@ -50,7 +50,7 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
     for t, c0, c1 in zip(tiers, now_counts, aft_counts):
         h0 = max(4, int((c0 / max_c) * 110))
         h1 = max(4, int((c1 / max_c) * 110))
-        lbl = t.split(" ", 1)[1]
+        lbl = t.split(" ", 1)
         bars_html.append(f"""
         <div class="tgroup">
           <div class="pair">
@@ -135,7 +135,6 @@ def render():
     )
 
     with st.expander("How to Use the Oncology Cohort Sandbox (3-Step Guide)", expanded=False):
-
         g1, g2, g3 = st.columns(3)
         g1.markdown("**1. Select or Customize Cohort**\nRun a synthetic HCC cohort, switch to **Custom Editable Table** to edit BCLC/ALBI rows or add your own with **`+`**, or upload an aggregate CSV.")
         g2.markdown("**2. Simulate Surveillance (ρ)**\nAdjust **ρ after (surveillance scenario)** to model ultrasound + AFP adherence, LDCT screening, or second-line systemic delivery.")
@@ -154,63 +153,3 @@ def render():
             elif src == "Custom Editable Table":
                 st.caption("Click any cell to customize values or click `+` at the bottom to add custom cohorts:")
                 ed = st.data_editor(pd.DataFrame(HCC_COHORT_PRESETS), num_rows="dynamic", width="stretch", key="onc_ed")
-                raw_rows = {str(r["Name"]): dict(N=float(r["N"]), L=float(r["L"]), E_sel=float(r["E_sel"]), V=float(r["V"]), rho_now=float(r["rho_now"]), C=int(r["C"])) for _, r in ed.dropna(subset=["Name", "L", "E_sel", "V", "rho_now", "C"]).iterrows()}
-            else:
-                up = st.file_uploader("Upload CSV (columns: Name, N, L, E_sel, V, rho_now, C)", type=["csv"], key="onc_up")
-                if up is not None:
-                    udf = pd.read_csv(up).dropna(subset=["Name", "L", "E_sel", "V", "rho_now"])
-                    raw_rows = {str(r["Name"]): dict(N=float(r.get("N", 1)), L=float(r["L"]), E_sel=float(r["E_sel"]), V=float(r["V"]), rho_now=float(r["rho_now"]), C=int(r.get("C", 3))) for _, r in udf.iterrows()}
-                else:
-                    st.info("Showing 250-patient synthetic HCC preview until a CSV is uploaded.")
-                    raw_rows = _synthetic_cohort(250, 2026)
-
-            st.subheader("Scenario")
-            override = st.toggle("Override ρ after for every row", True, key="onc_ov")
-            rho_scen = st.slider("ρ after (surveillance scenario)", 0.05, 0.95, 0.65, 0.01, key="onc_rho") if override else None
-
-    if override and rho_scen is not None:
-        for v in raw_rows.values():
-            v["rho_after"] = float(rho_scen)
-
-    ranked = core.rank_cohort(raw_rows)
-    df = pd.DataFrame([{
-        "Name": r["name"],
-        "Priority in tier": r["priority_in_tier"],
-        "R now": r["R_now"],
-        "Tier now": short(r["tier_now"]),
-        "R after": r.get("R_after"),
-        "Tier after": short(r["tier_after"]) if "tier_after" in r else "",
-        "Reduction %": r.get("risk_reduction_pct"),
-        "EAL now": r["EAL_now"],
-    } for r in ranked])
-
-    mean_now = float(df["R now"].mean())
-    mean_after = float(df["R after"].mean()) if df["R after"].notna().any() else mean_now
-    mean_eal = float(df["EAL now"].mean())
-    pct_chg = ((mean_after / mean_now) - 1.0) * 100 if mean_now > 0 else 0.0
-
-    with right:
-        _dual_layer_sandbox_card(df, raw_rows, mean_now, mean_after, mean_eal, rho_scen or 0.65)
-        st.write("")
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Rows scored", f"{len(df):,}")
-        m2.metric("Mean R now", f"{mean_now:.3f}")
-        m3.metric("Mean R after", f"{mean_after:.3f}", f"{pct_chg:+.1f}%", delta_color="inverse")
-
-        st.subheader("Oncology Tier Distribution")
-        tiers = ["1 Low", "2 Moderate", "3 High", "4 Severe", "5 Critical"]
-        fig = go.Figure()
-        fig.add_bar(x=tiers, y=[int((df["Tier now"] == t).sum()) for t in tiers], name="now", marker_color="#1E293B")
-        fig.add_bar(x=tiers, y=[int((df["Tier after"] == t).sum()) for t in tiers], name="after scenario", marker_color="#93C5FD")
-        fig.update_layout(barmode="group", yaxis_title="Patients or cohorts")
-        st.plotly_chart(style_fig(fig, 300), width="stretch")
-
-        st.dataframe(df, hide_index=True, width="stretch", height=290)
-        st.download_button("Download Oncology cohort (CSV)", df.to_csv(index=False).encode(), "rmti_oncology_sandbox.csv", "text/csv")
-
-    st.caption(
-        "Case Study & Citations: Marolla, C. (2026). Risk Mechanism Theory Index for Hepatocellular Carcinoma Surveillance Triage (SSRN: 7427450) & "
-        "From Snapshot to Trajectory (RMTI-Py v2.5) · Faria et al. ALBI Hepatocellular Carcinoma Cohort (Harvard Dataverse, n = 54) · "
-        "Singal, A. G., et al. (2022) · Lau-Min, K. S., et al. (JAMA Network Open, 2025)."
-    )
-    disclaimer()
