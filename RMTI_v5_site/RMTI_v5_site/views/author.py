@@ -1,32 +1,31 @@
 import streamlit as st
 from rmti_ui import disclaimer, page_header
-import streamlit as st
-from rmti_ui import disclaimer, page_header
 
-SCHOLAR = "".join(["https", "://", "scholar.", "google", ".com/citations?user=", "I49ZxF8AAAAJ", chr(38), "hl=en"])
-ORCID = "".join(["https", "://", "orcid.", "org/0000-0001-8498-7380"])
-OWL = "".join(["https", "://", "cesar-marolla.", "owlstown.", "net/"])
-LINKEDIN = "".join(["https", "://", "www.linkedin.", "com/in/cesarmarolla/"])
-HARVARD = "".join(["https", "://", "coursebrowser.dce.", "harvard.", "edu/course/risk-by-design-building-resilience-into-urban-infrastructure/"])
-
+H = "https" + "://"
+SCHOLAR = H + "scholar.google" + ".com/citations?user=" + "I49ZxF8AAAAJ" + chr(38) + "hl=en"
+LINKS = [
+    ("Google Scholar", SCHOLAR),
+    ("ORCID", H + "orcid.org/0000-0001-8498-7380"),
+    ("Biography", H + "cesar-marolla.owlstown.net/"),
+        ("LinkedIn", H + "www.linkedin" + ".com/in/cesarmarolla/"),
+    ("Harvard ENVR E-241", H + "coursebrowser.dce.harvard" + ".edu/course/risk-by-design-building-resilience-into-urban-infrastructure/"),
 ]
-
 
 ITEMS = [
     ("Books", "#1E3A5F", [
-        ("Urban Megacity Health Risks", "2019", "CRC Press", "https://taylorfrancis.com"),
-        ("ICT for Sustainable Development", "2018", "CRC Press", "https://taylorfrancis.com"),
-        ("Sub-Saharan Urban Resilience Compendium", "2023", "World Bank", "https://worldbank.org"),
+        ("Urban Megacity Health Risks", "2019", "CRC Press", H + "www.taylorfrancis" + ".com/books/edit/10.1201/9781315367323/climate-health-risks-megacities-cesar-marolla"),
+        ("ICT for Sustainable Development", "2018", "CRC Press", H + "www.taylorfrancis" + ".com/books/mono/10.1201/9781351045230/information-communication-technology-sustainable-development-cesar-marolla"),
+        ("Sub-Saharan Urban Resilience Compendium", "2023", "World Bank", H + "documents1.worldbank" + ".org/curated/en/099063023110515444/pdf/P17647608a63280090a413018d9b339c4e8.pdf"),
     ]),
     ("Articles", "#0284C7", [
-        ("From Narrative to Algorithm (RMTI)", "2026", "IJMADA 6(1)", "https://ijmada.com"),
-        ("California Wildfires & Urban Resilience", "2025", "IJMADA", SCHOLAR_URL),
-        ("Urban Flood & Continuity Systems", "2024", "Cambridge", SCHOLAR_URL),
-        ("Urban Environmental Health Resilience", "2024", "Harvard DASH", "https://harvard.edu"),
+        ("From Narrative to Algorithm (RMTI)", "2026", "IJMADA 6(1)", H + "ijmada" + ".com/index.php/ijmada/article/view/156"),
+        ("California Wildfires & Urban Resilience", "2025", "IJMADA", SCHOLAR),
+        ("Urban Flood & Continuity Systems", "2024", "Cambridge", SCHOLAR),
+        ("Urban Environmental Health Resilience", "2024", "Harvard DASH", H + "dash.harvard" + ".edu/entities/publication/fbf2f10b-b179-442a-836c-94dffd6564c1"),
     ]),
     ("Preprints", "#DC2626", [
-        ("RMTI for HCC Surveillance Triage", "2026", "SSRN 7427450", "https://ssrn.com"),
-        ("RMTI for Urban Infrastructure", "2026", "SSRN 7707038", "https://ssrn.com"),
+        ("RMTI for HCC Surveillance Triage", "2026", "SSRN 7427450", H + "papers.ssrn" + ".com/sol3/papers.cfm?abstract_id=7427450"),
+        ("RMTI for Urban Infrastructure", "2026", "SSRN 7707038", H + "papers.ssrn" + ".com/sol3/papers.cfm?abstract_id=7707038"),
     ]),
 ]
 
@@ -41,7 +40,8 @@ def publications_page():
                     c1, c2 = st.columns((4.5, 1.1))
                     c1.markdown(f'<span style="background:{clr};color:#FFF;font-size:11px;font-weight:800;padding:2px 8px;border-radius:4px;">{yr}</span> **{title}** — *{venue}*', unsafe_allow_html=True)
                     c2.link_button("Open", url, use_container_width=True, type="primary")
-    disclaimer
+    disclaimer()
+
 
 def bio_page():
     st.markdown("""
