@@ -1,4 +1,4 @@
-"""Cohort Sandbox: Synthetic/CSV triage + Main 3D + 2D RMTI Mathematical Overlay."""
+"""Oncology Cohort Sandbox: Hepatocellular Carcinoma (HCC) & Custom Cohort Triage."""
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -10,12 +10,21 @@ from rmti_ui import disclaimer, page_header, style_fig
 
 RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
 
+HCC_COHORT_PRESETS = [
+    {"Name": "Fibrosis F1–F3 Baseline (BCLC 0)", "N": 1, "L": 0.150, "E_sel": 0.600, "V": 0.350, "rho_now": 0.200, "C": 3},
+    {"Name": "Untreated HBV Cirrhosis F4 (Fan aMAP)", "N": 1, "L": 0.900, "E_sel": 0.720, "V": 0.600, "rho_now": 0.200, "C": 4},
+    {"Name": "Early HCC BCLC 0/A (US + AFP)", "N": 1, "L": 0.650, "E_sel": 0.680, "V": 0.480, "rho_now": 0.250, "C": 4},
+    {"Name": "Portal Invasion BCLC B/C (Faria ALBI n=54)", "N": 1, "L": 0.820, "E_sel": 0.780, "V": 0.522, "rho_now": 0.180, "C": 5},
+    {"Name": "Metastatic HCC BCLC D Subgroup", "N": 1, "L": 0.880, "E_sel": 0.850, "V": 0.740, "rho_now": 0.150, "C": 5},
+    {"Name": "Custom Oncology Cohort / Your Data", "N": 1, "L": 0.550, "E_sel": 0.600, "V": 0.500, "rho_now": 0.250, "C": 4},
+]
+
 
 def _synthetic_cohort(n, seed):
     rng = np.random.default_rng(int(seed))
     rows = {}
     for i in range(int(n)):
-        cid = f"SYN-{i + 1:03d}"
+        cid = f"HCC-{i + 1:03d}"
         L = float(np.clip(rng.beta(2.2, 4.5), 0.05, 0.95))
         E = float(np.clip(rng.beta(2.5, 3.0), 0.10, 0.95))
         V = float(np.clip(rng.beta(2.4, 3.2), 0.10, 0.95))
@@ -26,7 +35,6 @@ def _synthetic_cohort(n, seed):
 
 
 def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_now, rho_val):
-    """Visual Science-style Main 3D + 2D Dual-Layer Frame with live RMTI equations & moving columns."""
     tiers = ["1 Low", "2 Moderate", "3 High", "4 Severe", "5 Critical"]
     now_counts = [int((df["Tier now"] == t).sum()) for t in tiers]
     aft_counts = [int((df["Tier after"] == t).sum()) for t in tiers] if "Tier after" in df else now_counts
@@ -40,24 +48,14 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
 
     bars_html = []
     for t, c0, c1 in zip(tiers, now_counts, aft_counts):
-        h0 = max(4, int((c0 / max_c) * 112))
-        h1 = max(4, int((c1 / max_c) * 112))
+        h0 = max(4, int((c0 / max_c) * 110))
+        h1 = max(4, int((c1 / max_c) * 110))
         lbl = t.split(" ", 1)[1]
         bars_html.append(f"""
         <div class="tgroup">
           <div class="pair">
-            <div class="bwrap" title="Baseline {t}: {c0}">
-              <span class="cnt">{c0}</span>
-              <span class="dot white" style="bottom:{h0 + 14}px"></span>
-              <span class="dot white" style="bottom:{h0 + 7}px;left:58%"></span>
-              <div class="bar base" style="height:{h0}px"></div>
-            </div>
-            <div class="bwrap" title="Scenario {t}: {c1}">
-              <span class="cnt cyan">{c1}</span>
-              <span class="dot cyan" style="bottom:{h1 + 16}px"></span>
-              <span class="dot cyan" style="bottom:{h1 + 8}px;left:30%"></span>
-              <div class="bar after" style="height:{h1}px"></div>
-            </div>
+            <div class="bwrap"><span class="cnt">{c0}</span><span class="dot white" style="bottom:{h0 + 14}px"></span><div class="bar base" style="height:{h0}px"></div></div>
+            <div class="bwrap"><span class="cnt cyan">{c1}</span><span class="dot cyan" style="bottom:{h1 + 16}px"></span><div class="bar after" style="height:{h1}px"></div></div>
           </div>
           <div class="xlbl">{lbl}</div>
         </div>
@@ -76,7 +74,7 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
       .pill{{background:rgba(36,21,13,0.72);backdrop-filter:blur(6px);color:#FFF;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:4px;border:1px solid rgba(255,255,255,0.16)}}
       .overlay{{position:absolute;top:14px;right:18px;bottom:14px;width:62%;z-index:3;display:flex;flex-direction:column;justify-content:space-between;color:#FFF}}
       .math-box{{background:rgba(28,16,9,0.52);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.22);border-radius:10px;padding:8px 12px}}
-      .eq-row{{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:800;letter-spacing:0.01em}}
+      .eq-row{{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:800}}
       .levers{{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.16);font-size:10.5px;text-align:center}}
       .lv b{{display:block;font-size:12px;color:#FDE68A}}
       .plot{{position:relative;flex:1;margin:14px 4px 18px 28px;border-left:1.5px solid rgba(255,255,255,0.72);border-bottom:1.5px solid rgba(255,255,255,0.72);display:grid;grid-template-columns:repeat(5,1fr);align-items:end;padding:0 6px}}
@@ -93,18 +91,15 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
       .dot.white{{background:#FFFFFF;border-radius:50%}}
       .dot.cyan{{background:#38BDF8;border-radius:1px}}
       .xlbl{{position:absolute;bottom:-19px;font-size:10px;font-weight:700;color:#FFF;white-space:nowrap}}
-      .ftr{{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:rgba(255,255,255,0.95);background:rgba(28,16,9,0.45);padding:5px 10px;border-radius:8px}}
+      .ftr{{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:#FFF;background:rgba(28,16,9,0.45);padding:5px 10px;border-radius:8px}}
     </style>
     <div class="card">
-      <video autoplay loop muted playsinline>
-        <source src="{clip_primary}" type="video/mp4">
-        <source src="{clip_fallback}" type="video/mp4">
-      </video>
+      <video autoplay loop muted playsinline><source src="{clip_primary}" type="video/mp4"><source src="{clip_fallback}" type="video/mp4"></video>
       <div class="scrim"></div>
       <div class="pills">
-        <span class="pill">Detailed and Dynamic</span>
-        <span class="pill">Dual-Layer Storytelling</span>
-        <span class="pill">For Data-rich Stories</span>
+        <span class="pill">Clinical Oncology</span>
+        <span class="pill">HCC · BCLC &amp; ALBI</span>
+        <span class="pill">Dual-Layer 3D + 2D</span>
       </div>
       <div class="overlay">
         <div class="math-box">
@@ -124,7 +119,7 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
           {''.join(bars_html)}
         </div>
         <div class="ftr">
-          <span>n = {len(df):,} cohort units · ρ target = {rho_val:.2f}</span>
+          <span>n = {len(df):,} oncology cohort units · Target ρ = {rho_val:.2f}</span>
           <span>Mean R: {r_mean_now:.3f} → <b style="color:#7DD3FC">{r_mean_after:.3f}</b></span>
         </div>
       </div>
@@ -134,83 +129,27 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
 
 def render():
     page_header(
-        "Cohort Sandbox",
-        "Score and rank a synthetic cohort, or upload your own aggregate table, then test a surveillance-improvement scenario.",
+        "Oncology Cohort Sandbox — Hepatocellular Carcinoma (HCC) & Custom Cohort Triage",
+        "Case Study: Hepatocellular Carcinoma (HCC) BCLC & ALBI Surveillance Cohort (Marolla, 2026, SSRN: 7427450; Faria et al. ALBI Cohort, n = 54; Singal et al., 2022; Lau-Min et al., JAMA Netw Open, 2025).",
         "Research tools",
     )
+
+    with st.expander("How to Use the Oncology Cohort Sandbox (3-Step Guide)", expanded=True):
+        g1, g2, g3 = st.columns(3)
+        g1.markdown("**1. Select or Customize Cohort**\nRun a synthetic HCC cohort, switch to **Custom Editable Table** to edit BCLC/ALBI rows or add your own with **`+`**, or upload an aggregate CSV.")
+        g2.markdown("**2. Simulate Surveillance (ρ)**\nAdjust **ρ after (surveillance scenario)** to model ultrasound + AFP adherence, LDCT screening, or second-line systemic delivery.")
+        g3.markdown("**3. Inspect Tier Shifts & Export**\nWatch the **Main 3D + 2D** columns redistribute across Tiers 1–5 in real time and download your ranked CSV.")
+
     st.warning("Do not upload patient-identifiable data. Files are processed in memory for your session and are never stored. Use synthetic or aggregate values.")
 
-    left, right = st.columns((1.0, 1.85), gap="large")
+    left, right = st.columns((1.05, 1.85), gap="large")
     with left:
         with st.container(border=True):
-            src = st.radio("Data source", ["Synthetic cohort", "Upload CSV"], horizontal=True)
-            if src == "Synthetic cohort":
+            src = st.radio("Data source", ["Synthetic HCC cohort", "Custom Editable Table", "Upload CSV"], horizontal=True)
+            if src == "Synthetic HCC cohort":
                 n_pts = st.slider("Synthetic patients", 50, 2000, 850, 50)
                 seed = st.number_input("Random seed", 1, 99999, 2026, 1)
                 raw_rows = _synthetic_cohort(n_pts, seed)
-            else:
-                up = st.file_uploader("Upload CSV (columns: Name, N, L, E_sel, V, rho_now, C)", type=["csv"])
-                if up is not None:
-                    udf = pd.read_csv(up).dropna(subset=["Name", "L", "E_sel", "V", "rho_now"])
-                    raw_rows = {
-                        str(r["Name"]): dict(
-                            N=float(r.get("N", 1)),
-                            L=float(r["L"]),
-                            E_sel=float(r["E_sel"]),
-                            V=float(r["V"]),
-                            rho_now=float(r["rho_now"]),
-                            C=int(r.get("C", 3)),
-                        )
-                        for _, r in udf.iterrows()
-                    }
-                else:
-                    st.info("Showing 250-patient synthetic preview until a CSV is uploaded.")
-                    raw_rows = _synthetic_cohort(250, 2026)
-
-            st.subheader("Scenario")
-            override = st.toggle("Override ρ after for every row", True)
-            rho_scen = st.slider("ρ after (scenario)", 0.05, 0.95, 0.65, 0.01) if override else None
-
-    if override and rho_scen is not None:
-        for v in raw_rows.values():
-            v["rho_after"] = float(rho_scen)
-
-    ranked = core.rank_cohort(raw_rows)
-    out = []
-    for r in ranked:
-        out.append({
-            "Name": r["name"],
-            "Priority in tier": r["priority_in_tier"],
-            "R now": r["R_now"],
-            "Tier now": short(r["tier_now"]),
-            "R after": r.get("R_after"),
-            "Tier after": short(r["tier_after"]) if "tier_after" in r else "",
-            "Reduction %": r.get("risk_reduction_pct"),
-            "EAL now": r["EAL_now"],
-        })
-    df = pd.DataFrame(out)
-    mean_now = float(df["R now"].mean())
-    mean_after = float(df["R after"].mean()) if df["R after"].notna().any() else mean_now
-    mean_eal = float(df["EAL now"].mean())
-    pct_chg = ((mean_after / mean_now) - 1.0) * 100 if mean_now > 0 else 0.0
-
-    with right:
-        _dual_layer_sandbox_card(df, raw_rows, mean_now, mean_after, mean_eal, rho_scen or 0.65)
-        st.write("")
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Rows scored", f"{len(df):,}")
-        m2.metric("Mean R now", f"{mean_now:.3f}")
-        m3.metric("Mean R after", f"{mean_after:.3f}", f"{pct_chg:+.1f}%", delta_color="inverse")
-
-        st.subheader("Tier distribution")
-        tiers = ["1 Low", "2 Moderate", "3 High", "4 Severe", "5 Critical"]
-        fig = go.Figure()
-        fig.add_bar(x=tiers, y=[int((df["Tier now"] == t).sum()) for t in tiers], name="now", marker_color="#1E293B")
-        fig.add_bar(x=tiers, y=[int((df["Tier after"] == t).sum()) for t in tiers], name="after scenario", marker_color="#93C5FD")
-        fig.update_layout(barmode="group", yaxis_title="Patients or cohorts")
-        st.plotly_chart(style_fig(fig, 310), width="stretch")
-
-        st.dataframe(df, hide_index=True, width="stretch", height=320)
-        st.download_button("Download scored cohort (CSV)", df.to_csv(index=False).encode(), "rmti_cohort_sandbox.csv", "text/csv")
-
-    disclaimer()
+            elif src == "Custom Editable Table":
+                st.caption("Click any cell to customize values or click `+` at the bottom to add custom cohorts:")
+                ed = st.data_editor(pd.DataFrame(HCC_COHORT_PRESETS), num_rows="dynamic", width="stretch", key="onc_ed")
