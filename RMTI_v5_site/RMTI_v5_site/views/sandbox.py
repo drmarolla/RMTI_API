@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit.components.v1 as components
 
 from engine import core, short
 from rmti_ui import disclaimer, page_header, style_fig
@@ -63,9 +64,10 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
     clip_primary = f"{RAW_VIDEOS}/sandbox_dual3d.mp4"
     clip_fallback = f"{RAW_VIDEOS}/video1_4stages_3d.mp4"
 
-    st.html(f"""
+    components.html(f"""
     <style>
-      .sb-card{{position:relative;height:365px;border-radius:16px;overflow:hidden;border:1px solid #D6B899;background:linear-gradient(125deg,#F3DFC8 0%,#C88A55 52%,#8F562E 100%);box-shadow:0 10px 28px rgba(15,23,42,0.09);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}}
+      *{{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}}
+      .sb-card{{position:relative;height:365px;border-radius:16px;overflow:hidden;border:1px solid #D6B899;background:linear-gradient(125deg,#F3DFC8 0%,#C88A55 52%,#8F562E 100%);box-shadow:0 10px 28px rgba(15,23,42,0.09)}}
       .sb-card video{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.95}}
       .sb-scrim{{position:absolute;inset:0;background:linear-gradient(90deg,rgba(28,16,9,0.08) 0%,rgba(42,24,14,0.34) 38%,rgba(34,19,11,0.72) 100%)}}
       .sb-pills{{position:absolute;top:14px;left:14px;z-index:4;display:flex;gap:6px;flex-wrap:wrap}}
@@ -122,7 +124,7 @@ def _dual_layer_sandbox_card(df, raw_rows, r_mean_now, r_mean_after, eal_mean_no
         </div>
       </div>
     </div>
-    """)
+    """, height=372)
 
 
 def render():
@@ -150,4 +152,3 @@ def render():
                 raw_rows = _synthetic_cohort(n_pts, seed)
             elif src == "Custom Editable Table":
                 st.caption("Click any cell to customize values or click `+` at the bottom to add custom cohorts:")
-                ed = st.data_editor(pd.DataFrame(HCC_COHORT_PRESETS), num_rows="dynamic", width="stretch", key="onc_ed")
