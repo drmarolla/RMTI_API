@@ -1,14 +1,18 @@
-"""Home view — Full-page dark 3D video background, ambient audio toggle, and clickable RMTI cards."""
+"""Home view — Full-page dark 3D video background, RMTI masthead, ambient audio, and clickable cards."""
 import streamlit as st
 import streamlit.components.v1 as components
+
 PAGES = {}
 RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
 RAW_ROOT = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main"])
+
+
 def render():
     onc_mp4 = f"{RAW_VIDEOS}/home_oncology.mp4"
     dis_mp4 = f"{RAW_VIDEOS}/home_disaster.mp4"
     fb_onc = f"{RAW_VIDEOS}/video1_4stages_3d.mp4"
     fb_dis = f"{RAW_ROOT}/rmti_3_flood_heat_case_studies.mp4"
+
     st.markdown("""
     <style>
     html, body, .stApp, [data-testid="stAppViewContainer"] { background: transparent !important; }
@@ -20,13 +24,15 @@ def render():
     [data-testid="stSidebar"] * { color: #F1F5F9 !important; }
     [data-testid="stMain"] h1, [data-testid="stMain"] h2, [data-testid="stMain"] h3, [data-testid="stMain"] p, [data-testid="stMain"] strong { color: #FFFFFF !important; }
     [data-testid="stMain"] [data-testid="stCaptionContainer"] p, [data-testid="stMain"] small { color: #CBD5E1 !important; opacity: 1 !important; }
-    .hero-wrap { padding: 20px 4px 8px 4px; max-width: 680px; }
+    .hero-wrap { padding: 12px 4px 8px 4px; max-width: 720px; }
+    .hero-brand { color: #FFFFFF !important; font-size: 32px; font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .hero-brand span { color: #38BDF8 !important; }
     .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
     .hero-pill { background: #FFFFFF; color: #0F172A !important; font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 4px; }
     .hero-pill.red { background: #DC2626; color: #FFFFFF !important; }
     .hero-pill.blue { background: #0284C7; color: #FFFFFF !important; }
-    .hero-lead { color: #E2E8F0 !important; font-size: 16px; line-height: 1.6; margin-bottom: 14px; max-width: 560px; }
-    .hero-title { color: #FFFFFF !important; font-size: 48px; font-weight: 800; line-height: 1.06; letter-spacing: -0.03em; margin-bottom: 14px; }
+    .hero-lead { color: #E2E8F0 !important; font-size: 16px; line-height: 1.6; margin-bottom: 14px; max-width: 580px; }
+    .hero-title { color: #FFFFFF !important; font-size: 46px; font-weight: 800; line-height: 1.06; letter-spacing: -0.03em; margin-bottom: 14px; }
     .pillar-tag { display: inline-block; background: rgba(2,132,199,0.25); color: #38BDF8 !important; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; margin-bottom: 8px; }
     [data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
         background: rgba(15,23,42,0.86) !important; backdrop-filter: blur(12px);
@@ -40,6 +46,7 @@ def render():
     [data-testid="stMain"] .stButton > button[kind="primary"] * { color: #FFFFFF !important; }
     </style>
     """, unsafe_allow_html=True)
+
     components.html(f"""
     <script>
     (function() {{
@@ -66,10 +73,12 @@ def render():
     }})();
     </script>
     """, height=0)
+
     st.markdown("""
     <div class="hero-wrap">
+      <div class="hero-brand"><span>RMTI</span> — Risk Mechanism Theory Index</div>
       <div class="hero-pills">
-        <span class="hero-pill">Risk Intelligence • RMTI</span>
+        <span class="hero-pill">Risk Intelligence</span>
         <span class="hero-pill blue">Disaster Science</span>
         <span class="hero-pill red">Clinical Oncology</span>
         <span class="hero-pill">Deterministic FHIR API</span>
@@ -78,6 +87,7 @@ def render():
       <div class="hero-title">Quantify systemic risk.<br>Before it fragments care.</div>
     </div>
     """, unsafe_allow_html=True)
+
     components.html("""
     <style>
       body{margin:0;background:transparent;font-family:sans-serif}
@@ -109,15 +119,21 @@ def render():
       }
     </script>
     """, height=58)
+
     c1, c2, c3, c4, _ = st.columns([1.5, 1.7, 1.8, 1.8, 2.2])
     if c1.button("Explore the tools", type="primary", use_container_width=True, key="hero_explore"):
-        if "calc" in PAGES: st.switch_page(PAGES["calc"])
+        if "calc" in PAGES:
+            st.switch_page(PAGES["calc"])
     if c2.button("Disaster case studies", use_container_width=True, key="hero_disaster"):
-        if "urban" in PAGES: st.switch_page(PAGES["urban"])
+        if "urban" in PAGES:
+            st.switch_page(PAGES["urban"])
     if c3.button("Oncology case studies", use_container_width=True, key="hero_oncology"):
-        if "liver" in PAGES: st.switch_page(PAGES["liver"])
+        if "liver" in PAGES:
+            st.switch_page(PAGES["liver"])
     if c4.button("Books & Publications", use_container_width=True, key="hero_pubs"):
-        if "pubs" in PAGES: st.switch_page(PAGES["pubs"])
+        if "pubs" in PAGES:
+            st.switch_page(PAGES["pubs"])
+
     st.write("")
     pillars = [
         ("Unified framework", "R = L·E·V·(1−ρ)", "Disaster & Oncology", "method"),
@@ -126,11 +142,3 @@ def render():
         ("Clinical integration", "HL7 FHIR R4", "Deterministic tiers 1–4", "api"),
     ]
     p_cols = st.columns(4)
-    for col, (lbl, val, tag, pk) in zip(p_cols, pillars):
-        with col.container(border=True):
-            st.caption(lbl)
-            st.markdown(f"### {val}")
-            st.markdown(f'<span class="pillar-tag">{tag}</span>', unsafe_allow_html=True)
-            if st.button("Open", key=f"pil_{pk}", use_container_width=True):
-                if pk in PAGES:
-                    st.switch_page(PAGES[pk])
