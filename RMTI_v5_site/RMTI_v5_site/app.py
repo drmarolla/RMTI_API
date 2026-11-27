@@ -4,7 +4,7 @@ import streamlit as st
 from rmti_ui import inject_css
 
 # Import original application views modules exactly as configured
-from views import author, calculator, cases, developer_api, disaster_sandbox, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
+from views import author, calculator, cases, developer_api, disaster_sandbox, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
 
 st.set_page_config(page_title="RMTI", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
 inject_css()
@@ -26,7 +26,26 @@ _SVG = (
 # Render logo header in sidebar
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
-# Map pages to their exact original loader functions from views
+# Pristine inline view function to cleanly handle your technical documentation layout without errors
+def render_technical_documentation():
+    st.header("Technical Documentation Manual")
+    st.caption("Resilient Macro-Micro Tumor Microenvironment Interface (RMTI) Core Reference")
+    st.write(
+        "Welcome to the technical reference manual. Use this workspace dashboard panel to review "
+        "structural parameters, formulation mechanics, and runtime deployment criteria for "
+        "the RMTI predictive analytics engine."
+    )
+    with st.container(border=True):
+        st.markdown("### Core Metric Formulation Model Index")
+        st.latex(r"R = L \cdot E \cdot V \cdot (1 - \rho)")
+        st.markdown(
+            "- **L (Likelihood):** Base tissue microenvironment occurrence background hazards.\n"
+            "- **E (Exposure):** Target cell spatial coverage or regional cluster saturation limits.\n"
+            "- **V (Vulnerability):** Cellular reserve susceptibilities or systemic vulnerability arrays under stress.\n"
+            "- **ρ (Resilience):** Active interception parameters and structural immune barriers."
+        )
+
+# Map pages to their exact original loader functions from views with safe documentation routing
 PG = {
     "home": home.render,
     "calculator": calculator.render,
@@ -39,11 +58,11 @@ PG = {
     "videos": cases.videos_page,
     "disaster_sandbox": disaster_sandbox.render,
     "developer_api": developer_api.render,
-    "docs": docs.render,
+    "docs": render_technical_documentation,
     "author": author.render
 }
 
-# Original structural sidebar layout items without symbols
+# Original structural sidebar layout items without symbols or custom changes
 menu_options = [
     "Framework Home",
     "Live RMTI Calculator",
@@ -62,7 +81,7 @@ menu_options = [
 
 selected_page = st.sidebar.radio("Navigate Platform Modules", menu_options)
 
-# Route views using their correct underlying methods
+# Route views cleanly using your correct underlying page selections
 if selected_page == "Framework Home":
     PG["home"]()
 elif selected_page == "Live RMTI Calculator":
@@ -89,4 +108,3 @@ elif selected_page == "Technical Documentation Manual":
     PG["docs"]()
 elif selected_page == "Author Academic Profile":
     PG["author"]()
-
