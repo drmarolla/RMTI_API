@@ -5,12 +5,19 @@ import importlib.util
 import streamlit as st
 from rmti_ui import inject_css
 
-# Locate repository roots to tap into individual background python scripts
+# Configure explicit module lookup trees across your repository folders
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
 sys.path.append(REPO_ROOT)
 
-# Import original application module views safely
+# Core Platform Theme & Aesthetic Initialization System
+try:
+    from rmti_theme import apply as _theme
+    _theme()
+except Exception:
+    pass
+
+# Import standard dashboard application module view pages
 import views.author as author
 import views.calculator as calculator
 import views.cases as cases
@@ -20,7 +27,7 @@ import views.docs as docs
 import views.home as home
 import views.library as library
 
-# Secure high-end layout modules directly from your pristine backup file
+# Secure high-end analytical layouts directly from your pristine asset file
 try:
     spec = importlib.util.spec_from_file_location(
         "high_end_cases", 
@@ -31,7 +38,12 @@ try:
 except Exception:
     case_module = cases
 
-st.set_page_config(page_title="RMTI", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(
+    page_title="RMTI Platform", 
+    page_icon="📊", 
+    layout="wide", 
+    initial_sidebar_state="expanded"
+)
 inject_css()
 
 _NS = "".join(["http://", "www.w3.org/", "2000/svg"])
@@ -43,21 +55,30 @@ _SVG = (
 )
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
-# Link platform selections straight to your original build methods
+# Safe function runner mapping utility
+def safe_render(module_obj, fallback_func_name="render"):
+    if hasattr(module_obj, fallback_func_name):
+        getattr(module_obj, fallback_func_name)()
+    elif hasattr(module_obj, "main"):
+        getattr(module_obj, "main")()
+    elif hasattr(module_obj, "show"):
+        getattr(module_obj, "show")()
+
+# Map options to original structural layout generation hooks
 PG = {
-    "home": home.render if hasattr(home, 'render') else home.main if hasattr(home, 'main') else lambda: None,
-    "calculator": calculator.render if hasattr(calculator, 'render') else calculator.main if hasattr(calculator, 'main') else lambda: None,
+    "home": lambda: safe_render(home),
+    "calculator": lambda: safe_render(calculator),
     "liver": lambda: getattr(case_module, "case_page", cases.case_page)("liver"),
     "lung": lambda: getattr(case_module, "case_page", cases.case_page)("lung"),
     "breast": lambda: getattr(case_module, "case_page", cases.case_page)("breast"),
     "johnson": lambda: getattr(case_module, "johnson_page", cases.johnson_page)(),
     "urban": lambda: getattr(case_module, "urban_page", cases.urban_page)(),
-    "library": library.render if hasattr(library, 'render') else library.main if hasattr(library, 'main') else lambda: None,
+    "library": lambda: safe_render(library),
     "videos": lambda: getattr(case_module, "videos_page", cases.videos_page)(),
-    "disaster_sandbox": disaster_sandbox.render if hasattr(disaster_sandbox, 'render') else disaster_sandbox.main if hasattr(disaster_sandbox, 'main') else lambda: None,
-    "developer_api": developer_api.render if hasattr(developer_api, 'render') else developer_api.main if hasattr(developer_api, 'main') else lambda: None,
-    "docs": docs.render if hasattr(docs, 'render') else docs.main if hasattr(docs, 'main') else lambda: None,
-    "author": author.render if hasattr(author, 'render') else author.main if hasattr(author, 'main') else lambda: None
+    "disaster_sandbox": lambda: safe_render(disaster_sandbox),
+    "developer_api": lambda: safe_render(developer_api),
+    "docs": lambda: safe_render(docs),
+    "author": lambda: safe_render(author)
 }
 
 menu_options = [
@@ -78,6 +99,7 @@ menu_options = [
 
 selected_page = st.sidebar.radio("Navigate Platform Modules", menu_options)
 
+# Exact layout module processing routes
 if selected_page == "Framework Home": PG["home"]()
 elif selected_page == "Live RMTI Calculator": PG["calculator"]()
 elif selected_page == "Hepatocellular Carcinoma (HCC) Case Study": PG["liver"]()
