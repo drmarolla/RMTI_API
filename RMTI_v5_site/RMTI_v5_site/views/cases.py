@@ -48,14 +48,27 @@ STUDIO_CLIPS = {
         ),
         "Closing the 30% pre-second-line attrition gap (O'Shaughnessy et al., 2026) raises system resilience ρ and lowers residual risk R from 0.234 to 0.098.",
     ),
+    "urban": (
+        "case_african_cities.mp4",
+        "Disaster Science · Six Sub-Saharan African Cities",
+        "Main 3D + 2D: Urban Flood & Heat Governance",
+        (
+            ("L · Likelihood", "Extreme rainfall, flood & heatwave frequency", "#0284C7"),
+            ("E · Exposure", "Transit corridors, clinics & dense settlements", "#EF4444"),
+            ("V · Vulnerability", "Drainage deficit & baseline health fragility", "#F59E0B"),
+            ("1 − ρ · Resilience", "$50M green-grey infrastructure & health continuity", "#10B981"),
+        ),
+        "Allocating targeted resilience upgrades (ρ) across Bamako, Lagos, and Lilongwe cuts composite residual risk R by up to 48% and maximizes Expected Annual Loss (EAL) avoided per million residents.",
+    ),
 }
+
 
 def _dual_layer_panel(key, r_before=None, r_after=None):
     if key not in STUDIO_CLIPS:
         return
     filename, domain_tag, subtitle, steps, outcome_text = STUDIO_CLIPS[key]
     video_url = f"{RAW_VIDEOS}/{filename}"
-    accent = "#DC2626"
+    accent = "#0284C7" if key == "urban" else "#DC2626"
     col_3d, col_2d = st.columns((1.55, 1.0), gap="medium")
     with col_3d:
         components.html(f"""
@@ -85,15 +98,143 @@ def _dual_layer_panel(key, r_before=None, r_after=None):
         st.markdown("**RMTI Process & Quantified Outcome**")
         st.write(outcome_text)
 
-def videos_page():
-    st.header("🎬 Narrated 3D Motion Video Library")
-    st.write("Explore how the RMTI framework tracks cellular dynamics, tumor-immune barriers, and residual risks.")
-    st.video("https://githubusercontent.com Progression & Subtype Divergence  Scenes 1-3.mp4")
 
-def johnson_page():
-    st.header("Johnson Cohort Surveillance Analysis")
+def _video(key, label):
+    c = content.CASES.get(key, {})
+    _dual_layer_panel(key, c.get("r_before"), c.get("r_after"))
+    f = content.find_media(key)
+    if f and content.find_captions(f):
+        cap = content.find_captions(f)
+        with open(cap, "rb") as fh:
+            st.download_button("Download closed captions (.vtt)", fh.read(), os.path.basename(cap), "text/vtt", key=f"vtt_{key}")
+
+
+def _refs(key):
+    rows = []
+    for cite, url, kind in content.CASES[key]["refs"]:
+        link = f' <a href="{url}" target="_blank">open</a>' if url else ""
+        rows.append(f'<div class="card" style="margin-bottom:.6rem"><p><b>{kind}</b> · {cite}{link}</p></div>')
+    st.markdown("".join(rows), unsafe_allow_html=True)
+
+
+def _gbd_tab():
+    g = content.GBD_BREAST
+    st.markdown("**Global context, GBD 2023** (Lancet Oncology 2026;27:302-326).")
+    a, b, c3, d4 = st.columns(4)
+    a.metric("Incident cases, 2023", f"{g['cases_m']:.2f} million")
+    b.metric("Deaths, 2023", f"{g['deaths_k']:,} thousand")
+    c3.metric("DALYs, 2023", f"{g['dalys_m']:.1f} million")
+    d4.metric("Forecast cases, 2050", f"{g['cases_2050_m']:.2f} million", f"{g['deaths_2050_m']:.2f} million deaths", delta_color="off")
+    fig = go.Figure()
+    fig.add_bar(x=g["groups"], y=g["asir"], name="Incidence (ASIR)", marker_color="#38BDF8")
+    fig.add_bar(x=g["groups"], y=g["asmr"], name="Mortality (ASMR)", marker_color="#EF4444")
+    fig.update_layout(barmode="group", yaxis_title="Rate per 100,000", title="2023 by World Bank income group")
+    st.plotly_chart(style_fig(fig, 420), width="stretch")
+
+
+def _hcc_guidance_tab():
+    G = content.HCC_GUIDE
+    cols = st.columns(3, gap="medium")
+    for i, (t, b) in enumerate(G["facts"]):
+        cols[i % 3].markdown(card(t, b), unsafe_allow_html=True)
+    st.dataframe(pd.DataFrame(G["tests"], columns=("Test", "Sensitivity", "Specificity")), hide_index=True, width="stretch")
+
 
 def case_page(key):
     c = content.CASES[key]
     page_header(f"{c['title']}: from tumor events to trajectory", f"Published case study: {c['study']}. {c['finding']}", "Oncology case studies")
-    _dual_layer_panel(key, c.get("r_before"), c.get("r_after"))
+    names = ["3D + 2D Mechanism", "Tumor stages", "RMTI assessment", "Trajectory"]
+    if key == "liver":
+        names.append("Surveillance guidance")
+    if key == "breast":
+        names.append("Global burden")
+    names.append("Sources")
+    tabs = st.tabs(names)
+    it = iter(tabs)
+    with next(it):
+        _video(key, c["title"].lower())
+    with next(it):
+        cols = st.columns(4, gap="medium")
+        for col, (name, text) in zip(cols, c["stages"]):
+            col.markdown(card(name, text), unsafe_allow_html=True)
+    with next(it):
+        st.dataframe(pd.DataFrame(c["mapping"], columns=("Lever", "Published data used")), hide_index=True, width="stretch")
+        a, b = st.columns(2)
+        a.metric("R at first review", f"{c['r_before']:.3f}")
+        a.markdown(badge(core.tier(c["r_before"])), unsafe_allow_html=True)
+        b.metric("R after improvement", f"{c['r_after']:.3f}", f"{(c['r_after'] / c['r_before'] - 1) * 100:.0f}%", delta_color="inverse")
+        b.markdown(badge(core.tier(c["r_after"])), unsafe_allow_html=True)
+    with next(it):
+        g1, g2 = st.columns((1, 2.2), gap="large")
+        with g1:
+            L = st.slider("L", 0.0, 1.0, 0.5, 0.01, key=f"{key}L")
+            E = st.slider("E", 0.0, 1.0, 0.5, 0.01, key=f"{key}E")
+        pts = []
+        with g2:
+            cols = st.columns(4)
+            for i, col in enumerate(cols):
+                v = col.slider(f"V cycle {i + 1}", 0.0, 1.0, round(0.60 - 0.04 * i, 2), 0.01, key=f"{key}V{i}")
+                r = col.slider(f"ρ cycle {i + 1}", 0.0, 0.95, round(0.20 + 0.12 * i, 2), 0.01, key=f"{key}R{i}")
+                pts.append(core.score(L, E, v, r)["R_raw"])
+        fig = go.Figure()
+        add_tier_bands(fig)
+        fig.add_trace(go.Scatter(x=list(range(1, 5)), y=pts, mode="lines+markers", line=dict(color="#0F172A", width=4), marker=dict(size=13)))
+        fig.update_layout(xaxis=dict(title="Review cycle", dtick=1), yaxis_title="Residual risk R", yaxis_range=(0, max(0.4, max(pts) * 1.2)), showlegend=False)
+        st.plotly_chart(style_fig(fig, 360), width="stretch")       
+    if key == "liver":
+        with next(it):
+            _hcc_guidance_tab()
+    if key == "breast":
+        with next(it):
+            _gbd_tab()
+    with next(it):
+        _refs(key)
+    disclaimer()
+
+
+def johnson_page():
+    J = content.JOHNSON
+    page_header("HCC progression: the pathway matters for surveillance", "Johnson et al. (BJC Reports, 2024) followed 2,592 non-cirrhotic chronic liver disease patients.", "Oncology case studies")
+    k0, k1, k2, k3 = st.columns(4, gap="medium")
+    k0.metric("HCC developed", f"{J['hcc']}", f"{J['hcc'] / J['n']:.0%} of cohort", delta_color="off")
+    k1.metric("Never passed through cirrhosis", f"{J['no_cirrhosis']}", "28% of HCC", delta_color="off")
+    k2.metric("HBV that skipped cirrhosis", f"{J['hbv_direct']} of {J['hbv_total']}", "69%", delta_color="off")
+    k3.metric("HCC per 1,000 patient-years", f"{J['rate_noncirr']} vs {J['rate_cirr']}", "non-cirrhotic vs cirrhotic", delta_color="off")
+    c1, c2 = st.columns(2, gap="large")
+    with c1:
+        fig = go.Figure(go.Bar(x=("Passed through cirrhosis", "Remained non-cirrhotic"), y=(J["via_cirrhosis"], J["no_cirrhosis"]), marker_color=("#0284C7", "#EF4444"), text=(J["via_cirrhosis"], J["no_cirrhosis"]), textposition="outside"))
+        fig.update_layout(title="Pathway to HCC (n = 172)", yaxis_title="Patients")
+        st.plotly_chart(style_fig(fig, 400), width="stretch")
+    with c2:
+        fig = go.Figure(go.Bar(x=("Hepatitis B", "Hepatitis C"), y=(J["hbv_direct"] / J["hbv_total"] * 100, J["hcv_noncirr"] / J["hcv_total"] * 100), marker_color=("#EF4444", "#38BDF8"), text=(f"{J['hbv_direct']}/{J['hbv_total']}", f"{J['hcv_noncirr']}/{J['hcv_total']}"), textposition="outside"))
+        fig.update_layout(title="HCC without cirrhosis, by aetiology", yaxis_title="% of HCC cases", yaxis_range=(0, 100))
+        st.plotly_chart(style_fig(fig, 400), width="stretch")
+    with st.container(border=True):
+        st.markdown("**RMTI Process & Clinical Outcome**")
+        st.write("28% of all HCC cases (and 69% of HBV-related HCC) bypassed cirrhosis entirely. RMTI decouples Exposure (E) and Resilience (ρ) from cirrhosis-only gating.")
+    disclaimer()
+
+
+def urban_page():
+    from views import urban_cases
+    urban_cases.render()
+
+def videos_page():
+    page_header("Video library", "Narrated walkthroughs of the framework and the case studies.", "Case studies")
+    for f in content.all_videos():
+        st.subheader(os.path.basename(f))
+        st.video(f)
+    disclaimer()
+
+
+def liver():
+    case_page("liver")
+
+
+def lung():
+    case_page("lung")
+
+
+def breast():
+    case_page("breast")
+
