@@ -139,12 +139,17 @@ PG = {
     "refs": P(docs.references, "References and disclaimer", "menu_book", "references"),
     "api": P(developer_api.render, "Developer API", "code", "developer-api"),
 }
-home.PAGES = PG
-pg = st.navigation({
-    "": [PG["home"]],
-    "Clinical calculators": [PG["calc"], PG["hccs"], PG["hcct"]],
-    "Research tools": [PG["sandbox"], PG["dis_sandbox"]],
-    "Interactive models": [PG["models"], PG["live"], PG["m4d"]],
+# --- Explicit Namespace Object to Resolve app.py Attribute Errors ---
+class CasesContainer:
+    """Dynamically routes attribute lookups from app.py to the correct module functions."""
+    def __init__(self):
+        self.liver = lambda: case_page("liver")
+        self.lung = lambda: case_page("lung")
+        self.breast = lambda: case_page("breast")
+
+# Instantiate the object using the exact lowercase property name your app expects
+cases = CasesContainer()
+
     "Case studies": [PG["library"], PG["videos"]],
     "Oncology case studies": [PG["liver"], PG["lung"], PG["breast"], PG["johnson"]],
     "Disaster science case studies": [PG["lagos"], PG["lilongwe"], PG["bamako"], PG["nairobi"], PG["dar"], PG["lusaka"], PG["urban"]],
