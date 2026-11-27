@@ -26,7 +26,7 @@ _SVG = (
 # Render logo header in sidebar
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
-# Safe documentation fallback helper function referenced on line 53
+# Safe documentation fallback helper function
 def run_docs():
     if hasattr(docs, 'render'):
         docs.render()
