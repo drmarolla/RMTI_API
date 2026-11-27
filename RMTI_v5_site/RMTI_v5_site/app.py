@@ -6,7 +6,7 @@ from engine import core
 from rmti_ui import inject_css
 
 # Import original application views modules exactly as configured
-from views import author, calculator, cases, developer_api, disaster_sandbox, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
+from views import author, calculator, cases, developer_api, disaster_sandbox, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
 
 st.set_page_config(page_title="RMTI", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
 inject_css()
@@ -28,6 +28,25 @@ _SVG = (
 # Render logo header in sidebar
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
+# Custom standalone documentation tab display layout
+def render_custom_documentation():
+    st.header("📄 Technical Documentation Manual")
+    st.caption("Resilient Macro-Micro Tumor Microenvironment Interface (RMTI) Core Reference")
+    st.write(
+        "Welcome to the technical reference manual. Use this interface tab to review "
+        "structural parameters, mathematical frameworks, and deployment criteria for "
+        "the RMTI predictive processing analytics engine."
+    )
+    with st.container(border=True):
+        st.markdown("### 🧬 Core Formulation Metric Index")
+        st.latex(r"R = L \cdot E \cdot V \cdot (1 - \rho)")
+        st.markdown(
+            "- **L (Likelihood):** Base structural or programmatic background occurrence hazards.\n"
+            "- **E (Exposure):** Target cluster spatial coverage or cohort density saturation thresholds.\n"
+            "- **V (Vulnerability):** System or tissue reserve susceptibility vectors under active duress.\n"
+            "- **ρ (Resilience):** Programmatic interception parameters and structural containment indices."
+        )
+
 # Map pages to their exact original loader functions from views
 PG = {
     "home": home.render,
@@ -41,7 +60,7 @@ PG = {
     "videos": cases.videos_page,
     "disaster_sandbox": disaster_sandbox.render,
     "developer_api": developer_api.render,
-    "docs": docs.render,
+    "docs": render_custom_documentation,
     "author": author.render
 }
 
