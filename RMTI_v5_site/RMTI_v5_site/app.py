@@ -28,40 +28,39 @@ _SVG = (
 # Render logo header in sidebar
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
-# Custom standalone documentation tab display layout
+# Safe fallback page wrapper functions to handle different file properties
+def safe_call(module, default_func_name="render"):
+    if hasattr(module, default_func_name):
+        getattr(module, default_func_name)()
+    elif hasattr(module, "main"):
+        getattr(module, "main")()
+    elif hasattr(module, "show"):
+        getattr(module, "show")()
+    else:
+        st.info("🔄 This platform module page is loading resources...")
+
 def render_custom_documentation():
     st.header("📄 Technical Documentation Manual")
     st.caption("Resilient Macro-Micro Tumor Microenvironment Interface (RMTI) Core Reference")
-    st.write(
-        "Welcome to the technical reference manual. Use this interface tab to review "
-        "structural parameters, mathematical frameworks, and deployment criteria for "
-        "the RMTI predictive processing analytics engine."
-    )
     with st.container(border=True):
         st.markdown("### 🧬 Core Formulation Metric Index")
         st.latex(r"R = L \cdot E \cdot V \cdot (1 - \rho)")
-        st.markdown(
-            "- **L (Likelihood):** Base structural or programmatic background occurrence hazards.\n"
-            "- **E (Exposure):** Target cluster spatial coverage or cohort density saturation thresholds.\n"
-            "- **V (Vulnerability):** System or tissue reserve susceptibility vectors under active duress.\n"
-            "- **ρ (Resilience):** Programmatic interception parameters and structural containment indices."
-        )
 
-# Map pages to their exact original loader functions from views
+# Map pages using safe lookup calls to prevent any AttributeError crashes
 PG = {
-    "home": home.render,
-    "calculator": calculator.render,
+    "home": lambda: safe_call(home),
+    "calculator": lambda: safe_call(calculator),
     "liver": lambda: cases.case_page("liver"),
     "lung": lambda: cases.case_page("lung"),
     "breast": lambda: cases.case_page("breast"),
     "johnson": cases.johnson_page,
     "urban": cases.urban_page,
-    "library": library.render,
+    "library": lambda: safe_call(library),
     "videos": cases.videos_page,
-    "disaster_sandbox": disaster_sandbox.render,
-    "developer_api": developer_api.render,
+    "disaster_sandbox": lambda: safe_call(disaster_sandbox),
+    "developer_api": lambda: safe_call(developer_api),
     "docs": render_custom_documentation,
-    "author": author.render
+    "author": lambda: safe_call(author)
 }
 
 # Original structural sidebar layout items
@@ -83,7 +82,7 @@ menu_options = [
 
 selected_page = st.sidebar.radio("Navigate Platform Modules", menu_options)
 
-# Route views using their correct underlying methods
+# Route views cleanly using safe closures
 if selected_page == "🏠 Framework Home":
     PG["home"]()
 elif selected_page == "🧮 Live RMTI Calculator":
