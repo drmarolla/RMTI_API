@@ -3,8 +3,22 @@ import os
 import streamlit as st
 from rmti_ui import inject_css
 
-# Import original application views modules exactly as configured
-from views import author, calculator, cases, developer_api, disaster_sandbox, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
+# Split imports onto clean, individual lines to eliminate compiler indentation traps
+import views.author as author
+import views.calculator as calculator
+import views.cases as cases
+import views.developer_api as developer_api
+import views.disaster_sandbox as disaster_sandbox
+import views.docs as docs
+import views.hcc_surveillance as hcc_surveillance
+import views.hcc_treatment as hcc_treatment
+import views.home as home
+import views.library as library
+import views.live_matrix as live_matrix
+import views.matrix4d as matrix4d
+import views.models3d as models3d
+import views.sandbox as sandbox
+import views.urban_cases as urban_cases
 
 st.set_page_config(page_title="RMTI", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
 inject_css()
