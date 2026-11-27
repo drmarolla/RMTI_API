@@ -34,21 +34,28 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Safe function runner to automatically route hidden module naming variations without throwing AttributeErrors
+def execute_safe_render(module_obj):
+    for target_func in ["render", "main", "show"]:
+        if hasattr(module_obj, target_func):
+            getattr(module_obj, target_func)()
+            return
+
 # Connect platform modules straight to your original structural layout generation hooks
 PG = {
-    "home": home.render,
-    "calculator": calculator.render,
-    "liver": lambda: cases.case_page("liver"),
-    "lung": lambda: cases.case_page("lung"),
-    "breast": lambda: cases.case_page("breast"),
-    "johnson": cases.johnson_page,
-    "urban": cases.urban_page,
-    "library": library.render,
-    "videos": cases.videos_page,
-    "disaster_sandbox": disaster_sandbox.render,
-    "developer_api": developer_api.render,
-    "docs": docs.render,
-    "author": author.render
+    "home": lambda: execute_safe_render(home),
+    "calculator": lambda: execute_safe_render(calculator),
+    "liver": lambda: cases.case_page("liver") if hasattr(cases, 'case_page') else execute_safe_render(cases),
+    "lung": lambda: cases.case_page("lung") if hasattr(cases, 'case_page') else execute_safe_render(cases),
+    "breast": lambda: cases.case_page("breast") if hasattr(cases, 'case_page') else execute_safe_render(cases),
+    "johnson": lambda: cases.johnson_page() if hasattr(cases, 'johnson_page') else execute_safe_render(cases),
+    "urban": lambda: cases.urban_page() if hasattr(cases, 'urban_page') else execute_safe_render(cases),
+    "library": lambda: execute_safe_render(library),
+    "videos": lambda: cases.videos_page() if hasattr(cases, 'videos_page') else execute_safe_render(cases),
+    "disaster_sandbox": lambda: execute_safe_render(disaster_sandbox),
+    "developer_api": lambda: execute_safe_render(developer_api),
+    "docs": lambda: execute_safe_render(docs),
+    "author": lambda: execute_safe_render(author)
 }
 
 # The pristine structural side-menu layout options
