@@ -100,3 +100,4 @@ elif selected_page == "Technical Documentation Manual":
     PG["docs"]()
 elif selected_page == "Author Academic Profile":
     PG["author"]()
+
