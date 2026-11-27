@@ -3,7 +3,7 @@ import base64
 import os
 import streamlit as st
 from engine import core
-from rmt_ui import inject_css
+from rmti_ui import inject_css
 
 # Make sure views modules are imported correctly
 from views import author, calculator, cases, developer_api, disaster_sandbox, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
