@@ -26,18 +26,18 @@ _SVG = (
 # Render logo header in sidebar
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
-# Safe documentation fallback runner
+# Safe documentation fallback helper function referenced on line 53
 def run_docs():
     if hasattr(docs, 'render'):
         docs.render()
-    elif hasattr(docs, 'show'):
-        docs.show()
     elif hasattr(docs, 'main'):
         docs.main()
+    elif hasattr(docs, 'show'):
+        docs.show()
     else:
-        st.info("Technical Documentation Manual is loading...")
+        st.info("Technical Documentation Manual is compiling...")
 
-# Map pages using safe fallback loaders to protect against AttributeError
+# Map pages to their exact loader functions from views with safety checks
 PG = {
     "home": home.render if hasattr(home, 'render') else home.main if hasattr(home, 'main') else lambda: None,
     "calculator": calculator.render if hasattr(calculator, 'render') else calculator.main if hasattr(calculator, 'main') else lambda: None,
