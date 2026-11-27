@@ -5,12 +5,11 @@ import plotly.graph_objects as go
 import streamlit as st
 import streamlit.components.v1 as components
 
-# Safe helper path to resolve files relative to app location
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-REPO_ROOT = os.path.dirname(CURRENT_DIR)
-MEDIA_DIR = os.path.join(REPO_ROOT, "media")
+import content
+from engine import core, short
+from rmti_ui import add_tier_bands, badge, card, disclaimer, page_header, style_fig
 
-RAW_VIDEOS = "https://githubusercontent.com"
+RAW_VIDEOS = "".join(["https://raw.", "githubusercontent.", "com/drmarolla/RMTI_API/main/assets/videos"])
 
 STUDIO_CLIPS = {
     "liver": (
@@ -49,39 +48,14 @@ STUDIO_CLIPS = {
         ),
         "Closing the 30% pre-second-line attrition gap (O'Shaughnessy et al., 2026) raises system resilience ρ and lowers residual risk R from 0.234 to 0.098.",
     ),
-    "urban": (
-        "case_african_cities.mp4",
-        "Disaster Science · Six Sub-Saharan African Cities",
-        "Main 3D + 2D: Urban Flood & Heat Governance",
-        (
-            ("L · Likelihood", "Extreme rainfall, flood & heatwave frequency", "#0284C7"),
-            ("E · Exposure", "Transit corridors, clinics & dense settlements", "#EF4444"),
-            ("V · Vulnerability", "Drainage deficit & baseline health fragility", "#F59E0B"),
-            ("1 − ρ · Resilience", "$50M green-grey infrastructure & health continuity", "#10B981"),
-        ),
-        "Allocating targeted resilience upgrades (ρ) across Bamako, Lagos, and Lilongwe cuts composite residual risk R by up to 48% and maximizes Expected Annual Loss (EAL) avoided per million residents.",
-    ),
 }
-
-def scan_and_resolve(target_filename):
-    if not os.path.exists(MEDIA_DIR):
-        return os.path.join("media", target_filename)
-    def make_key(name):
-        return "".join(c for c in name.replace("–", "-").lower() if c.isalnum())
-    target_key = make_key(target_filename)
-    target_ext = os.path.splitext(target_filename).lower()
-    for actual_file in os.listdir(MEDIA_DIR):
-        actual_ext = os.path.splitext(actual_file).lower()
-        if actual_ext == target_ext and make_key(actual_file) == target_key:
-            return os.path.join(MEDIA_DIR, actual_file)
-    return os.path.join(MEDIA_DIR, target_filename)
 
 def _dual_layer_panel(key, r_before=None, r_after=None):
     if key not in STUDIO_CLIPS:
         return
     filename, domain_tag, subtitle, steps, outcome_text = STUDIO_CLIPS[key]
     video_url = f"{RAW_VIDEOS}/{filename}"
-    accent = "#0284C7" if key == "urban" else "#DC2626"
+    accent = "#DC2626"
     col_3d, col_2d = st.columns((1.55, 1.0), gap="medium")
     with col_3d:
         components.html(f"""
@@ -114,54 +88,12 @@ def _dual_layer_panel(key, r_before=None, r_after=None):
 def videos_page():
     st.header("🎬 Narrated 3D Motion Video Library")
     st.write("Explore how the RMTI framework tracks cellular dynamics, tumor-immune barriers, and residual risks.")
-    
-    st.subheader("1. Ductal Progression & Subtype Divergence")
-    st.video(scan_and_resolve("Ductal Progression & Subtype Divergence Scenes 1-3.mp4"))
-    st.audio(scan_and_resolve("Ductal Progression & Subtype Divergence Scenes 1-3.mp3"))
-    st.divider()
-    
-    st.subheader("2. Cells Forming Tumor Immune Barrier (Scene 4)")
-    st.video(scan_and_resolve("Cells_forming_tumor_immune_barrier_scene 4.mp4"))
-    st.audio(scan_and_resolve("Cells Forming Tumor Immune Barrier Scene 4.mp3"))
-    st.divider()
-
-    st.subheader("3. Cells Blocking Tumor Infiltration (Scene 5)")
-    st.video(scan_and_resolve("Cells_blocking_tumor_infiltration_scene 5.mp4"))
-    st.audio(scan_and_resolve("Cells Blocking Tumor Infiltration Scene 5.mp3"))
-    st.divider()
-
-    st.subheader("4. Cells Forming Tumor Immune Barrier (Scenes 6-8)")
-    st.video(scan_and_resolve("Cells_forming_tumor_immune_barrier_Scenes 6-8.mp4"))
-    st.audio(scan_and_resolve("Cells Forming Tumor Immune Barrier Scenes 6-8.mp3"))
-    st.divider()
-
-    st.subheader("5. Antibodies Destroying Tumor Cells")
-    st.video(scan_and_resolve("Antibodies_destroying_tumor_cells.mp4"))
-    st.audio(scan_and_resolve("Antibodies Destroying Tumor Cells.mp3"))
-    st.divider()
-
-    st.subheader("6. Tumor Microenvironment Exposure & Resilience Deficit")
-    st.video(scan_and_resolve("Tumor Microenvironment Exposure & Resilience Deficit.mp4"))
-    st.audio(scan_and_resolve("Tumor Microenvironment Exposure & Resilience Deficit.mp3"))
-    st.divider()
-
-    st.subheader("7. Escalating Residual Risk Trajectory")
-    st.video(scan_and_resolve("Escalating Residual Risk Trajectory .mp4"))
-    st.audio(scan_and_resolve("Escalating Residual Risk Trajectory.mp3"))
+    st.video("https://githubusercontent.com Progression & Subtype Divergence  Scenes 1-3.mp4")
 
 def johnson_page():
-    st.header("📊 Johnson Cohort Surveillance Analysis")
-    st.write("Tracking longitudinal medical and demographic surveillance datasets.")
-
-def urban_page():
-    st.header("🏙️ Sub-Saharan Urban Flooding Case Study")
-    _dual_layer_panel("urban", 0.420, 0.218)
+    st.header("Johnson Cohort Surveillance Analysis")
 
 def case_page(key):
-    st.header(f"Clinical Case Profile: {key.upper()}")
-    if key == "liver":
-        _dual_layer_panel("liver", 0.258, 0.107)
-    elif key == "lung":
-        _dual_layer_panel("lung", 0.281, 0.112)
-    elif key == "breast":
-        _dual_layer_panel("breast", 0.234, 0.098)
+    c = content.CASES[key]
+    page_header(f"{c['title']}: from tumor events to trajectory", f"Published case study: {c['study']}. {c['finding']}", "Oncology case studies")
+    _dual_layer_panel(key, c.get("r_before"), c.get("r_after"))
