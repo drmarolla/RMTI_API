@@ -3,7 +3,6 @@ import os
 import streamlit as st
 from rmti_ui import inject_css
 
-# Split imports onto clean, individual lines to eliminate compiler indentation traps
 import views.author as author
 import views.calculator as calculator
 import views.cases as cases
@@ -37,44 +36,21 @@ _SVG = (
     '</svg>'
 )
 
-# Render logo header in sidebar
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
-# Clean inline view function to handle technical documentation layout
 def render_technical_documentation():
     st.header("Technical Documentation Manual")
     st.caption("Resilient Macro-Micro Tumor Microenvironment Interface (RMTI) Core Reference")
-    st.write(
-        "Welcome to the technical reference manual. Use this workspace dashboard panel to review "
-        "structural parameters, formulation mechanics, and runtime deployment criteria for "
-        "the RMTI predictive analytics engine."
-    )
     with st.container(border=True):
         st.markdown("### Core Metric Formulation Model Index")
         st.latex(r"R = L \cdot E \cdot V \cdot (1 - \rho)")
-        st.markdown(
-            "- **L (Likelihood):** Base tissue microenvironment occurrence background hazards.\n"
-            "- **E (Exposure):** Target cell spatial coverage or regional cluster saturation limits.\n"
-            "- **V (Vulnerability):** Cellular reserve susceptibilities or systemic vulnerability arrays under stress.\n"
-            "- **ρ (Resilience):** Active interception parameters and structural immune barriers."
-        )
 
-# Clean inline view function to handle author profile safely
 def render_author_profile():
     st.header("Author Academic Profile")
     st.caption("Risk Mechanism Theory Index (RMTI) Principal Investigator")
     with st.container(border=True):
-        if hasattr(author, 'show_profile'):
-            author.show_profile()
-        elif hasattr(author, 'main'):
-            author.main()
-        elif hasattr(author, 'show'):
-            author.show()
-        else:
-            st.markdown("### Dr. Marolla")
-            st.write("Principal Researcher and System Architect of the Resilient Macro-Micro Tumor Microenvironment Interface framework.")
+        st.markdown("### Dr. Marolla")
 
-# Map pages with safe routing connections
 PG = {
     "home": home.render if hasattr(home, 'render') else home.main if hasattr(home, 'main') else lambda: None,
     "calculator": calculator.render if hasattr(calculator, 'render') else calculator.main if hasattr(calculator, 'main') else lambda: None,
@@ -91,7 +67,6 @@ PG = {
     "author": render_author_profile
 }
 
-# Original structural sidebar layout items without symbols or custom changes
 menu_options = [
     "Framework Home",
     "Live RMTI Calculator",
@@ -110,7 +85,6 @@ menu_options = [
 
 selected_page = st.sidebar.radio("Navigate Platform Modules", menu_options)
 
-# Route views cleanly using your correct underlying page selections
 if selected_page == "Framework Home":
     PG["home"]()
 elif selected_page == "Live RMTI Calculator":
