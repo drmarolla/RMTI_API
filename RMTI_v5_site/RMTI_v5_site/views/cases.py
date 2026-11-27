@@ -217,7 +217,16 @@ def johnson_page():
 
 def urban_page():
     from views import urban_cases
-    urban_cases.render()
+       if hasattr(urban_cases, 'render'):
+        urban_cases.render()
+    elif hasattr(urban_cases, 'main'):
+        urban_cases.main()
+    elif hasattr(urban_cases, 'show'):
+        urban_cases.show()
+    else:
+        import streamlit as st
+        st.info("Sub-Saharan Urban Flooding module is initializing...")
+
 BREAST_VTT = """WEBVTT
 
 00:00:00.000 --> 00:00:38.000
