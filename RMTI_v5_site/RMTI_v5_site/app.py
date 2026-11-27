@@ -5,7 +5,7 @@ import streamlit as st
 from engine import core
 from rmti_ui import inject_css
 
-# Make sure views modules are imported correctly
+# Import original application views modules exactly as configured
 from views import author, calculator, cases, developer_api, disaster_sandbox, docs, hcc_surveillance, hcc_treatment, home, library, live_matrix, matrix4d, models3d, sandbox, urban_cases
 
 st.set_page_config(page_title="RMTI", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
@@ -28,7 +28,7 @@ _SVG = (
 # Render logo header in sidebar
 st.sidebar.markdown(f'<div style="margin-bottom: 1.5rem;">{_SVG}</div>', unsafe_allow_html=True)
 
-# Define Navigation Dictionary mapping pages cleanly 
+# Map pages to their exact original loader functions from views
 PG = {
     "home": home.render,
     "calculator": calculator.render,
@@ -45,16 +45,7 @@ PG = {
     "author": author.render
 }
 
-# Sidebar Selectbox Menu Router Layout
-NAV_MAP = {
-    "Overview & Tools": [PG["home"], PG["calculator"]],
-    "Case Studies": [PG["liver"], PG["lung"], PG["breast"], PG["johnson"], PG["urban"]],
-    "Video Resources": [PG["library"], PG["videos"]],
-    "Simulations": [PG["disaster_sandbox"]],
-    "Documentation & Profile": [PG["developer_api"], PG["docs"], PG["author"]]
-}
-
-# Create a clean choice mapping structure
+# Original structural sidebar layout items
 menu_options = [
     "🏠 Framework Home",
     "🧮 Live RMTI Calculator",
@@ -73,7 +64,7 @@ menu_options = [
 
 selected_page = st.sidebar.radio("Navigate Platform Modules", menu_options)
 
-# Route layout views based on perfectly aligned criteria
+# Route views using their correct underlying methods
 if selected_page == "🏠 Framework Home":
     PG["home"]()
 elif selected_page == "🧮 Live RMTI Calculator":
